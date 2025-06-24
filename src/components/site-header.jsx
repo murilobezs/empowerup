@@ -1,11 +1,14 @@
 "use client"
 
 import { useState } from "react"
-import { Link, useLocation } from "react-router-dom"
+import { Link, useLocation, useNavigate } from "react-router-dom"
 import { Button } from "./ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet"
 import { Menu } from "lucide-react"
 import { cn } from "../lib/utils"
+import { useAuth } from "../contexts/AuthContext"
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./ui/dropdown-menu"
 
 const navigation = [
 	{ name: "Início", href: "/" },
@@ -16,7 +19,10 @@ const navigation = [
 
 export function SiteHeader() {
 	const location = useLocation()
+	const navigate = useNavigate()
+	const { user, logout } = useAuth()
 	const [isOpen, setIsOpen] = useState(false)
+	const isAuthPage = location.pathname === '/login' || location.pathname === '/cadastro'
 
 	return (
 		<header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -49,12 +55,16 @@ export function SiteHeader() {
 
 				{/* Desktop Auth Buttons */}
 				<div className="hidden md:flex items-center space-x-2">
-					<Button variant="ghost" asChild className="hover:text-white">
-						<Link to="/login">Entrar</Link>
-					</Button>
-					<Button asChild className="bg-coral hover:bg-coral/90">
-						<Link to="/cadastro">Cadastrar</Link>
-					</Button>
+					{!user && !isAuthPage && (
+						<>
+							<Button variant="ghost" asChild className="hover:text-white">
+								<Link to="/login">Entrar</Link>
+							</Button>
+							<Button asChild className="bg-coral hover:bg-coral/90">
+								<Link to="/cadastro">Cadastrar</Link>
+							</Button>
+						</>
+					)}
 				</div>
 
 				{/* Mobile Menu */}
@@ -82,25 +92,49 @@ export function SiteHeader() {
 									{item.name}
 								</Link>
 							))}
-							<div className="flex flex-col space-y-2 pt-4">
-								<Button
-									variant="ghost"
-									asChild
-									onClick={() => setIsOpen(false)}
-								>
-									<Link to="/login">Entrar</Link>
-								</Button>
-								<Button
-									asChild
-									className="bg-coral hover:bg-coral/90"
-									onClick={() => setIsOpen(false)}
-								>
-									<Link to="/cadastro">Cadastrar</Link>
-								</Button>
-							</div>
+							{!user && !isAuthPage && (
+								<div className="flex flex-col space-y-2 pt-4">
+									<Button
+										variant="ghost"
+										asChild
+										onClick={() => setIsOpen(false)}
+									>
+										<Link to="/login">Entrar</Link>
+									</Button>
+									<Button
+										asChild
+										className="bg-coral hover:bg-coral/90"
+										onClick={() => setIsOpen(false)}
+									>
+										<Link to="/cadastro">Cadastrar</Link>
+									</Button>
+								</div>
+							)}
 						</nav>
 					</SheetContent>
 				</Sheet>
+
+				{/* User Avatar and Dropdown */}
+				<nav className="flex items-center space-x-4">
+					{!isAuthPage && user ? (
+						<DropdownMenu>
+							<DropdownMenuTrigger>
+								<Avatar>
+									<AvatarImage src={user.avatar_url} />
+									<AvatarFallback>{user.nome?.charAt(0)}</AvatarFallback>
+								</Avatar>
+							</DropdownMenuTrigger>
+							<DropdownMenuContent>
+								<DropdownMenuItem onClick={() => {
+									logout()
+									navigate('/')
+								}}>
+									Sair
+								</DropdownMenuItem>
+							</DropdownMenuContent>
+						</DropdownMenu>
+					) : null}
+				</nav>
 			</div>
 		</header>
 	)

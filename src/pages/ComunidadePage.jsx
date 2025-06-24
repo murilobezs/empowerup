@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { SiteHeader } from "../components/site-header"
 import { SiteFooter } from "../components/site-footer"
 import { Button } from "../components/ui/button"
@@ -23,122 +23,115 @@ import {
   Clock,
   Star,
   Send,
-  ImageIcon,
-  Video,
-  Smile,
+  Paperclip,
+  AlertTriangle,
+  Trash2,
 } from "lucide-react"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "../components/ui/dropdown-menu"
+import { CreateGroupModal } from "../components/create-group-modal"
 
 export default function ComunidadePage() {
   const [searchTerm, setSearchTerm] = useState("")
   const [newPost, setNewPost] = useState("")
   const [selectedFilter, setSelectedFilter] = useState("todos")
-  const [posts, setPosts] = useState([
-    {
-      id: 1,
-      autor: "Ana Silva",
-      username: "@ana_artesa",
-      avatar: "/placeholder.svg?height=40&width=40",
-      tempo: "2 horas atrás",
-      conteudo:
-        "Acabei de lançar minha nova coleção de bolsas artesanais! Muito feliz com o resultado 🎨✨ Cada peça foi feita com muito amor e dedicação. O que vocês acham?",
-      imagem: "/placeholder.svg?height=300&width=500",
-      likes: 24,
-      comentarios: 8,
-      compartilhamentos: 3,
-      categoria: "Novidades",
-      liked: false,
-      tags: ["#artesanato", "#bolsas", "#handmade"],
-    },
-    {
-      id: 2,
-      autor: "Maria Santos",
-      username: "@maria_empreende",
-      avatar: "/placeholder.svg?height=40&width=40",
-      tempo: "4 horas atrás",
-      conteudo:
-        "Dica para empreendedoras: sempre mantenham um bom relacionamento com seus clientes. A confiança é tudo! 💪 Respondam rapidamente, sejam transparentes e sempre entreguem mais do que prometem.",
-      likes: 18,
-      comentarios: 12,
-      compartilhamentos: 7,
-      categoria: "Dicas",
-      liked: true,
-      tags: ["#dicas", "#empreendedorismo", "#clientes"],
-    },
-    {
-      id: 3,
-      autor: "Carla Oliveira",
-      username: "@carla_sustentavel",
-      avatar: "/placeholder.svg?height=40&width=40",
-      tempo: "6 horas atrás",
-      conteudo:
-        "Participei de uma feira de artesanato hoje e foi incrível! Conheci outras empreendedoras maravilhosas e aprendi muito sobre sustentabilidade nos negócios. 🌱",
-      imagem: "/placeholder.svg?height=300&width=500",
-      likes: 31,
-      comentarios: 15,
-      compartilhamentos: 5,
-      categoria: "Eventos",
-      liked: false,
-      tags: ["#feira", "#sustentabilidade", "#networking"],
-    },
-    {
-      id: 4,
-      autor: "Juliana Costa",
-      username: "@ju_cosmeticos",
-      avatar: "/placeholder.svg?height=40&width=40",
-      tempo: "8 horas atrás",
-      conteudo:
-        "Receita caseira de hidratante labial natural! 🌿 Ingredientes: cera de abelha, óleo de coco, vitamina E. Super fácil de fazer e vende muito bem!",
-      likes: 42,
-      comentarios: 23,
-      compartilhamentos: 12,
-      categoria: "Receitas",
-      liked: true,
-      tags: ["#cosmeticos", "#natural", "#receita"],
-    },
-  ])
+  const [posts, setPosts] = useState([])
+  const [grupos, setGrupos] = useState([]) // Add new state for groups
 
-  const grupos = [
-    {
-      id: 1,
-      nome: "Artesãs Unidas",
-      membros: 1234,
-      descricao: "Grupo para artesãs compartilharem técnicas e experiências",
-      categoria: "Artesanato",
-      imagem: "/placeholder.svg?height=100&width=100",
-      ativo: true,
-      ultimaAtividade: "2 min atrás",
-    },
-    {
-      id: 2,
-      nome: "Empreendedoras Digitais",
-      membros: 856,
-      descricao: "Dicas e estratégias para vender online",
-      categoria: "Marketing Digital",
-      imagem: "/placeholder.svg?height=100&width=100",
-      ativo: true,
-      ultimaAtividade: "15 min atrás",
-    },
-    {
-      id: 3,
-      nome: "Sustentabilidade no Negócio",
-      membros: 642,
-      descricao: "Práticas sustentáveis para empreendedoras conscientes",
-      categoria: "Sustentabilidade",
-      imagem: "/placeholder.svg?height=100&width=100",
-      ativo: false,
-      ultimaAtividade: "1 hora atrás",
-    },
-    {
-      id: 4,
-      nome: "Mães Empreendedoras",
-      membros: 923,
-      descricao: "Equilibrando maternidade e empreendedorismo",
-      categoria: "Lifestyle",
-      imagem: "/placeholder.svg?height=100&width=100",
-      ativo: true,
-      ultimaAtividade: "30 min atrás",
-    },
-  ]
+  // Fetch posts and groups when component mounts
+  useEffect(() => {
+    fetchPosts()
+    fetchGrupos()
+  }, [])
+
+  const fetchPosts = async () => {
+    try {
+      const response = await fetch("http://localhost/empowerup/api/posts/postagens.php")
+      const data = await response.json()
+      setPosts(data)
+    } catch (error) {
+      console.error("Erro ao buscar posts:", error)
+    }
+  }
+
+  const fetchGrupos = async () => {
+    try {
+      const response = await fetch("http://localhost/empowerup/api/groups/grupos.php")
+      const data = await response.json()
+      setGrupos(data)
+    } catch (error) {
+      console.error("Erro ao buscar grupos:", error)
+    }
+  }
+
+  const handleNewPost = async () => {
+    if (newPost.trim()) {
+      const postData = {
+        autor: "Você",
+        username: "@voce",
+        avatar: "/placeholder.svg?height=40&width=40",
+        conteudo: newPost,
+        categoria: "Geral",
+        tags: [],
+      }
+
+      try {
+        const response = await fetch("http://localhost/empowerup/api/posts/postagens.php", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(postData),
+        })
+
+        if (response.ok) {
+          fetchPosts() // Recarrega os posts
+          setNewPost("")
+        }
+      } catch (error) {
+        console.error("Erro ao criar post:", error)
+      }
+    }
+  }
+
+  const handleDeletePost = async (postId) => {
+    try {
+      const response = await fetch(`http://localhost/empowerup/api/posts/postagens.php?id=${postId}`, {
+        method: "DELETE",
+      })
+
+      if (response.ok) {
+        fetchPosts() // Recarrega os posts
+      }
+    } catch (error) {
+      console.error("Erro ao deletar post:", error)
+    }
+  }
+
+  const handleCreateGroup = async (groupData) => {
+    try {
+      const response = await fetch("http://localhost/empowerup/api/groups/grupos.php", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(groupData),
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        if (data.success) {
+          fetchGrupos() // Recarrega os grupos
+        }
+      }
+    } catch (error) {
+      console.error("Erro ao criar grupo:", error)
+    }
+  }
 
   const eventos = [
     {
@@ -213,31 +206,21 @@ export default function ComunidadePage() {
     )
   }
 
-  const handleNewPost = () => {
-    if (newPost.trim()) {
-      const novoPost = {
-        id: posts.length + 1,
-        autor: "Você",
-        username: "@voce",
-        avatar: "/placeholder.svg?height=40&width=40",
-        tempo: "agora",
-        conteudo: newPost,
-        likes: 0,
-        comentarios: 0,
-        compartilhamentos: 0,
-        categoria: "Geral",
-        liked: false,
-        tags: [],
-      }
-      setPosts([novoPost, ...posts])
-      setNewPost("")
-    }
-  }
-
   const filteredPosts = posts.filter((post) => {
     if (selectedFilter === "todos") return true
     return post.categoria.toLowerCase() === selectedFilter.toLowerCase()
   })
+
+  // Add this helper function at the top of your component
+  const parseTags = (tags) => {
+    if (!tags) return []
+    if (Array.isArray(tags)) return tags
+    try {
+      return JSON.parse(tags)
+    } catch {
+      return []
+    }
+  }
 
   return (
     <div className="flex min-h-screen flex-col bg-gray-50">
@@ -314,9 +297,48 @@ export default function ComunidadePage() {
             </TabsList>
 
             <TabsContent value="feed" className="mt-0">
-              <div className="grid grid-cols-1 gap-8">
-                {/* Feed principal */}
-                <div className="space-y-6 max-w-3xl mx-auto lg:max-w-none">
+              <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+                {/* Grupos na coluna esquerda */}
+                <div className="space-y-6 lg:sticky lg:top-20">
+                  {/* Grupos sugeridos */}
+                  <Card className="shadow-sm">
+                    <CardHeader>
+                      <CardTitle className="text-lg flex items-center">
+                        <Users className="mr-2 h-5 w-5 text-coral" />
+                        Grupos Sugeridos
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      {grupos.slice(0, 3).map((grupo) => (
+                        <div
+                          key={grupo.id}
+                          className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-50 transition-colors"
+                        >
+                          <Avatar className="h-10 w-10">
+                            <AvatarImage src={grupo.imagem || "/placeholder.svg"} />
+                            <AvatarFallback className="bg-sage text-white">{grupo.nome.charAt(0)}</AvatarFallback>
+                          </Avatar>
+                          <div className="flex-1 min-w-0">
+                            <h4 className="font-medium truncate">{grupo.nome}</h4>
+                            <p className="text-sm text-muted-foreground">{grupo.membros} membros</p>
+                          </div>
+                          <Button size="sm" variant="outline" className="shrink-0">
+                            Participar
+                          </Button>
+                        </div>
+                      ))}
+                      <a
+                        href="/grupos"
+                        className="block w-full text-center text-coral hover:underline font-medium transition-colors"
+                      >
+                        Ver todos os grupos
+                      </a>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                {/* Feed principal (no centro) */}
+                <div className="space-y-6 lg:col-span-2 w-full lg:mx-auto">
                   {/* Criar post */}
                   <Card className="shadow-sm">
                     <CardContent className="p-6">
@@ -337,18 +359,24 @@ export default function ComunidadePage() {
                         </div>
                         <div className="flex items-center justify-between">
                           <div className="flex items-center space-x-2">
-                            <Button variant="ghost" size="sm" className="text-coral hover:text-coral/80">
-                              <ImageIcon className="h-4 w-4 mr-1" />
-                              Foto
-                            </Button>
-                            <Button variant="ghost" size="sm" className="text-sage hover:text-sage/80">
-                              <Video className="h-4 w-4 mr-1" />
-                              Vídeo
-                            </Button>
-                            <Button variant="ghost" size="sm" className="text-olive hover:text-olive/80">
-                              <Smile className="h-4 w-4 mr-1" />
-                              Emoji
-                            </Button>
+                            <label htmlFor="file-upload" className="cursor-pointer">
+                              <Button variant="ghost" size="sm" className="text-coral hover:text-coral/80" asChild>
+                                <div>
+                                  <Paperclip className="h-4 w-4 mr-1" />
+                                  Anexar
+                                </div>
+                              </Button>
+                            </label>
+                            <input
+                              id="file-upload"
+                              type="file"
+                              accept="image/*,video/*"
+                              className="hidden"
+                              onChange={(e) => {
+                                // Handle file upload here
+                                console.log(e.target.files[0])
+                              }}
+                            />
                           </div>
                           <Button
                             onClick={handleNewPost}
@@ -395,9 +423,9 @@ export default function ComunidadePage() {
                               <p className="text-gray-800 text-base leading-relaxed">{post.conteudo}</p>
 
                               {/* Tags */}
-                              {post.tags && post.tags.length > 0 && (
+                              {post.tags && (
                                 <div className="flex flex-wrap gap-2">
-                                  {post.tags.map((tag, index) => (
+                                  {parseTags(post.tags).map((tag, index) => (
                                     <span
                                       key={index}
                                       className="text-coral hover:text-coral/80 cursor-pointer text-sm font-medium"
@@ -441,9 +469,35 @@ export default function ComunidadePage() {
                                   {post.compartilhamentos}
                                 </Button>
                               </div>
-                              <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
-                                Comentar
-                              </Button>
+                              <div className="flex items-center">
+                                <DropdownMenu>
+                                  <DropdownMenuTrigger asChild>
+                                    <Button variant="ghost" size="sm" className="rounded-full h-8 w-8 p-0">
+                                      <div className="flex space-x-1">
+                                        <div className="h-1 w-1 rounded-full bg-gray-500"></div>
+                                        <div className="h-1 w-1 rounded-full bg-gray-500"></div>
+                                        <div className="h-1 w-1 rounded-full bg-gray-500"></div>
+                                      </div>
+                                    </Button>
+                                  </DropdownMenuTrigger>
+                                  <DropdownMenuContent align="end">
+                                    {post.autor === "Você" ? (
+                                      <DropdownMenuItem
+                                        className="text-red-600 focus:text-red-600"
+                                        onClick={() => handleDeletePost(post.id)}
+                                      >
+                                        <Trash2 className="mr-2 h-4 w-4" />
+                                        Deletar post
+                                      </DropdownMenuItem>
+                                    ) : (
+                                      <DropdownMenuItem className="text-yellow-600 focus:text-yellow-600">
+                                        <AlertTriangle className="mr-2 h-4 w-4" />
+                                        Reportar problema
+                                      </DropdownMenuItem>
+                                    )}
+                                  </DropdownMenuContent>
+                                </DropdownMenu>
+                              </div>
                             </div>
                           </div>
                         </CardContent>
@@ -452,41 +506,8 @@ export default function ComunidadePage() {
                   </div>
                 </div>
 
-                {/* Sidebar - Vai para baixo em telas menores */}
+                {/* Eventos na coluna direita */}
                 <div className="space-y-6 lg:sticky lg:top-20">
-                  {/* Grupos sugeridos */}
-                  <Card className="shadow-sm">
-                    <CardHeader>
-                      <CardTitle className="text-lg flex items-center">
-                        <Users className="mr-2 h-5 w-5 text-coral" />
-                        Grupos Sugeridos
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      {grupos.slice(0, 3).map((grupo) => (
-                        <div
-                          key={grupo.id}
-                          className="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-50 transition-colors"
-                        >
-                          <Avatar className="h-10 w-10">
-                            <AvatarImage src={grupo.imagem || "/placeholder.svg"} />
-                            <AvatarFallback className="bg-sage text-white">{grupo.nome.charAt(0)}</AvatarFallback>
-                          </Avatar>
-                          <div className="flex-1 min-w-0">
-                            <h4 className="font-medium truncate">{grupo.nome}</h4>
-                            <p className="text-sm text-muted-foreground">{grupo.membros} membros</p>
-                          </div>
-                          <Button size="sm" variant="outline" className="shrink-0">
-                            Participar
-                          </Button>
-                        </div>
-                      ))}
-                      <Button variant="ghost" className="w-full text-coral hover:text-coral/80">
-                        Ver todos os grupos
-                      </Button>
-                    </CardContent>
-                  </Card>
-
                   {/* Próximos eventos */}
                   <Card className="shadow-sm">
                     <CardHeader>
@@ -523,9 +544,12 @@ export default function ComunidadePage() {
                           </Button>
                         </div>
                       ))}
-                      <Button variant="ghost" className="w-full text-olive hover:text-olive/80">
+                      <a
+                        href="/eventos"
+                        className="block w-full text-center text-olive hover:underline font-medium transition-colors"
+                      >
                         Ver todos os eventos
-                      </Button>
+                      </a>
                     </CardContent>
                   </Card>
 
@@ -563,12 +587,8 @@ export default function ComunidadePage() {
               <div className="space-y-6">
                 <div className="flex items-center justify-between">
                   <h2 className="text-2xl font-bold">Grupos da Comunidade</h2>
-                  <Button className="bg-coral hover:bg-coral/90">
-                    <Plus className="mr-2 h-4 w-4" />
-                    Criar Grupo
-                  </Button>
+                  <CreateGroupModal onCreateGroup={handleCreateGroup} />
                 </div>
-
                 <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                   {grupos.map((grupo) => (
                     <Card key={grupo.id} className="shadow-sm hover:shadow-md transition-shadow">
@@ -614,10 +634,13 @@ export default function ComunidadePage() {
               <div className="space-y-6">
                 <div className="flex items-center justify-between">
                   <h2 className="text-2xl font-bold">Eventos da Comunidade</h2>
-                  <Button className="bg-olive hover:bg-olive/90">
-                    <Plus className="mr-2 h-4 w-4" />
-                    Criar Evento
-                  </Button>
+                  {/* Removido botão de criar evento */}
+                  <a
+                    href="/eventos"
+                    className="text-olive hover:underline font-medium transition-colors"
+                  >
+                    Ver todos os eventos
+                  </a>
                 </div>
 
                 <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -707,59 +730,60 @@ export default function ComunidadePage() {
                 </div>
 
                 {/* Seção de insights */}
-                <Card className="shadow-sm">
-                  <CardHeader>
-                    <CardTitle className="flex items-center">
-                      <TrendingUp className="mr-2 h-5 w-5 text-coral" />
-                      Insights da Comunidade
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid gap-6 md:grid-cols-2">
-                      <div className="space-y-4">
-                        <h4 className="font-semibold">Mais Engajamento</h4>
-                        <div className="space-y-2">
-                          <div className="flex justify-between items-center">
-                            <span className="text-sm">Posts com imagens</span>
-                            <span className="text-sm font-medium text-coral">+45%</span>
-                          </div>
-                          <div className="flex justify-between items-center">
-                            <span className="text-sm">Posts com perguntas</span>
-                            <span className="text-sm font-medium text-olive">+32%</span>
-                          </div>
-                          <div className="flex justify-between items-center">
-                            <span className="text-sm">Posts com dicas</span>
-                            <span className="text-sm font-medium text-sage">+28%</span>
-                          </div>
-                        </div>
-                      </div>
+                        <Card className="shadow-sm">
+                          <CardHeader>
+                          <CardTitle className="flex items-center">
+                            <TrendingUp className="mr-2 h-5 w-5 text-coral" />
+                            Insights da Comunidade
+                          </CardTitle>
+                          </CardHeader>
+                          <CardContent>
+                          <div className="grid gap-6 md:grid-cols-2">
+                            <div className="space-y-4">
+                            <h4 className="font-semibold">Mais Engajamento</h4>
+                            <div className="space-y-2">
+                              <div className="flex justify-between items-center">
+                              <span className="text-sm">Posts com imagens</span>
+                              <span className="text-sm font-medium text-coral">+45%</span>
+                              </div>
+                              <div className="flex justify-between items-center">
+                              <span className="text-sm">Posts com perguntas</span>
+                              <span className="text-sm font-medium text-olive">+32%</span>
+                              </div>
+                              <div className="flex justify-between items-center">
+                              <span className="text-sm">Posts com dicas</span>
+                              <span className="text-sm font-medium text-sage">+28%</span>
+                              </div>
+                            </div>
+                            </div>
 
-                      <div className="space-y-4">
-                        <h4 className="font-semibold">Horários de Pico</h4>
-                        <div className="space-y-2">
-                          <div className="flex justify-between items-center">
-                            <span className="text-sm">19h - 21h</span>
-                            <span className="text-sm font-medium text-coral">Pico</span>
+                            <div className="space-y-4">
+                            <h4 className="font-semibold">Horários de Pico</h4>
+                            <div className="space-y-2">
+                              <div className="flex justify-between items-center">
+                              <span className="text-sm">19h - 21h</span>
+                              <span className="text-sm font-medium text-coral">Pico</span>
+                              </div>
+                              <div className="flex justify-between items-center">
+                              <span className="text-sm">12h - 14h</span>
+                              <span className="text-sm font-medium text-olive">Alto</span>
+                              </div>
+                              <div className="flex justify-between items-center">
+                              <span className="text-sm">09h - 11h</span>
+                              <span className="text-sm font-medium text-sage">Médio</span>
+                              </div>
+                            </div>
+                            </div>
                           </div>
-                          <div className="flex justify-between items-center">
-                            <span className="text-sm">12h - 14h</span>
-                            <span className="text-sm font-medium text-olive">Alto</span>
-                          </div>
-                          <div className="flex justify-between items-center">
-                            <span className="text-sm">09h - 11h</span>
-                            <span className="text-sm font-medium text-sage">Médio</span>
-                          </div>
+                          </CardContent>
+                        </Card>
                         </div>
-                      </div>
+                      </TabsContent>
+                      </Tabs>
                     </div>
-                  </CardContent>
-                </Card>
-              </div>
-            </TabsContent>
-          </Tabs>
-        </div>
-      </main>
-      <SiteFooter />
-    </div>
-  )
-}
+                    </main>
+                    <SiteFooter />
+                  </div>
+                  )
+                }
+
