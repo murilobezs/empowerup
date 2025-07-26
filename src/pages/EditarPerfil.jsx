@@ -1,5 +1,3 @@
-"use client"
-
 import { useState } from "react"
 import { SiteHeader } from "../components/site-header"
 import { SiteFooter } from "../components/site-footer"
@@ -8,7 +6,7 @@ import { Card, CardContent } from "../components/ui/card"
 import { Input } from "../components/ui/input"
 import { Textarea } from "../components/ui/textarea"
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar"
-import { MapPin, Calendar } from "lucide-react"
+import ImageUpload from "../components/ImageUpload"
 
 export default function EditarPerfil() {
   const [perfil, setPerfil] = useState({
@@ -19,6 +17,8 @@ export default function EditarPerfil() {
     membro_desde: "Janeiro 2022",
     especialidades: "Artesanato, Decoração, Sustentabilidade",
   })
+
+  const [showImageUpload, setShowImageUpload] = useState(false)
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -31,6 +31,14 @@ export default function EditarPerfil() {
       ...prev,
       [name]: value
     }))
+  }
+
+  const handleImageUpload = (imagePath) => {
+    setPerfil(prev => ({
+      ...prev,
+      avatar: imagePath
+    }))
+    setShowImageUpload(false)
   }
 
   return (
@@ -46,7 +54,27 @@ export default function EditarPerfil() {
                     <AvatarImage src={perfil.avatar} alt={perfil.nome} />
                     <AvatarFallback className="text-2xl">{perfil.nome.charAt(0)}</AvatarFallback>
                   </Avatar>
-                  <Button type="button" variant="outline">Alterar foto</Button>
+                  <div className="flex space-x-2">
+                    <Button 
+                      type="button" 
+                      variant="outline"
+                      onClick={() => setShowImageUpload(!showImageUpload)}
+                    >
+                      {showImageUpload ? "Cancelar" : "Alterar foto"}
+                    </Button>
+                  </div>
+                  
+                  {showImageUpload && (
+                    <div className="w-full max-w-md">
+                      <ImageUpload
+                        uploadType="user_avatar"
+                        userId={1} // Substitua pelo ID do usuário atual
+                        onUpload={handleImageUpload}
+                        currentImage={perfil.avatar}
+                        placeholder="Selecione sua nova foto de perfil"
+                      />
+                    </div>
+                  )}
                 </div>
 
                 <div className="space-y-4">

@@ -1,5 +1,3 @@
-"use client"
-
 import { useState } from "react"
 import { Link, useLocation, useNavigate } from "react-router-dom"
 import { Button } from "./ui/button"
@@ -118,13 +116,23 @@ export function SiteHeader() {
 				<nav className="flex items-center space-x-4">
 					{!isAuthPage && user ? (
 						<DropdownMenu>
-							<DropdownMenuTrigger>
+							<DropdownMenuTrigger className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
 								<Avatar>
-									<AvatarImage src={user.avatar_url} />
+									<AvatarImage src={user.avatar_url ? `http://localhost/empowerup/public${user.avatar_url}` : ''} />
 									<AvatarFallback>{user.nome?.charAt(0)}</AvatarFallback>
 								</Avatar>
+								<span className="hidden sm:block text-sm font-medium">
+									{user.nome}
+								</span>
 							</DropdownMenuTrigger>
-							<DropdownMenuContent>
+							<DropdownMenuContent align="end" className="w-56">
+								<DropdownMenuItem onClick={() => navigate('/meu-perfil')}>
+									<Avatar className="mr-2 h-4 w-4">
+										<AvatarImage src={user.avatar_url ? `http://localhost/empowerup/public${user.avatar_url}` : ''} />
+										<AvatarFallback className="text-xs">{user.nome?.charAt(0)}</AvatarFallback>
+									</Avatar>
+									Meu Perfil
+								</DropdownMenuItem>
 								<DropdownMenuItem onClick={() => {
 									logout()
 									navigate('/')

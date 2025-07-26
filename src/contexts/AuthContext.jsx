@@ -10,16 +10,25 @@ export const AuthProvider = ({ children }) => {
     localStorage.setItem("user", JSON.stringify(userData))
   }
 
+  const updateUser = (updatedData) => {
+    const updatedUser = { ...user, ...updatedData }
+    setUser(updatedUser)
+    localStorage.setItem("user", JSON.stringify(updatedUser))
+  }
+
   const logout = () => {
     setUser(null)
     localStorage.removeItem("user")
   }
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, login, logout, updateUser }}>
       {children}
     </AuthContext.Provider>
   )
 }
 
 export const useAuth = () => useContext(AuthContext)
+
+// Exportar o contexto também para uso direto
+export { AuthContext }

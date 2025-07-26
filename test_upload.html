@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste de Upload - EmpowerUp</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .success { color: green; }
+        .error { color: red; }
+        .upload-area { border: 2px dashed #ccc; padding: 20px; margin: 20px 0; text-align: center; }
+        .upload-area:hover { border-color: #999; }
+        .upload-area.dragover { border-color: #000; background-color: #f0f0f0; }
+        button { background: #007cba; color: white; padding: 10px 20px; border: none; cursor: pointer; }
+        button:hover { background: #005a87; }
+        .preview { max-width: 200px; margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <h1>🔧 Teste de Upload de Imagens</h1>
+    
+    <div class="upload-area" id="uploadArea">
+        <p>Arraste uma imagem aqui ou clique para selecionar</p>
+        <input type="file" id="fileInput" accept="image/*" style="display: none;">
+        <button onclick="document.getElementById('fileInput').click()">Selecionar Imagem</button>
+    </div>
+    
+    <div id="preview"></div>
+    <div id="result"></div>
+    
+    <h3>Instruções:</h3>
+    <ol>
+        <li>Certifique-se de que o XAMPP está rodando</li>
+        <li>Verifique se o arquivo está em: <code>c:\xampp\htdocs\empowerup\api\upload_image.php</code></li>
+        <li>Selecione uma imagem para testar</li>
+        <li>Verifique o resultado abaixo</li>
+    </ol>
+    
+    <script>
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const preview = document.getElementById('preview');
+        const result = document.getElementById('result');
+        
+        // Drag and drop handlers
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+        
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+        
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handleFile(files[0]);
+            }
+        });
+        
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                handleFile(e.target.files[0]);
+            }
+        });
+        
+        function handleFile(file) {
+            // Mostrar preview
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                preview.innerHTML = `<img src="${e.target.result}" class="preview" alt="Preview">`;
+            };
+            reader.readAsDataURL(file);
+            
+            // Fazer upload
+            uploadFile(file);
+        }
+        
+        async function uploadFile(file) {
+            const formData = new FormData();
+            formData.append('image', file);
+            formData.append('upload_type', 'user_avatar');
+            formData.append('user_id', '1');
+            
+            result.innerHTML = '<p>Enviando imagem...</p>';
+            
+            try {
+                const response = await fetch('http://localhost/empowerup/api/upload_image.php', {
+                    method: 'POST',
+                    body: formData,
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    result.innerHTML = `<div class="success">
+                        <h3>✅ Upload realizado com sucesso!</h3>
+                        <p>Caminho: ${data.image_path}</p>
+                        <p>Arquivo: ${data.file_name}</p>
+                    </div>`;
+                } else {
+                    result.innerHTML = `<div class="error">
+                        <h3>❌ Erro no upload</h3>
+                        <p>${data.message}</p>
+                    </div>`;
+                }
+            } catch (error) {
+                result.innerHTML = `<div class="error">
+                    <h3>❌ Erro de conexão</h3>
+                    <p>${error.message}</p>
+                    <p>Verifique se o XAMPP está rodando e se a URL está correta.</p>
+                </div>`;
+            }
+        }
+    </script>
+</body>
+</html>

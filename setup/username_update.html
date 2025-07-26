@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atualização do Banco - Sistema de Username</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .button {
+            background-color: #e74c3c;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+        .button:hover {
+            background-color: #c0392b;
+        }
+        .success {
+            color: #27ae60;
+            background-color: #d5f4e6;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .error {
+            color: #e74c3c;
+            background-color: #fdf2f2;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .info {
+            color: #3498db;
+            background-color: #ebf3fd;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .code {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            margin: 10px 0;
+            border-left: 4px solid #e74c3c;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Atualização do Sistema - Username & Posts</h1>
+        
+        <div class="info">
+            <strong>Sobre esta atualização:</strong><br>
+            • Adiciona campo <code>username</code> único para cada usuário<br>
+            • Adiciona campo <code>user_id</code> nos posts para relacionar com o usuário<br>
+            • Cria chaves estrangeiras e índices para melhor performance<br>
+            • Atualiza posts existentes com o primeiro usuário do sistema
+        </div>
+
+        <h2>Passos da Atualização:</h2>
+        
+        <button class="button" onclick="runUpdate()">🔄 Executar Atualização</button>
+        <button class="button" onclick="checkStatus()">📊 Verificar Status</button>
+        
+        <div id="result"></div>
+
+        <h3>SQL que será executado:</h3>
+        <div class="code">-- Adicionar campo username na tabela usuarios
+ALTER TABLE usuarios ADD COLUMN username VARCHAR(50) UNIQUE DEFAULT '';
+
+-- Adicionar campo user_id na tabela posts
+ALTER TABLE posts ADD COLUMN user_id INT(11) NULL;
+
+-- Adicionar chave estrangeira
+ALTER TABLE posts ADD CONSTRAINT fk_posts_user_id 
+  FOREIGN KEY (user_id) REFERENCES usuarios(id) ON DELETE CASCADE;
+
+-- Atualizar posts existentes
+UPDATE posts SET user_id = 1 WHERE user_id IS NULL;
+
+-- Criar índices
+CREATE INDEX idx_posts_user_id ON posts(user_id);
+CREATE INDEX idx_posts_created_at ON posts(created_at);
+CREATE INDEX idx_usuarios_username ON usuarios(username);</div>
+    </div>
+
+    <script>
+        async function runUpdate() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '<div class="info">Executando atualização...</div>';
+
+            try {
+                const response = await fetch('database_update_username.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ action: 'update' })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    resultDiv.innerHTML = `
+                        <div class="success">
+                            <strong>✅ Atualização realizada com sucesso!</strong><br>
+                            ${result.message}
+                        </div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="error">
+                            <strong>❌ Erro na atualização:</strong><br>
+                            ${result.message}
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="error">
+                        <strong>❌ Erro de conexão:</strong><br>
+                        ${error.message}
+                    </div>
+                `;
+            }
+        }
+
+        async function checkStatus() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '<div class="info">Verificando status...</div>';
+
+            try {
+                const response = await fetch('database_update_username.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ action: 'check' })
+                });
+
+                const result = await response.json();
+
+                resultDiv.innerHTML = `
+                    <div class="info">
+                        <strong>📊 Status do Banco de Dados:</strong><br>
+                        ${result.message}
+                    </div>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="error">
+                        <strong>❌ Erro de verificação:</strong><br>
+                        ${error.message}
+                    </div>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>

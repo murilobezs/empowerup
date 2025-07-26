@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atualização do Banco de Dados - EmpowerUp</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #FF6B6B;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .update-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .update-section h3 {
+            color: #333;
+            margin-top: 0;
+        }
+        button {
+            background-color: #FF6B6B;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #FF5252;
+        }
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        .success {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+        .error {
+            color: #f44336;
+            font-weight: bold;
+        }
+        .warning {
+            color: #ff9800;
+            font-weight: bold;
+        }
+        .log {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 15px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .info {
+            background-color: #e3f2fd;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            border-left: 4px solid #2196F3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Atualização do Banco de Dados - EmpowerUp</h1>
+        
+        <div class="info">
+            <strong>⚠️ IMPORTANTE:</strong> Esta página irá atualizar o banco de dados com as novas funcionalidades:
+            <ul>
+                <li>Adição de username único para usuários</li>
+                <li>Suporte a imagens em posts (até 5MB)</li>
+                <li>Imagens de capa para grupos</li>
+                <li>Sistema de upload de imagens</li>
+            </ul>
+            <strong>Certifique-se de ter um backup do banco antes de continuar!</strong>
+        </div>
+
+        <div class="update-section">
+            <h3>1. Atualizar Tabela de Usuários</h3>
+            <p>Adiciona campo <code>username</code> único para todos os usuários</p>
+            <button onclick="updateUsuarios()">Atualizar Usuários</button>
+            <div id="usuarios-log" class="log" style="display: none;"></div>
+        </div>
+
+        <div class="update-section">
+            <h3>2. Atualizar Tabela de Posts</h3>
+            <p>Adiciona campo <code>imagem</code> para posts com imagens</p>
+            <button onclick="updatePosts()">Atualizar Posts</button>
+            <div id="posts-log" class="log" style="display: none;"></div>
+        </div>
+
+        <div class="update-section">
+            <h3>3. Atualizar Tabela de Grupos</h3>
+            <p>Melhora o campo <code>imagem</code> para suportar uploads</p>
+            <button onclick="updateGrupos()">Atualizar Grupos</button>
+            <div id="grupos-log" class="log" style="display: none;"></div>
+        </div>
+
+        <div class="update-section">
+            <h3>4. Criar Pastas para Imagens</h3>
+            <p>Cria a estrutura de pastas necessária para armazenar as imagens</p>
+            <button onclick="createImageFolders()">Criar Pastas</button>
+            <div id="folders-log" class="log" style="display: none;"></div>
+        </div>
+
+        <div class="update-section">
+            <h3>5. Executar Todas as Atualizações</h3>
+            <p>Executa todas as atualizações de uma vez</p>
+            <button onclick="runAllUpdates()" style="background-color: #4CAF50;">Executar Tudo</button>
+            <div id="all-log" class="log" style="display: none;"></div>
+        </div>
+    </div>
+
+    <script>
+        function showLog(logId) {
+            document.getElementById(logId).style.display = 'block';
+        }
+
+        function appendLog(logId, message, type = 'info') {
+            const log = document.getElementById(logId);
+            const timestamp = new Date().toLocaleTimeString();
+            const colorMap = {
+                'success': '#4CAF50',
+                'error': '#f44336',
+                'warning': '#ff9800',
+                'info': '#333'
+            };
+            log.innerHTML += `<span style="color: ${colorMap[type]};">[${timestamp}] ${message}</span>\n`;
+            log.scrollTop = log.scrollHeight;
+        }
+
+        async function makeRequest(endpoint, logId, successMessage) {
+            showLog(logId);
+            appendLog(logId, `Iniciando atualização: ${endpoint}`, 'info');
+            
+            try {
+                const response = await fetch(`database_update.php?action=${endpoint}`);
+                const result = await response.text();
+                
+                if (response.ok) {
+                    appendLog(logId, successMessage, 'success');
+                    appendLog(logId, result, 'info');
+                } else {
+                    appendLog(logId, `Erro HTTP: ${response.status}`, 'error');
+                    appendLog(logId, result, 'error');
+                }
+            } catch (error) {
+                appendLog(logId, `Erro na requisição: ${error.message}`, 'error');
+            }
+        }
+
+        async function updateUsuarios() {
+            await makeRequest('update_usuarios', 'usuarios-log', 'Tabela de usuários atualizada com sucesso!');
+        }
+
+        async function updatePosts() {
+            await makeRequest('update_posts', 'posts-log', 'Tabela de posts atualizada com sucesso!');
+        }
+
+        async function updateGrupos() {
+            await makeRequest('update_grupos', 'grupos-log', 'Tabela de grupos atualizada com sucesso!');
+        }
+
+        async function createImageFolders() {
+            await makeRequest('create_folders', 'folders-log', 'Pastas de imagens criadas com sucesso!');
+        }
+
+        async function runAllUpdates() {
+            showLog('all-log');
+            appendLog('all-log', 'Iniciando todas as atualizações...', 'info');
+            
+            await makeRequest('update_usuarios', 'all-log', '✅ Usuários atualizados');
+            await makeRequest('update_posts', 'all-log', '✅ Posts atualizados');
+            await makeRequest('update_grupos', 'all-log', '✅ Grupos atualizados');
+            await makeRequest('create_folders', 'all-log', '✅ Pastas criadas');
+            
+            appendLog('all-log', '🎉 Todas as atualizações concluídas!', 'success');
+        }
+    </script>
+</body>
+</html>
