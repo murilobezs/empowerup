@@ -4,22 +4,16 @@ import { Button } from './ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { Badge } from './ui/badge';
 import { Textarea } from './ui/textarea';
-import { Input } from './ui/input';
 import { 
   Heart, 
   MessageCircle, 
   Share2, 
   MoreHorizontal, 
   Send, 
-  Image as ImageIcon, 
-  Video, 
-  Smile,
   Edit,
   Trash2,
   Reply,
-  X,
-  Play,
-  Pause
+  X
 } from 'lucide-react';
 import {
   DropdownMenu,
@@ -33,6 +27,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from './ui/dialog';
+import apiService from '../services/api';
 
 const SocialPost = ({ post, currentUser, onLike, onComment, onShare, onDelete, onUpdate }) => {
   const [showComments, setShowComments] = useState(false);
@@ -46,7 +41,6 @@ const SocialPost = ({ post, currentUser, onLike, onComment, onShare, onDelete, o
   const [commentCount, setCommentCount] = useState(post.comentarios || 0);
   const [loadingComments, setLoadingComments] = useState(false);
   const [loadingLikes, setLoadingLikes] = useState(false);
-  const [isVideoPlaying, setIsVideoPlaying] = useState(false);
 
   // Carregar comentários quando abrir
   useEffect(() => {
@@ -193,6 +187,79 @@ const SocialPost = ({ post, currentUser, onLike, onComment, onShare, onDelete, o
   };
 
   const renderMedia = () => {
+    // Novo sistema: mídia do banco BLOB
+    if (post.media_files && post.media_files.length > 0) {
+      const mediaFiles = post.media_files;
+      
+      if (mediaFiles.length === 1) {
+        // Um arquivo - layout único
+        const media = mediaFiles[0];
+        const mediaUrl = `http://localhost/empowerup/api/posts/media.php?id=${media.id}`;
+        
+        if (media.media_type.startsWith('image/')) {
+          return (
+            <div className="rounded-xl overflow-hidden mt-3">
+              <img
+                src={mediaUrl}
+                alt={media.media_filename}
+                className="w-full max-h-96 object-cover cursor-pointer hover:opacity-95 transition-opacity"
+                onClick={() => window.open(mediaUrl, '_blank')}
+              />
+            </div>
+          );
+        } else if (media.media_type.startsWith('video/')) {
+          return (
+            <div className="rounded-xl overflow-hidden mt-3">
+              <video
+                src={mediaUrl}
+                controls
+                className="w-full max-h-96 object-cover"
+                poster="/placeholder.svg?height=300&width=500"
+              />
+            </div>
+          );
+        }
+      } else {
+        // Múltiplos arquivos - grid
+        return (
+          <div className={`grid gap-2 rounded-xl overflow-hidden mt-3 ${
+            mediaFiles.length === 2 ? 'grid-cols-2' :
+            mediaFiles.length === 3 ? 'grid-cols-2' :
+            'grid-cols-2'
+          }`}>
+            {mediaFiles.map((media, index) => {
+              const mediaUrl = `http://localhost/empowerup/api/posts/media.php?id=${media.id}`;
+              
+              return (
+                <div 
+                  key={media.id} 
+                  className={`relative ${
+                    mediaFiles.length === 3 && index === 0 ? 'row-span-2' : ''
+                  }`}
+                >
+                  {media.media_type.startsWith('image/') ? (
+                    <img
+                      src={mediaUrl}
+                      alt={media.media_filename}
+                      className="w-full h-full object-cover min-h-[150px] max-h-[300px] cursor-pointer hover:opacity-95 transition-opacity"
+                      onClick={() => window.open(mediaUrl, '_blank')}
+                    />
+                  ) : (
+                    <video
+                      src={mediaUrl}
+                      controls
+                      className="w-full h-full object-cover min-h-[150px] max-h-[300px]"
+                    />
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        );
+      }
+    }
+
+    // Sistema antigo - manter compatibilidade
     if (post.tipo_midia === 'imagem' && post.imagem_url) {
       return (
         <div className="rounded-xl overflow-hidden mt-3">
@@ -380,18 +447,35 @@ const SocialPost = ({ post, currentUser, onLike, onComment, onShare, onDelete, o
           <p className="text-gray-800 leading-relaxed">{post.conteudo}</p>
           
           {/* Tags */}
-          {post.tags && post.tags.length > 0 && (
-            <div className="flex flex-wrap gap-2 mt-3">
-              {post.tags.map((tag, index) => (
-                <span
-                  key={index}
-                  className="text-coral hover:text-coral/80 cursor-pointer text-sm font-medium"
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
-          )}
+          {(() => {
+            let tags = [];
+            try {
+              // Se post.tags é uma string JSON, fazer parse
+              if (typeof post.tags === 'string') {
+                tags = JSON.parse(post.tags);
+              } else if (Array.isArray(post.tags)) {
+                tags = post.tags;
+              }
+            } catch (e) {
+              // Se não conseguir fazer parse, tentar split por vírgula
+              if (typeof post.tags === 'string') {
+                tags = post.tags.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0);
+              }
+            }
+            
+            return tags && tags.length > 0 && (
+              <div className="flex flex-wrap gap-2 mt-3">
+                {tags.map((tag, index) => (
+                  <span
+                    key={index}
+                    className="text-coral hover:text-coral/80 cursor-pointer text-sm font-medium"
+                  >
+                    {tag.startsWith('#') ? tag : `#${tag}`}
+                  </span>
+                ))}
+              </div>
+            );
+          })()}
 
           {/* Mídia */}
           {renderMedia()}

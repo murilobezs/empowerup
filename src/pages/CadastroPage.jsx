@@ -9,8 +9,10 @@ import { Checkbox } from "../components/ui/checkbox"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs"
 import { Textarea } from "../components/ui/textarea"
+import { useAuth } from "../contexts/AuthContext"
 
 export default function CadastroPage() {
+  const { register } = useAuth()
   const navigate = useNavigate()
   const [formData, setFormData] = useState({
     nome: "",
@@ -33,29 +35,36 @@ export default function CadastroPage() {
   const handleSubmit = async (e, tipo) => {
     e.preventDefault()
     
-    try {
-      const response = await fetch('http://localhost/empowerup/api/auth/register.php', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          ...formData,
-          tipo
-        }),
-      })
+    // Validação de senha
+    if (formData.senha !== formData.confirmarSenha) {
+      alert('As senhas não coincidem')
+      return
+    }
 
-      const data = await response.json()
+    if (!formData.termos) {
+      alert('Você deve aceitar os termos de uso')
+      return
+    }
+    
+    try {
+      const result = await register({
+        nome: formData.nome,
+        email: formData.email,
+        senha: formData.senha,
+        telefone: formData.telefone,
+        bio: formData.bio,
+        tipo
+      });
       
-      if (response.ok) {
-        // Redirecionar para login após cadastro bem-sucedido
-        navigate('/login')
+      if (result.success) {
+        // Redirecionar para a página de comunidade após cadastro bem-sucedido
+        navigate('/comunidade');
       } else {
-        alert(data.message || 'Erro ao cadastrar')
+        alert(result.message || 'Erro ao cadastrar');
       }
     } catch (error) {
-      console.error('Erro:', error)
-      alert('Erro ao conectar com o servidor')
+      console.error('Erro:', error);
+      alert('Erro ao conectar com o servidor');
     }
   }
 

@@ -2,7 +2,6 @@ import React, { useState, useEffect, useContext } from 'react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs'
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card'
 import { Button } from '../components/ui/button'
-import { Avatar, AvatarFallback, AvatarImage } from '../components/ui/avatar'
 import { Badge } from '../components/ui/badge'
 import { 
   MessageCircle, 
@@ -12,83 +11,146 @@ import {
   MapPin,
   ChevronRight,
   Filter,
-  Sparkles
+  Sparkles,
+  TrendingUp,
+  Hash
 } from 'lucide-react'
 import { CreateGroupModal } from '../components/create-group-modal'
 import { AuthContext } from '../contexts/AuthContext'
 import { useToast } from '../components/ui/toast'
 import SocialPost from '../components/SocialPost'
-import AdvancedCreatePost from '../components/AdvancedCreatePost'
+import EmpowerUpCreatePost from '../components/EmpowerUpCreatePost'
+import SearchComponent from '../components/SearchComponent'
 
 export default function ComunidadePage() {
   const [posts, setPosts] = useState([])
   const [groups, setGroups] = useState([])
   const [events, setEvents] = useState([])
+  const [trending, setTrending] = useState([])
   const [showCreateGroup, setShowCreateGroup] = useState(false)
-  const [showCreatePost, setShowCreatePost] = useState(false)
   const [selectedFilter, setSelectedFilter] = useState("todos")
   const [loading, setLoading] = useState(true)
   
   const { user } = useContext(AuthContext)
   const { addToast } = useToast()
 
-  // Fetch posts
-  const fetchPosts = async () => {
-    try {
-      const response = await fetch("http://localhost/empowerup/api/posts/postagens.php")
-      if (response.ok) {
-        const data = await response.json()
-        if (data.success) {
-          setPosts(data.posts || [])
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const response = await fetch(`http://localhost/empowerup/api/posts/postagens_blob.php${user?.id ? `?user_id=${user.id}` : ''}`)
+        if (response.ok) {
+          const data = await response.json()
+          setPosts(Array.isArray(data) ? data : [])
         }
+      } catch (error) {
+        console.error("Erro ao carregar posts:", error)
       }
-    } catch (error) {
-      console.error("Erro ao carregar posts:", error)
     }
-  }
 
-  // Fetch groups
-  const fetchGroups = async () => {
-    try {
-      const response = await fetch("http://localhost/empowerup/api/groups/grupos.php")
-      if (response.ok) {
-        const data = await response.json()
-        if (data.success) {
-          setGroups(data.groups || [])
+    const fetchGroups = async () => {
+      try {
+        const response = await fetch("http://localhost/empowerup/api/groups/grupos.php")
+        if (response.ok) {
+          const data = await response.json()
+          if (data.success) {
+            setGroups(data.groups || [])
+          }
         }
+      } catch (error) {
+        console.error("Erro ao carregar grupos:", error)
       }
-    } catch (error) {
-      console.error("Erro ao carregar grupos:", error)
     }
-  }
 
-  // Fetch events
-  const fetchEvents = async () => {
-    try {
-      const response = await fetch("http://localhost/empowerup/api/events/list.php")
-      if (response.ok) {
-        const data = await response.json()
-        if (data.success) {
-          setEvents(data.events || [])
+    const fetchEvents = async () => {
+      try {
+        const response = await fetch("http://localhost/empowerup/api/events/list.php")
+        if (response.ok) {
+          const data = await response.json()
+          if (data.success) {
+            setEvents(data.events || [])
+          }
         }
+      } catch (error) {
+        console.error("Erro ao carregar eventos:", error)
       }
-    } catch (error) {
-      console.error("Erro ao carregar eventos:", error)
-    } finally {
+    }
+
+    const fetchTrending = async () => {
+      try {
+        const response = await fetch("http://localhost/empowerup/api/trending/")
+        if (response.ok) {
+          const data = await response.json()
+          setTrending(data.trending || [])
+        }
+      } catch (error) {
+        console.error("Erro ao carregar trending:", error)
+      }
+    }
+
+    const loadData = async () => {
+      setLoading(true)
+      await Promise.all([
+        fetchPosts(),
+        fetchGroups(),
+        fetchEvents(),
+        fetchTrending()
+      ])
       setLoading(false)
     }
-  }
+    
+    loadData()
+  }, [user?.id])
 
-  useEffect(() => {
-    fetchPosts()
-    fetchGroups()
-    fetchEvents()
-  }, [])
+  const handleNewPost = async (postData, mediaFile) => {
+    try {
+      if (!user?.id) {
+        addToast('Você precisa estar logado para postar', 'error')
+        return { success: false, message: 'Usuário não logado' }
+      }
 
-  const handleNewPost = (newPostData) => {
-    // Adicionar o novo post à lista de posts
-    setPosts(prevPosts => [newPostData, ...prevPosts])
-    setShowCreatePost(false)
+      // Preparar FormData para envio
+      const formData = new FormData()
+      formData.append('conteudo', postData.conteudo)
+      formData.append('categoria', postData.categoria)
+      formData.append('tags', JSON.stringify(postData.tags))
+      
+      // Adicionar arquivo de mídia se existir
+      if (mediaFile) {
+        if (mediaFile.type.startsWith('image/')) {
+          formData.append('image', mediaFile)
+        } else if (mediaFile.type.startsWith('video/')) {
+          formData.append('video', mediaFile)
+        }
+      }
+
+      // Obter token de autenticação
+      const userData = JSON.parse(localStorage.getItem('empowerup_user') || '{}')
+      
+      // Fazer chamada para API usando a nova estrutura
+      const response = await fetch('http://localhost/empowerup/api/posts', {
+        method: 'POST',
+        headers: {
+          'Authorization': userData.token ? `Bearer ${userData.token}` : ''
+        },
+        body: formData
+      })
+
+      const result = await response.json()
+      
+      if (result.success) {
+        // Adicionar o novo post à lista de posts
+        setPosts(prevPosts => [result.data.post, ...prevPosts])
+        addToast('Post criado com sucesso! 🎉', 'success')
+        return { success: true, post: result.data.post }
+      } else {
+        addToast('Erro ao criar post: ' + result.message, 'error')
+        return { success: false, message: result.message }
+      }
+    } catch (error) {
+      console.error('Erro ao criar post:', error)
+      addToast('Erro ao publicar post: ' + error.message, 'error')
+      return { success: false, message: error.message }
+    }
   }
 
   const handleDeletePost = async (postId) => {
@@ -124,11 +186,20 @@ export default function ComunidadePage() {
       })
 
       if (response.ok) {
-        fetchGroups() // Recarrega os grupos
+        // Recarregar grupos
+        const groupsResponse = await fetch("http://localhost/empowerup/api/groups/grupos.php")
+        if (groupsResponse.ok) {
+          const data = await groupsResponse.json()
+          if (data.success) {
+            setGroups(data.groups || [])
+          }
+        }
         setShowCreateGroup(false)
+        addToast('Grupo criado com sucesso! 🎉', 'success')
       }
     } catch (error) {
       console.error("Erro ao criar grupo:", error)
+      addToast('Erro ao criar grupo', 'error')
     }
   }
 
@@ -198,7 +269,11 @@ export default function ComunidadePage() {
       if (data.success) {
         addToast('Comentário adicionado! 💬', 'success')
         // Recarregar os posts para mostrar o novo comentário
-        fetchPosts()
+        const postsResponse = await fetch(`http://localhost/empowerup/api/posts/postagens_new.php${user?.id ? `?user_id=${user.id}` : ''}`)
+        if (postsResponse.ok) {
+          const postsData = await postsResponse.json()
+          setPosts(Array.isArray(postsData) ? postsData : [])
+        }
       }
     } catch (error) {
       console.error('Erro ao comentar:', error)
@@ -290,48 +365,11 @@ export default function ComunidadePage() {
                 <div className="lg:col-span-3 space-y-6">
                   {/* Criar Post */}
                   {user ? (
-                    <div className="mb-6">
-                      {showCreatePost ? (
-                        <div className="space-y-4">
-                          <div className="flex items-center justify-between">
-                            <h2 className="text-xl font-semibold">Criar novo post</h2>
-                            <Button 
-                              variant="ghost" 
-                              onClick={() => setShowCreatePost(false)}
-                            >
-                              Cancelar
-                            </Button>
-                          </div>
-                          <AdvancedCreatePost 
-                            user={user} 
-                            onPostCreated={handleNewPost}
-                          />
-                        </div>
-                      ) : (
-                        <Card className="shadow-sm cursor-pointer hover:shadow-md transition-shadow"
-                              onClick={() => setShowCreatePost(true)}>
-                          <CardContent className="p-6">
-                            <div className="flex items-center space-x-4">
-                              <Avatar className="w-12 h-12">
-                                <AvatarImage src={user.avatar_url ? `http://localhost/empowerup/public${user.avatar_url}` : ''} />
-                                <AvatarFallback className="bg-coral text-white">
-                                  {user.nome?.charAt(0)}
-                                </AvatarFallback>
-                              </Avatar>
-                              <div className="flex-1">
-                                <div className="bg-gray-100 rounded-full px-4 py-3 text-gray-500 hover:bg-gray-200 transition-colors">
-                                  Compartilhe algo inspirador com a comunidade...
-                                </div>
-                              </div>
-                              <Button className="bg-coral hover:bg-coral/90">
-                                <Plus className="h-4 w-4 mr-2" />
-                                Publicar
-                              </Button>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      )}
-                    </div>
+                    <EmpowerUpCreatePost 
+                      user={user} 
+                      onPostCreated={handleNewPost}
+                      className="mb-6"
+                    />
                   ) : (
                     <Card className="shadow-sm">
                       <CardContent className="p-6 text-center">
@@ -396,8 +434,46 @@ export default function ComunidadePage() {
                   </div>
                 </div>
 
-                {/* Coluna Lateral - Eventos */}
+                {/* Coluna Lateral - Pesquisa e Trending */}
                 <div className="space-y-6 lg:sticky lg:top-20">
+                  {/* Componente de Pesquisa */}
+                  <SearchComponent />
+
+                  {/* Trending Topics */}
+                  <Card className="shadow-sm">
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-lg flex items-center">
+                        <TrendingUp className="h-5 w-5 mr-2 text-coral" />
+                        Trending
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-3">
+                        {trending.length > 0 ? (
+                          trending.slice(0, 5).map((trend, index) => (
+                            <div key={index} className="flex items-center justify-between p-2 hover:bg-gray-50 rounded-lg cursor-pointer">
+                              <div className="flex items-center space-x-3">
+                                <div className="w-10 h-10 bg-coral/10 rounded-full flex items-center justify-center">
+                                  <Hash className="h-5 w-5 text-coral" />
+                                </div>
+                                <div>
+                                  <div className="font-medium text-sm">#{trend.tag}</div>
+                                  <div className="text-xs text-gray-500">{trend.count} posts</div>
+                                </div>
+                              </div>
+                              <TrendingUp className="h-4 w-4 text-gray-400" />
+                            </div>
+                          ))
+                        ) : (
+                          <div className="text-center text-gray-500 py-4">
+                            <Hash className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                            <p className="text-sm">Nenhuma hashtag em alta ainda</p>
+                          </div>
+                        )}
+                      </div>
+                    </CardContent>
+                  </Card>
+
                   {/* Próximos Eventos */}
                   <Card className="shadow-sm">
                     <CardHeader className="pb-3">

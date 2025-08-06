@@ -31,28 +31,19 @@ export default function LoginPage() {
     e.preventDefault()
     
     try {
-      const response = await fetch('http://localhost/empowerup/api/auth/login.php', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: formData.email,
-          senha: formData.senha
-        }),
-      })
-
-      const data = await response.json()
+      const result = await login({
+        email: formData.email,
+        senha: formData.senha
+      });
       
-      if (response.ok) {
-        login(data.user)
-        navigate('/comunidade')
+      if (result.success) {
+        navigate('/comunidade');
       } else {
-        alert(data.message || 'Erro ao fazer login')
+        alert(result.message || 'Erro ao fazer login');
       }
     } catch (error) {
-      console.error('Erro:', error)
-      alert('Erro ao conectar com o servidor')
+      console.error('Erro:', error);
+      alert('Erro ao conectar com o servidor');
     }
   }
 
