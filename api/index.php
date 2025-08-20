@@ -34,8 +34,7 @@ require_once __DIR__ . '/config/config.php';
 CorsMiddleware::handle();
 CorsMiddleware::securityHeaders();
 
-// Rate limiting global
-AuthMiddleware::rateLimit();
+// Rate limiting removed globally (disabled per user request)
 
 // Tratamento de erros
 set_error_handler(function($severity, $message, $file, $line) {
@@ -76,13 +75,16 @@ class Router {
         $this->method = $_SERVER['REQUEST_METHOD'];
         $this->path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
         
-        // Remover prefixo da aplicação se existir (/empowerup/api)
-        $this->path = preg_replace('/^\/empowerup\/api/', '', $this->path);
+    // Remover base path da aplicação e index.php dinamicamente
+    $basePath = dirname($_SERVER['SCRIPT_NAME']);
+    // Normalizar barras e remover barra final
+    $basePath = rtrim(str_replace('\\', '/', $basePath), '/');
+    // Remover /basePath e opcional /index.php
+    $this->path = preg_replace('#^' . preg_quote($basePath, '#') . '(?:/index\.php)?#', '', $this->path);
         
-        // Remover trailing slash
+        // Remover barra final
         $this->path = rtrim($this->path, '/');
-        
-        if (empty($this->path)) {
+        if ($this->path === '') {
             $this->path = '/';
         }
     }
@@ -154,13 +156,11 @@ $router->get('/', function() {
 
 // Rotas de autenticação
 $router->post('/auth/register', function() {
-    AuthMiddleware::rateLimit(5, 900); // Mais restritivo para registro
     $controller = new AuthController();
     $controller->register();
 });
 
 $router->post('/auth/login', function() {
-    AuthMiddleware::rateLimit(5, 900); // Mais restritivo para login
     $controller = new AuthController();
     $controller->login();
 });

@@ -74,6 +74,12 @@ class PostController {
             $params[] = $offset;
             
             $posts = $this->db->fetchAll($query, $params);
+
+            // Anexar metadata de mídia (post_media) para cada post
+            foreach ($posts as &$p) {
+                $media = $this->db->fetchAll('SELECT id, media_filename, media_type FROM post_media WHERE post_id = ?', [$p['id']]);
+                $p['media_files'] = $media ?: [];
+            }
             
             // Query para contar total
             $countQuery = 'SELECT COUNT(*) as total FROM posts p';
@@ -151,6 +157,10 @@ class PostController {
                 echo Helper::jsonResponse(false, 'Post não encontrado', [], 404);
                 return;
             }
+
+            // Anexar metadata de mídia (post_media)
+            $media = $this->db->fetchAll('SELECT id, media_filename, media_type FROM post_media WHERE post_id = ?', [$post['id']]);
+            $post['media_files'] = $media ?: [];
             
             echo Helper::jsonResponse(true, '', [
                 'post' => Helper::formatPost($post, $currentUserId)
@@ -169,10 +179,18 @@ class PostController {
         try {
             $user = AuthMiddleware::required();
             
-            // Processar dados
-            $conteudo = $_POST['conteudo'] ?? '';
-            $categoria = $_POST['categoria'] ?? 'Geral';
-            $tags = isset($_POST['tags']) ? json_decode($_POST['tags'], true) : [];
+            // Processar dados (suporte a JSON e FormData)
+            $contentType = $_SERVER['CONTENT_TYPE'] ?? '';
+            if (strpos($contentType, 'application/json') !== false) {
+                $body = json_decode(file_get_contents('php://input'), true) ?: [];
+                $conteudo = $body['conteudo'] ?? '';
+                $categoria = $body['categoria'] ?? 'Geral';
+                $tags = is_array($body['tags']) ? $body['tags'] : [];
+            } else {
+                $conteudo = $_POST['conteudo'] ?? '';
+                $categoria = $_POST['categoria'] ?? 'Geral';
+                $tags = isset($_POST['tags']) ? json_decode($_POST['tags'], true) : [];
+            }
             
             // Validar dados
             $validator = new Validator(['conteudo' => $conteudo, 'categoria' => $categoria, 'tags' => $tags]);
@@ -186,20 +204,16 @@ class PostController {
                 return;
             }
             
-            $imagemUrl = null;
-            $videoUrl = null;
             $tipoMidia = 'none';
-            
-            // Processar upload de mídia
-            if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-                $imagemUrl = Helper::processUpload($_FILES['image'], 'image');
+
+            // Determinar tipo de mídia (se houver)
+            if ((isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK)) {
                 $tipoMidia = 'imagem';
-            } elseif (isset($_FILES['video']) && $_FILES['video']['error'] === UPLOAD_ERR_OK) {
-                $videoUrl = Helper::processUpload($_FILES['video'], 'video');
+            } elseif ((isset($_FILES['video']) && $_FILES['video']['error'] === UPLOAD_ERR_OK)) {
                 $tipoMidia = 'video';
             }
-            
-            // Inserir post
+
+            // Inserir post (sem URL de arquivo, mídia ficará em post_media)
             $postId = $this->db->insert(
                 'INSERT INTO posts (user_id, autor, username, avatar, conteudo, categoria, tags, imagem_url, video_url, tipo_midia) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
                 [
@@ -210,11 +224,27 @@ class PostController {
                     Helper::sanitizeString($conteudo),
                     Helper::sanitizeString($categoria),
                     json_encode($tags),
-                    $imagemUrl,
-                    $videoUrl,
+                    null,
+                    null,
                     $tipoMidia
                 ]
             );
+
+            // Salvar arquivos de mídia no banco (post_media)
+            if ($postId && isset($_FILES) && !empty($_FILES)) {
+                try {
+                    if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
+                        Helper::saveMediaToDb($postId, $_FILES['image']);
+                    }
+
+                    if (isset($_FILES['video']) && $_FILES['video']['error'] === UPLOAD_ERR_OK) {
+                        Helper::saveMediaToDb($postId, $_FILES['video']);
+                    }
+                } catch (Exception $e) {
+                    // Log do erro, mas não falhar a criação do post
+                    Helper::logError('Erro ao salvar mídia no DB: ' . $e->getMessage(), ['post_id' => $postId]);
+                }
+            }
             
             // Buscar post criado
             $newPost = $this->db->fetch(
@@ -224,6 +254,12 @@ class PostController {
                  WHERE p.id = ?',
                 [$postId]
             );
+
+            // Anexar arquivos de mídia (metadados) ao post
+            if ($newPost) {
+                $mediaRows = $this->db->fetchAll('SELECT id, media_filename, media_type FROM post_media WHERE post_id = ?', [$newPost['id']]);
+                $newPost['media_files'] = $mediaRows ?: [];
+            }
             
             echo Helper::jsonResponse(true, 'Post criado com sucesso', [
                 'post' => Helper::formatPost($newPost, $user['id'])
@@ -231,7 +267,11 @@ class PostController {
             
         } catch (Exception $e) {
             Helper::logError('Create post error: ' . $e->getMessage());
-            echo Helper::jsonResponse(false, 'Erro ao criar post', [], 500);
+            if (defined('DEBUG_MODE') && DEBUG_MODE) {
+                echo Helper::jsonResponse(false, 'Erro ao criar post: ' . $e->getMessage(), [], 500);
+            } else {
+                echo Helper::jsonResponse(false, 'Erro ao criar post', [], 500);
+            }
         }
     }
     
@@ -329,20 +369,8 @@ class PostController {
                 return;
             }
             
-            // Deletar arquivos de mídia
-            if ($existingPost['imagem_url']) {
-                $imagePath = __DIR__ . '/../../public' . $existingPost['imagem_url'];
-                if (file_exists($imagePath)) {
-                    unlink($imagePath);
-                }
-            }
-            
-            if ($existingPost['video_url']) {
-                $videoPath = __DIR__ . '/../../public' . $existingPost['video_url'];
-                if (file_exists($videoPath)) {
-                    unlink($videoPath);
-                }
-            }
+            // Deletar mídias relacionadas do banco (post_media)
+            $this->db->execute('DELETE FROM post_media WHERE post_id = ?', [$id]);
             
             // Deletar post
             $this->db->execute('DELETE FROM posts WHERE id = ?', [$id]);
@@ -410,6 +438,12 @@ class PostController {
             
             $posts = $this->db->fetchAll($sqlQuery, $params);
             
+            // Anexar metadata de mídia para os resultados da busca
+            foreach ($posts as &$p) {
+                $media = $this->db->fetchAll('SELECT id, media_filename, media_type FROM post_media WHERE post_id = ?', [$p['id']]);
+                $p['media_files'] = $media ?: [];
+            }
+
             $formattedPosts = array_map(function($post) use ($currentUserId) {
                 return Helper::formatPost($post, $currentUserId);
             }, $posts);

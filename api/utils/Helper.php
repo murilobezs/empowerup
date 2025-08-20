@@ -96,12 +96,13 @@ class Helper {
             'nome' => $user['nome'],
             'username' => $user['username'],
             'email' => $user['email'],
-            'telefone' => $user['telefone'],
-            'bio' => $user['bio'],
+            // These fields may not be present in all contexts
+            'telefone' => $user['telefone'] ?? null,
+            'bio' => $user['bio'] ?? null,
             'tipo' => $user['tipo'],
             'avatar_url' => $user['avatar_url'],
-            'created_at' => $user['created_at'],
-            'updated_at' => $user['updated_at']
+            'created_at' => $user['created_at'] ?? null,
+            'updated_at' => $user['updated_at'] ?? null
         ];
     }
     
@@ -197,6 +198,56 @@ class Helper {
         }
         
         return '/images/' . $subfolder . $filename;
+    }
+
+    /**
+     * Salvar mídia no banco de dados como BLOB (post_media)
+     * Retorna array com metadata do arquivo salvo
+     */
+    public static function saveMediaToDb($postId, $file) {
+        if (!isset($file) || $file['error'] !== UPLOAD_ERR_OK) {
+            throw new Exception('Erro no upload do arquivo');
+        }
+
+        // Verificar tamanho
+        if ($file['size'] > MAX_FILE_SIZE) {
+            throw new Exception('Arquivo muito grande. Máximo: ' . (MAX_FILE_SIZE / 1024 / 1024) . 'MB');
+        }
+
+        $extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+        $mime = $file['type'] ?? mime_content_type($file['tmp_name']);
+        $allowedExtensions = in_array($extension, ALLOWED_VIDEO_EXTENSIONS) ? ALLOWED_VIDEO_EXTENSIONS : ALLOWED_EXTENSIONS;
+
+        if (!in_array($extension, $allowedExtensions)) {
+            throw new Exception('Tipo de arquivo não permitido');
+        }
+
+        $filename = uniqid() . '_' . time() . '.' . $extension;
+
+        $data = file_get_contents($file['tmp_name']);
+
+        // Inserir no banco usando PDO diretamente para bind de LOB
+        $db = Database::getInstance();
+        $pdo = $db->getConnection();
+
+        $sql = 'INSERT INTO post_media (post_id, media_filename, media_type, data, created_at) VALUES (?, ?, ?, ?, NOW())';
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindValue(1, $postId, PDO::PARAM_INT);
+        $stmt->bindValue(2, $filename);
+        $stmt->bindValue(3, $mime);
+        $stmt->bindValue(4, $data, PDO::PARAM_LOB);
+
+        if (!$stmt->execute()) {
+            throw new Exception('Erro ao salvar mídia no banco');
+        }
+
+        $mediaId = $pdo->lastInsertId();
+
+        return [
+            'id' => (int)$mediaId,
+            'media_filename' => $filename,
+            'media_type' => $mime
+        ];
     }
     
     /**

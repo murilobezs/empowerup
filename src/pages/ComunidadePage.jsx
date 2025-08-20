@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs'
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card'
 import { Button } from '../components/ui/button'
@@ -16,7 +16,9 @@ import {
   Hash
 } from 'lucide-react'
 import { CreateGroupModal } from '../components/create-group-modal'
-import { AuthContext } from '../contexts/AuthContext'
+import { useAuth } from '../contexts/AuthContext'
+import { Dialog, DialogContent } from '../components/ui/dialog'
+import UsernameSetup from '../components/UsernameSetup'
 import { useToast } from '../components/ui/toast'
 import SocialPost from '../components/SocialPost'
 import EmpowerUpCreatePost from '../components/EmpowerUpCreatePost'
@@ -31,16 +33,23 @@ export default function ComunidadePage() {
   const [selectedFilter, setSelectedFilter] = useState("todos")
   const [loading, setLoading] = useState(true)
   
-  const { user } = useContext(AuthContext)
+  const { user, updateUser } = useAuth()
   const { addToast } = useToast()
 
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await fetch(`http://localhost/empowerup/api/posts/postagens_blob.php${user?.id ? `?user_id=${user.id}` : ''}`)
+  // fetch all posts via API endpoint
+  const url = `http://localhost/empowerup/api/posts${user?.id ? `?user_id=${user.id}` : ''}`
+  const response = await fetch(url)
         if (response.ok) {
-          const data = await response.json()
-          setPosts(Array.isArray(data) ? data : [])
+          const result = await response.json()
+          // Carregar posts do campo 'posts' da resposta da API
+          if (result.success && Array.isArray(result.posts)) {
+            setPosts(result.posts)
+          } else {
+            setPosts([])
+          }
         }
       } catch (error) {
         console.error("Erro ao carregar posts:", error)
@@ -100,6 +109,13 @@ export default function ComunidadePage() {
     
     loadData()
   }, [user?.id])
+  // open username setup modal for new users
+  const [showUsernameModal, setShowUsernameModal] = useState(false)
+  useEffect(() => {
+    if (user && !user.username) {
+      setShowUsernameModal(true)
+    }
+  }, [user])
 
   const handleNewPost = async (postData, mediaFile) => {
     try {
@@ -139,9 +155,9 @@ export default function ComunidadePage() {
       
       if (result.success) {
         // Adicionar o novo post à lista de posts
-        setPosts(prevPosts => [result.data.post, ...prevPosts])
+        setPosts(prevPosts => [result.post, ...prevPosts])
         addToast('Post criado com sucesso! 🎉', 'success')
-        return { success: true, post: result.data.post }
+        return { success: true, post: result.post }
       } else {
         addToast('Erro ao criar post: ' + result.message, 'error')
         return { success: false, message: result.message }
@@ -694,6 +710,20 @@ export default function ComunidadePage() {
           onClose={() => setShowCreateGroup(false)}
           onSave={handleCreateGroup}
         />
+      )}
+      {showUsernameModal && (
+        <Dialog open={showUsernameModal} onOpenChange={setShowUsernameModal}>
+          <DialogContent>
+            {/* Modal for initial username setup */}
+            <UsernameSetup
+              user={user}
+              onUsernameSet={(username) => {
+                updateUser({ username });
+                setShowUsernameModal(false);
+              }}
+            />
+          </DialogContent>
+        </Dialog>
       )}
     </div>
   )

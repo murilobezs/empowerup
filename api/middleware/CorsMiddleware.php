@@ -14,8 +14,8 @@ class CorsMiddleware {
         // Verificar se origin está na lista permitida
         if (in_array($origin, CORS_ORIGINS)) {
             header("Access-Control-Allow-Origin: {$origin}");
-        } else {
-            header("Access-Control-Allow-Origin: *");
+            // Informar caches diferentes por origin
+            header('Vary: Origin');
         }
         
         header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");

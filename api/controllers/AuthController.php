@@ -190,7 +190,11 @@ class AuthController {
             
         } catch (Exception $e) {
             Helper::logError('Profile error: ' . $e->getMessage());
-            echo Helper::jsonResponse(false, 'Erro ao buscar perfil', [], 500);
+            if (defined('DEBUG_MODE') && DEBUG_MODE) {
+                echo Helper::jsonResponse(false, 'Erro ao buscar perfil: ' . $e->getMessage(), [], 500);
+            } else {
+                echo Helper::jsonResponse(false, 'Erro ao buscar perfil', [], 500);
+            }
         }
     }
     

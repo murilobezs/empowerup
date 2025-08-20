@@ -126,7 +126,7 @@ export function SiteHeader() {
 								</span>
 							</DropdownMenuTrigger>
 							<DropdownMenuContent align="end" className="w-56">
-								<DropdownMenuItem onClick={() => navigate('/meu-perfil')}>
+								<DropdownMenuItem onClick={() => navigate('/perfil')}>
 									<Avatar className="mr-2 h-4 w-4">
 										<AvatarImage src={user.avatar_url ? `http://localhost/empowerup/public${user.avatar_url}` : ''} />
 										<AvatarFallback className="text-xs">{user.nome?.charAt(0)}</AvatarFallback>
