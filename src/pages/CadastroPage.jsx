@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import { SiteHeader } from "../components/site-header"
 import { SiteFooter } from "../components/site-footer"
@@ -10,6 +10,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs"
 import { Textarea } from "../components/ui/textarea"
 import { useAuth } from "../contexts/AuthContext"
+import apiService from "../services/apiService"
 
 export default function CadastroPage() {
   const { register } = useAuth()
@@ -23,6 +24,10 @@ export default function CadastroPage() {
     bio: "",
     termos: false,
   })
+  const [registered, setRegistered] = useState(false)
+  const [infoMessage, setInfoMessage] = useState("")
+  const [verificationStatus, setVerificationStatus] = useState(null) // null | 'pending' | 'success' | 'error'
+  const [verificationMessage, setVerificationMessage] = useState("")
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target
@@ -57,14 +62,46 @@ export default function CadastroPage() {
       });
       
       if (result.success) {
-        // Redirecionar para a página de comunidade após cadastro bem-sucedido
-        navigate('/comunidade');
+        // Mostrar instrução de verificação por email em vez de redirecionar automaticamente
+        setRegistered(true)
+        setInfoMessage('Cadastro realizado com sucesso. Enviamos um email com um link de verificação para o seu endereço — por favor, verifique sua caixa de entrada (e spam).')
       } else {
         alert(result.message || 'Erro ao cadastrar');
       }
     } catch (error) {
       console.error('Erro:', error);
       alert('Erro ao conectar com o servidor');
+    }
+  }
+
+  // Verifica token de verificação vindo na query string (ex: /cadastro?token=...)
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    const token = params.get('token')
+    if (token) {
+      verifyEmailToken(token)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  const verifyEmailToken = async (token) => {
+    setVerificationStatus('pending')
+    setVerificationMessage('Verificando token...')
+    try {
+      const res = await apiService.request(`/auth/verify?token=${encodeURIComponent(token)}`)
+      if (res && res.success) {
+        setVerificationStatus('success')
+        setVerificationMessage(res.message || 'Email verificado com sucesso. Agora você pode fazer login.')
+        // redireciona para login após 2.5s
+        setTimeout(() => navigate('/login'), 2500)
+      } else {
+        setVerificationStatus('error')
+        setVerificationMessage((res && res.message) || 'Token inválido ou expirado.')
+      }
+    } catch (err) {
+      setVerificationStatus('error')
+      const msg = (err && (err.message || (err.data && err.data.message))) || 'Erro ao verificar token.'
+      setVerificationMessage(msg)
     }
   }
 
@@ -78,6 +115,13 @@ export default function CadastroPage() {
               <h1 className="text-3xl font-bold">Junte-se à EmpowerUp</h1>
               <p className="text-gray-700">Crie sua conta e comece a empreender hoje mesmo</p>
             </div>
+            {/* Mostrar mensagem de resultado de verificação (se houver) */}
+            {verificationStatus && (
+              <div className={`rounded-md p-4 mb-4 ${verificationStatus === 'success' ? 'bg-green-50 text-green-800' : verificationStatus === 'error' ? 'bg-red-50 text-red-800' : 'bg-yellow-50 text-yellow-800'}`}>
+                {verificationMessage}
+              </div>
+            )}
+
             <Tabs defaultValue="empreendedora" className="w-full">
               <TabsList className="grid w-full grid-cols-1">
                 <TabsTrigger value="empreendedora">Empreendedora</TabsTrigger>
@@ -90,7 +134,19 @@ export default function CadastroPage() {
                       Crie sua conta para vender produtos e conectar-se com outras empreendedoras.
                     </CardDescription>
                   </CardHeader>
-                  <form onSubmit={(e) => handleSubmit(e, "empreendedora")}>
+                  {registered ? (
+                    <CardContent>
+                      <div className="space-y-3 text-center">
+                        <h3 className="text-lg font-semibold">Quase lá — verifique seu email</h3>
+                        <p className="text-sm text-gray-700">{infoMessage}</p>
+                        <p className="text-sm text-gray-600">Se não recebeu o email, verifique a caixa de spam ou solicite um novo envio na página de login.</p>
+                        <div className="pt-4">
+                          <Button onClick={() => navigate('/login')} className="bg-coral">Ir para login</Button>
+                        </div>
+                      </div>
+                    </CardContent>
+                  ) : (
+                    <form onSubmit={(e) => handleSubmit(e, "empreendedora")}>
                     <CardContent className="space-y-4">
                       <div className="space-y-2">
                         <Label htmlFor="nome-empreendedora">Nome completo</Label>
@@ -191,7 +247,8 @@ export default function CadastroPage() {
                         </Link>
                       </div>
                     </CardFooter>
-                  </form>
+                    </form>
+                  )}
                 </Card>
               </TabsContent>
             </Tabs>

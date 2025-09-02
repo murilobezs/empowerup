@@ -9,6 +9,33 @@ class PostController {
     public function __construct() {
         $this->db = Database::getInstance();
     }
+
+    /**
+     * Contar posts não lidos / novos para badge
+     */
+    public function unreadCount() {
+        try {
+            $currentUser = AuthMiddleware::optional();
+
+            // Se usuário autenticado, tentar usar campo updated_at como referência
+            if ($currentUser) {
+                // Buscar última vez que usuário foi atualizado (usar updated_at como proxy)
+                $userRow = $this->db->fetch('SELECT updated_at FROM usuarios WHERE id = ?', [$currentUser['id']]);
+                $since = $userRow && isset($userRow['updated_at']) ? $userRow['updated_at'] : date('Y-m-d H:i:s', strtotime('-7 days'));
+            } else {
+                // Usuário anônimo: contar posts dos últimos 7 dias
+                $since = date('Y-m-d H:i:s', strtotime('-7 days'));
+            }
+
+            $result = $this->db->fetch('SELECT COUNT(*) as count FROM posts WHERE created_at >= ?', [$since]);
+            $count = $result ? (int)$result['count'] : 0;
+
+            echo Helper::jsonResponse(true, '', ['count' => $count]);
+        } catch (Exception $e) {
+            Helper::logError('Unread count error: ' . $e->getMessage());
+            echo Helper::jsonResponse(false, 'Erro ao calcular unread count', [], 500);
+        }
+    }
     
     /**
      * Listar posts
@@ -261,8 +288,9 @@ class PostController {
                 $newPost['media_files'] = $mediaRows ?: [];
             }
             
-            echo Helper::jsonResponse(true, 'Post criado com sucesso', [
-                'post' => Helper::formatPost($newPost, $user['id'])
+            echo Helper::jsonResponse(true, '', [
+                'post' => Helper::formatPost($newPost, $user['id']),
+                'message' => 'Post criado com sucesso'
             ], 201);
             
         } catch (Exception $e) {

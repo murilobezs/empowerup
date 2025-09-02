@@ -165,6 +165,26 @@ $router->post('/auth/login', function() {
     $controller->login();
 });
 
+$router->get('/auth/verify', function() {
+    $controller = new AuthController();
+    $controller->verifyEmail();
+});
+
+$router->post('/auth/forgot-password', function() {
+    $controller = new AuthController();
+    $controller->forgotPassword();
+});
+
+$router->post('/auth/reset-password', function() {
+    $controller = new AuthController();
+    $controller->resetPassword();
+});
+
+$router->post('/auth/logout', function() {
+    $controller = new AuthController();
+    $controller->logout();
+});
+
 $router->get('/auth/profile', function() {
     $controller = new AuthController();
     $controller->profile();
@@ -205,6 +225,12 @@ $router->post('/users/avatar', function() {
 $router->get('/posts', function() {
     $controller = new PostController();
     $controller->getPosts();
+});
+
+// Endpoint para contar posts não lidos / novos (usado pelo header para badge)
+$router->get('/posts/unread_count', function() {
+    $controller = new PostController();
+    $controller->unreadCount();
 });
 
 $router->get('/posts/search', function() {

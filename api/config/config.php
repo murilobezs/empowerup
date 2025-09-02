@@ -25,6 +25,17 @@ define('API_VERSION', '1.0.0');
 define('TIMEZONE', 'America/Sao_Paulo');
 define('DEBUG_MODE', true);
 
+// Mail / SMTP configuration
+// To enable SMTP set SMTP_ENABLED to true and fill SMTP_PASSWORD
+define('SMTP_ENABLED', true);
+define('SMTP_HOST', 'smtp.gmail.com');
+define('SMTP_PORT', 587);
+define('SMTP_ENCRYPTION', 'tls'); // none | tls | ssl
+define('SMTP_USERNAME', 'muriscamroll@gmail.com');
+define('SMTP_PASSWORD', 'lroc xdio aesy tnov'); // <-- put your SMTP password or app password here
+define('MAIL_FROM', SMTP_USERNAME);
+define('MAIL_FROM_NAME', 'EmpowerUp');
+
 // Headers CORS
 define('CORS_ORIGINS', [
     'http://localhost:3000',

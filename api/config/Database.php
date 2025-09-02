@@ -4,11 +4,11 @@
  */
 
 class Database {
-    private $host = 'localhost';
-    private $db_name = 'empowerup';
-    private $username = 'root';
-    private $password = '';
-    private $charset = 'utf8mb4';
+    private $host;
+    private $db_name;
+    private $username;
+    private $password;
+    private $charset;
     private $pdo;
     private static $instance = null;
 
@@ -31,15 +31,27 @@ class Database {
      */
     private function connect() {
         try {
+            // Use config constants if available (config.php should define DB_* constants)
+            $this->host = defined('DB_HOST') ? DB_HOST : 'localhost';
+            $this->db_name = defined('DB_NAME') ? DB_NAME : 'empowerup';
+            $this->username = defined('DB_USER') ? DB_USER : 'root';
+            $this->password = defined('DB_PASS') ? DB_PASS : '';
+            $this->charset = defined('DB_CHARSET') ? DB_CHARSET : 'utf8mb4';
+
             $dsn = "mysql:host={$this->host};dbname={$this->db_name};charset={$this->charset}";
 
             $options = [
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
                 PDO::ATTR_EMULATE_PREPARES => false,
-                PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES {$this->charset}",
-                PDO::ATTR_PERSISTENT => true
+                // Avoid persistent connections by default (can cause issues on some shared hosts)
+                PDO::ATTR_PERSISTENT => false
             ];
+
+            // Add MYSQL_ATTR_INIT_COMMAND only if the constant exists (to avoid warnings on non-MySQL PDO)
+            if (defined('PDO::MYSQL_ATTR_INIT_COMMAND')) {
+                $options[PDO::MYSQL_ATTR_INIT_COMMAND] = "SET NAMES {$this->charset}";
+            }
 
             $this->pdo = new PDO($dsn, $this->username, $this->password, $options);
             

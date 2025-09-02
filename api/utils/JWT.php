@@ -70,13 +70,19 @@ class JWT {
      * Codificar em base64 URL-safe
      */
     private static function base64UrlEncode($data) {
-        return rtrim(strtr(base64_encode($data), '+/', '-_'), '=');
+    return rtrim(strtr(base64_encode($data), '+/', '-_'), '=');
     }
     
     /**
      * Decodificar base64 URL-safe
      */
     private static function base64UrlDecode($data) {
-        return base64_decode(str_pad(strtr($data, '-_', '+/'), strlen($data) % 4, '=', STR_PAD_RIGHT));
+        // Replace URL-safe characters and add padding
+        $b64 = strtr($data, '-_', '+/');
+        $padding = 4 - (strlen($b64) % 4);
+        if ($padding > 0 && $padding < 4) {
+            $b64 .= str_repeat('=', $padding);
+        }
+        return base64_decode($b64);
     }
 }

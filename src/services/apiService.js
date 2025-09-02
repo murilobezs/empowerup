@@ -26,7 +26,7 @@ class ApiService {
     };
 
     // Adicionar token de autorização se disponível
-    const userData = JSON.parse(localStorage.getItem('user') || '{}');
+    const userData = JSON.parse(localStorage.getItem(config.AUTH.USER_KEY) || '{}');
     if (userData.token) {
       config.headers.Authorization = `Bearer ${userData.token}`;
     }
@@ -45,7 +45,10 @@ class ApiService {
       }
 
       if (!response.ok) {
-        throw new Error(data.message || `HTTP error! status: ${response.status}`);
+        const err = new Error(data && data.message ? data.message : `HTTP error! status: ${response.status}`);
+        err.status = response.status;
+        err.data = data;
+        throw err;
       }
 
       return data;
@@ -72,7 +75,7 @@ class ApiService {
     };
 
     // Adicionar token de autorização se disponível
-    const userData = JSON.parse(localStorage.getItem('user') || '{}');
+    const userData = JSON.parse(localStorage.getItem(config.AUTH.USER_KEY) || '{}');
     if (userData.token) {
       config.headers.Authorization = `Bearer ${userData.token}`;
     }
@@ -82,7 +85,10 @@ class ApiService {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || `HTTP error! status: ${response.status}`);
+        const err = new Error(data && data.message ? data.message : `HTTP error! status: ${response.status}`);
+        err.status = response.status;
+        err.data = data;
+        throw err;
       }
 
       return data;

@@ -1,12 +1,10 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs'
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card'
 import { Button } from '../components/ui/button'
-import { Badge } from '../components/ui/badge'
 import { 
   MessageCircle, 
   Users, 
-  Plus, 
   Calendar,
   MapPin,
   ChevronRight,
@@ -19,6 +17,7 @@ import {
   Bookmark,
   Mail,
   User
+  ,CheckCircle, X
 } from 'lucide-react'
 import { CreateGroupModal } from '../components/create-group-modal'
 import { useAuth } from '../contexts/AuthContext'
@@ -41,9 +40,11 @@ export default function ComunidadePage() {
   const [loading, setLoading] = useState(true)
   const [showBanner, setShowBanner] = useState(true)
   const [bannerVisible, setBannerVisible] = useState(false)
+  const [successModal, setSuccessModal] = useState({ visible: false, message: '' }) // Novo estado para o modal
   
   const { user, updateUser } = useAuth()
   const { addToast } = useToast()
+  const successTimeoutRef = useRef(null)
 
   // Handle banner animations and persistence
   useEffect(() => {
@@ -181,7 +182,10 @@ export default function ComunidadePage() {
       if (result.success) {
         // Adicionar o novo post à lista de posts
         setPosts(prevPosts => [result.post, ...prevPosts])
-        addToast('Post criado com sucesso! 🎉', 'success')
+  // Exibir modal de sucesso personalizado
+  setSuccessModal({ visible: true, message: 'Post realizado com sucesso' })
+  if (successTimeoutRef.current) clearTimeout(successTimeoutRef.current)
+  successTimeoutRef.current = setTimeout(() => setSuccessModal({ visible: false, message: '' }), 4000)
         return { success: true, post: result.post }
       } else {
         addToast('Erro ao criar post: ' + result.message, 'error')
@@ -193,6 +197,13 @@ export default function ComunidadePage() {
       return { success: false, message: error.message }
     }
   }
+
+  // cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (successTimeoutRef.current) clearTimeout(successTimeoutRef.current)
+    }
+  }, [])
 
   const handleDeletePost = async (postId) => {
     if (!window.confirm('Tem certeza que deseja deletar este post?')) {
@@ -379,6 +390,29 @@ export default function ComunidadePage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-coral/5 to-olive/5 text-gray-800">
+      {/* Modal de Sucesso personalizado */}
+      {successModal.visible && (
+        <div className="fixed top-5 right-5 z-50">
+          <div className="w-80 bg-white rounded-lg shadow-lg ring-1 ring-black/5 overflow-hidden">
+            <div className="flex items-start gap-3 p-3">
+              <div className="flex-shrink-0 mt-1">
+                <CheckCircle className="h-6 w-6 text-emerald-500" />
+              </div>
+              <div className="flex-1">
+                <div className="text-sm font-medium text-gray-900">{successModal.message}</div>
+                <div className="text-xs text-gray-500">Seu post foi publicado e aparece na comunidade.</div>
+              </div>
+              <button aria-label="Fechar" onClick={() => { if (successTimeoutRef.current) clearTimeout(successTimeoutRef.current); setSuccessModal({ visible: false, message: '' }) }} className="text-gray-400 hover:text-gray-600 focus:outline-none">
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+            <div className="h-1 bg-emerald-100">
+              <div className="h-full bg-emerald-500 animate-progress" style={{ animationDuration: '4s' }} />
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Platform header */}
       <SiteHeader />
 

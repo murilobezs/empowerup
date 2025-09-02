@@ -29,32 +29,53 @@ class AuthMiddleware {
      * Processar autenticação
      */
     private static function authenticate() {
-        $headers = getallheaders();
-        $authHeader = $headers['Authorization'] ?? $headers['authorization'] ?? '';
-        
+        // getallheaders() may not exist in some SAPIs; provide a safe fallback
+        $rawHeaders = [];
+        if (function_exists('getallheaders')) {
+            $rawHeaders = getallheaders();
+        } else {
+            // Build headers from $_SERVER keys
+            foreach ($_SERVER as $key => $value) {
+                if (strpos($key, 'HTTP_') === 0) {
+                    $name = str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($key, 5)))));
+                    $rawHeaders[$name] = $value;
+                }
+            }
+        }
+
+        // Normalize header keys to lowercase for safe access
+        $headers = [];
+        foreach ($rawHeaders as $k => $v) {
+            $headers[strtolower($k)] = $v;
+        }
+
+        $authHeader = $headers['authorization'] ?? $_SERVER['HTTP_AUTHORIZATION'] ?? $_SERVER['REDIRECT_HTTP_AUTHORIZATION'] ?? '';
+
         if (!$authHeader || !preg_match('/Bearer\s+(.*)$/i', $authHeader, $matches)) {
             return null;
         }
-        
+
         $token = $matches[1];
-        
+
         try {
             $payload = JWT::decode($token);
-            
+
             // Verificar se o usuário ainda existe
             $db = Database::getInstance();
             $user = $db->fetch(
                 'SELECT id, nome, username, email, tipo, avatar_url FROM usuarios WHERE id = ?',
                 [$payload['userId']]
             );
-            
+
             if (!$user) {
                 return null;
             }
-            
+
             return $user;
-            
+
         } catch (Exception $e) {
+            // Registrar erro para diagnóstico sem vazar detalhes ao cliente
+            Helper::logError('Auth token error: ' . $e->getMessage());
             return null;
         }
     }

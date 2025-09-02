@@ -8,6 +8,18 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  // Declarar logout e updateUser como funções (hoisted) para uso em useEffect
+  function logout() {
+    setUser(null);
+    localStorage.removeItem(config.AUTH.USER_KEY);
+  }
+
+  function updateUser(newUserData) {
+    const updatedUser = { ...user, ...newUserData };
+    setUser(updatedUser);
+    localStorage.setItem(config.AUTH.USER_KEY, JSON.stringify(updatedUser));
+  }
+
   useEffect(() => {
     // Verificar se há um usuário salvo no localStorage
     const savedUser = localStorage.getItem(config.AUTH.USER_KEY);
@@ -15,8 +27,29 @@ export const AuthProvider = ({ children }) => {
       try {
         const userData = JSON.parse(savedUser);
         setUser(userData);
-        // Verificar se o token ainda é válido
-        validateToken(userData.token);
+
+        // Valida token imediatamente, mas somente desloga em caso de 401/403
+        (async (token) => {
+          try {
+            const profile = await apiService.getProfile();
+            // Se válido, atualizar usuário com profile (inline para evitar dependência de closure)
+            setUser(prev => {
+              const updated = { ...prev, ...profile };
+              localStorage.setItem(config.AUTH.USER_KEY, JSON.stringify(updated));
+              return updated;
+            });
+          } catch (error) {
+            console.error('Erro ao validar token:', error);
+            const status = error && (error.status || (error.response && error.response.status));
+            if (status === 401 || status === 403) {
+              console.warn('Token expirado/invalid. Efetuando logout.');
+              logout();
+            } else {
+              console.warn('Falha temporária ao validar token; mantendo sessão local.', error);
+            }
+          }
+        })(userData.token);
+
       } catch (error) {
         console.error('Erro ao carregar usuário do localStorage:', error);
         localStorage.removeItem(config.AUTH.USER_KEY);
@@ -25,17 +58,7 @@ export const AuthProvider = ({ children }) => {
     setLoading(false);
   }, []);
 
-  const validateToken = async (token) => {
-    try {
-      // Tentar obter o perfil do usuário para validar o token
-      const profile = await apiService.getProfile();
-      // Se chegou até aqui, o token é válido
-      updateUser(profile);
-    } catch (error) {
-      console.error('Token inválido:', error);
-      logout();
-    }
-  };
+  // validateToken moved into useEffect to avoid hook dependency warnings
 
   const login = async (credentials) => {
     try {
@@ -85,16 +108,7 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const logout = () => {
-    setUser(null);
-    localStorage.removeItem(config.AUTH.USER_KEY);
-  };
-
-  const updateUser = (newUserData) => {
-    const updatedUser = { ...user, ...newUserData };
-    setUser(updatedUser);
-    localStorage.setItem(config.AUTH.USER_KEY, JSON.stringify(updatedUser));
-  };
+  // logout and updateUser are declared above to be used by useEffect
 
   const updateProfile = async (profileData) => {
     try {
