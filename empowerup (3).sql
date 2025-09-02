@@ -1,0 +1,422 @@
+-- phpMyAdmin SQL Dump
+-- version 5.2.1
+-- https://www.phpmyadmin.net/
+--
+-- Host: 127.0.0.1
+-- Tempo de geração: 02/09/2025 às 03:01
+-- Versão do servidor: 10.4.32-MariaDB
+-- Versão do PHP: 8.2.12
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
+SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+
+--
+-- Banco de dados: `empowerup`
+--
+CREATE DATABASE IF NOT EXISTS `empowerup` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+USE `empowerup`;
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura para tabela `grupos`
+--
+
+CREATE TABLE `grupos` (
+  `id` int(11) NOT NULL,
+  `criador_id` int(11) DEFAULT NULL,
+  `nome` varchar(255) NOT NULL,
+  `descricao` text DEFAULT NULL,
+  `categoria` varchar(100) DEFAULT NULL,
+  `membros` int(11) DEFAULT 0,
+  `imagem` varchar(255) DEFAULT NULL,
+  `imagem_capa` varchar(255) DEFAULT NULL,
+  `ativo` tinyint(1) DEFAULT 1,
+  `ultima_atividade` timestamp NOT NULL DEFAULT current_timestamp(),
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Despejando dados para a tabela `grupos`
+--
+
+INSERT INTO `grupos` (`id`, `criador_id`, `nome`, `descricao`, `categoria`, `membros`, `imagem`, `imagem_capa`, `ativo`, `ultima_atividade`, `created_at`) VALUES
+(1, NULL, 'Artesãs de alma', 'Para nós divas artesãs', 'Artesanato', 0, '/placeholder.svg?height=100&width=100', NULL, 1, '2025-06-24 02:52:08', '2025-06-24 02:52:08'),
+(2, NULL, 'Artesãs de alma', 'Para nós divas artesãs', 'Artesanato', 0, '/placeholder.svg?height=100&width=100', NULL, 1, '2025-06-24 02:52:08', '2025-06-24 02:52:08');
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura para tabela `posts`
+--
+
+CREATE TABLE `posts` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) DEFAULT NULL,
+  `autor` varchar(255) NOT NULL,
+  `username` varchar(255) NOT NULL,
+  `avatar` varchar(255) DEFAULT NULL,
+  `conteudo` text NOT NULL,
+  `imagem` varchar(255) DEFAULT NULL,
+  `categoria` varchar(100) DEFAULT NULL,
+  `tags` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`tags`)),
+  `likes` int(11) DEFAULT 0,
+  `comentarios` int(11) DEFAULT 0,
+  `compartilhamentos` int(11) DEFAULT 0,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `imagem_url` varchar(500) DEFAULT NULL,
+  `video_url` varchar(500) DEFAULT NULL,
+  `gif_url` varchar(500) DEFAULT NULL,
+  `tipo_midia` enum('imagem','video','gif','none') DEFAULT 'none',
+  `media_data` longblob DEFAULT NULL,
+  `media_type` varchar(50) DEFAULT NULL,
+  `media_filename` varchar(255) DEFAULT NULL,
+  `media_size` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Despejando dados para a tabela `posts`
+--
+
+INSERT INTO `posts` (`id`, `user_id`, `autor`, `username`, `avatar`, `conteudo`, `imagem`, `categoria`, `tags`, `likes`, `comentarios`, `compartilhamentos`, `created_at`, `imagem_url`, `video_url`, `gif_url`, `tipo_midia`, `media_data`, `media_type`, `media_filename`, `media_size`) VALUES
+(2, 1, 'Você', '@voce', '/placeholder.svg?height=40&width=40', 'oii', NULL, 'Geral', '[]', 0, 0, 0, '2025-06-24 02:04:30', NULL, NULL, NULL, 'none', NULL, NULL, NULL, NULL),
+(3, 1, 'Você', '@voce', '/placeholder.svg?height=40&width=40', 'ola gostaria', NULL, 'Geral', '[]', 0, 0, 0, '2025-06-24 02:14:32', NULL, NULL, NULL, 'none', NULL, NULL, NULL, NULL),
+(5, 1, 'Você', '@voce', '/placeholder.svg?height=40&width=40', 'teste 22/06', NULL, 'Geral', '[]', 0, 1, 0, '2025-06-24 02:17:06', NULL, NULL, NULL, 'none', NULL, NULL, NULL, NULL),
+(6, 1, 'Você', '@voce', '/placeholder.svg?height=40&width=40', 'teste (foto nn esta funcionando!) rever API', NULL, 'Geral', '[]', 0, 0, 0, '2025-06-24 02:17:27', NULL, NULL, NULL, 'none', NULL, NULL, NULL, NULL),
+(7, 1, 'Você', '@voce', '/placeholder.svg?height=40&width=40', 'Bem-vinda à empower up!', NULL, 'Geral', '[]', 0, 0, 0, '2025-06-24 02:17:53', NULL, NULL, NULL, 'none', NULL, NULL, NULL, NULL),
+(8, 1, 'Você', '@voce', '/placeholder.svg?height=40&width=40', 'oi', NULL, 'Geral', '[]', 0, 0, 0, '2025-06-24 02:39:19', NULL, NULL, NULL, 'none', NULL, NULL, NULL, NULL),
+(9, 1, 'Você', '@voce', '/placeholder.svg?height=40&width=40', 'oi', NULL, 'Geral', '[]', 0, 0, 0, '2025-06-24 02:39:19', NULL, NULL, NULL, 'none', NULL, NULL, NULL, NULL),
+(10, 1, 'Você', '@voce', '/placeholder.svg?height=40&width=40', 'oi', NULL, 'Geral', '[]', 0, 0, 0, '2025-06-24 02:39:20', NULL, NULL, NULL, 'none', NULL, NULL, NULL, NULL),
+(11, 1, 'Você', '@voce', '/placeholder.svg?height=40&width=40', 'ola', NULL, 'Geral', '[]', 0, 0, 0, '2025-06-24 03:21:19', NULL, NULL, NULL, 'none', NULL, NULL, NULL, NULL),
+(12, 1, 'Você', '@voce', '/placeholder.svg?height=40&width=40', 'oiii', NULL, 'Geral', '[]', 0, 0, 0, '2025-07-14 23:59:40', NULL, NULL, NULL, 'none', NULL, NULL, NULL, NULL),
+(13, 4, 'dui', '@', '/placeholder.svg?height=40&width=40', 'olá!', NULL, 'Dicas', '[\"amor\",\"pets\"]', 0, 0, 0, '2025-07-15 01:55:44', NULL, NULL, NULL, 'none', NULL, NULL, NULL, NULL),
+(14, 4, 'dui', '@dui', '/images/pfp/user/68840f7b84a6b_1753485179.jpg', 'oiiie', NULL, 'Geral', '[]', 0, 0, 0, '2025-07-26 02:05:57', NULL, NULL, NULL, 'none', NULL, NULL, NULL, NULL),
+(15, 4, 'dui', '@dui', '/images/pfp/user/68840f7b84a6b_1753485179.jpg', 'hello girls', NULL, 'Beleza', '[\"#moda #beleza\"]', 0, 0, 0, '2025-07-26 02:06:50', NULL, NULL, NULL, 'none', NULL, NULL, NULL, NULL),
+(16, 4, 'dui', '@dui', '/images/pfp/user/68840f7b84a6b_1753485179.jpg', 'oii', NULL, 'Beleza', '[\"#amo\"]', 0, 2, 0, '2025-08-01 19:55:00', NULL, NULL, NULL, 'none', NULL, NULL, NULL, NULL),
+(17, 4, 'dui', '@dui', '/images/pfp/user/68840f7b84a6b_1753485179.jpg', 'amei esa foto fchação', NULL, 'Inspiração', '[\"#gata\"]', 0, 0, 0, '2025-08-01 19:57:14', NULL, NULL, NULL, 'none', NULL, NULL, NULL, NULL),
+(18, 1, 'murilo', 'murilo', '/images/pfp/user/68759965eae9b_1752537445.jpg', 'oii', NULL, 'Geral', '[]', 0, 0, 0, '2025-08-06 01:47:34', NULL, NULL, NULL, 'none', NULL, NULL, NULL, NULL),
+(19, 5, 'more', 'more', '/placeholder.svg?height=40&width=40', 'oiii', NULL, 'Geral', '[]', 0, 0, 0, '2025-08-20 00:27:55', NULL, NULL, NULL, 'none', NULL, NULL, NULL, NULL),
+(20, 5, 'more', 'more', '/placeholder.svg?height=40&width=40', 'cjhcjhvjhvjgij', NULL, 'Geral', '[]', 0, 0, 0, '2025-08-20 01:39:03', NULL, NULL, NULL, 'none', NULL, NULL, NULL, NULL),
+(21, 5, 'more', 'more', '/placeholder.svg?height=40&width=40', 'teste', NULL, 'Geral', '[]', 0, 0, 0, '2025-09-01 22:47:24', NULL, NULL, NULL, 'none', NULL, NULL, NULL, NULL),
+(22, 5, 'more', 'more', '/placeholder.svg?height=40&width=40', 'eu amo', NULL, 'Educação', '[]', 0, 0, 0, '2025-09-02 00:24:38', NULL, NULL, NULL, 'none', NULL, NULL, NULL, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura para tabela `post_comentarios`
+--
+
+CREATE TABLE `post_comentarios` (
+  `id` int(11) NOT NULL,
+  `post_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `conteudo` text NOT NULL,
+  `parent_id` int(11) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Despejando dados para a tabela `post_comentarios`
+--
+
+INSERT INTO `post_comentarios` (`id`, `post_id`, `user_id`, `conteudo`, `parent_id`, `created_at`, `updated_at`) VALUES
+(1, 16, 4, 'arrasouuu', NULL, '2025-08-01 19:55:12', '2025-08-01 19:55:12'),
+(2, 16, 4, 'miga sua loka', 1, '2025-08-01 19:55:32', '2025-08-01 19:55:32'),
+(3, 5, 4, 'arrasou viado!', NULL, '2025-08-01 20:48:51', '2025-08-01 20:48:51');
+
+--
+-- Acionadores `post_comentarios`
+--
+DELIMITER $$
+CREATE TRIGGER `update_post_comments_count` AFTER INSERT ON `post_comentarios` FOR EACH ROW BEGIN
+                    UPDATE posts SET comentarios = (
+                        SELECT COUNT(*) FROM post_comentarios WHERE post_id = NEW.post_id
+                    ) WHERE id = NEW.post_id;
+                END
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE TRIGGER `update_post_comments_count_delete` AFTER DELETE ON `post_comentarios` FOR EACH ROW BEGIN
+                    UPDATE posts SET comentarios = (
+                        SELECT COUNT(*) FROM post_comentarios WHERE post_id = OLD.post_id
+                    ) WHERE id = OLD.post_id;
+                END
+$$
+DELIMITER ;
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura para tabela `post_compartilhamentos`
+--
+
+CREATE TABLE `post_compartilhamentos` (
+  `id` int(11) NOT NULL,
+  `post_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Acionadores `post_compartilhamentos`
+--
+DELIMITER $$
+CREATE TRIGGER `update_post_shares_count` AFTER INSERT ON `post_compartilhamentos` FOR EACH ROW BEGIN
+                    UPDATE posts SET compartilhamentos = (
+                        SELECT COUNT(*) FROM post_compartilhamentos WHERE post_id = NEW.post_id
+                    ) WHERE id = NEW.post_id;
+                END
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE TRIGGER `update_post_shares_count_delete` AFTER DELETE ON `post_compartilhamentos` FOR EACH ROW BEGIN
+                    UPDATE posts SET compartilhamentos = (
+                        SELECT COUNT(*) FROM post_compartilhamentos WHERE post_id = OLD.post_id
+                    ) WHERE id = OLD.post_id;
+                END
+$$
+DELIMITER ;
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura para tabela `post_likes`
+--
+
+CREATE TABLE `post_likes` (
+  `id` int(11) NOT NULL,
+  `post_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Acionadores `post_likes`
+--
+DELIMITER $$
+CREATE TRIGGER `update_post_likes_count` AFTER INSERT ON `post_likes` FOR EACH ROW BEGIN
+                    UPDATE posts SET likes = (
+                        SELECT COUNT(*) FROM post_likes WHERE post_id = NEW.post_id
+                    ) WHERE id = NEW.post_id;
+                END
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE TRIGGER `update_post_likes_count_delete` AFTER DELETE ON `post_likes` FOR EACH ROW BEGIN
+                    UPDATE posts SET likes = (
+                        SELECT COUNT(*) FROM post_likes WHERE post_id = OLD.post_id
+                    ) WHERE id = OLD.post_id;
+                END
+$$
+DELIMITER ;
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura para tabela `post_media`
+--
+
+CREATE TABLE `post_media` (
+  `id` int(11) NOT NULL,
+  `post_id` int(11) NOT NULL,
+  `media_data` longblob NOT NULL,
+  `media_type` varchar(50) NOT NULL,
+  `media_filename` varchar(255) NOT NULL,
+  `media_size` int(11) NOT NULL,
+  `media_order` tinyint(4) DEFAULT 0,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura para tabela `usuarios`
+--
+
+CREATE TABLE `usuarios` (
+  `id` int(11) NOT NULL,
+  `nome` varchar(255) NOT NULL,
+  `username` varchar(50) DEFAULT NULL,
+  `email` varchar(255) NOT NULL,
+  `senha` varchar(255) NOT NULL,
+  `telefone` varchar(20) DEFAULT NULL,
+  `bio` text DEFAULT NULL,
+  `tipo` enum('empreendedora','cliente') NOT NULL,
+  `avatar_url` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Despejando dados para a tabela `usuarios`
+--
+
+INSERT INTO `usuarios` (`id`, `nome`, `username`, `email`, `senha`, `telefone`, `bio`, `tipo`, `avatar_url`, `created_at`, `updated_at`) VALUES
+(1, 'murilo', 'murilo', 'murisud15@gmail.com', '$2y$10$tuxfPcY/dcR1H5ybuoUi0e2mrCn4lAXfs2YAkGIavGgUTNvHZbTyS', '11930850009', 'sou aluno', 'empreendedora', '/images/pfp/user/68759965eae9b_1752537445.jpg', '2025-06-24 03:19:32', '2025-07-14 23:57:30'),
+(4, 'dui', 'dui', 'giovanna@gmail.com', '$2y$10$zX7vJcaNy4OaJRsJftruuuTrMFZG/erAZtiMqyWySdjtnjl2Nsuo.', '1191234567', 'hii', 'empreendedora', '/images/pfp/user/68840f7b84a6b_1753485179.jpg', '2025-07-15 01:54:31', '2025-07-25 23:12:59'),
+(5, 'more', 'more', 'vivi@gmail.com', '$2y$10$87YSeobQCWXYol03cEQgX.RrAJ5GRTQKV/rNPdZQxxzc3N7gBHMVm', '11982833435', 'kgykiugtt', 'empreendedora', '/placeholder.svg?height=40&width=40', '2025-08-20 00:05:04', '2025-08-20 00:05:04');
+
+--
+-- Índices para tabelas despejadas
+--
+
+--
+-- Índices de tabela `grupos`
+--
+ALTER TABLE `grupos`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idx_criador_id` (`criador_id`);
+
+--
+-- Índices de tabela `posts`
+--
+ALTER TABLE `posts`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idx_user_id` (`user_id`),
+  ADD KEY `idx_posts_user_id` (`user_id`),
+  ADD KEY `idx_posts_created_at` (`created_at`),
+  ADD KEY `idx_media_type` (`media_type`),
+  ADD KEY `idx_media_size` (`media_size`);
+
+--
+-- Índices de tabela `post_comentarios`
+--
+ALTER TABLE `post_comentarios`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idx_post_id` (`post_id`),
+  ADD KEY `idx_user_id` (`user_id`),
+  ADD KEY `idx_parent_id` (`parent_id`);
+
+--
+-- Índices de tabela `post_compartilhamentos`
+--
+ALTER TABLE `post_compartilhamentos`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `unique_share` (`post_id`,`user_id`),
+  ADD KEY `idx_post_id` (`post_id`),
+  ADD KEY `idx_user_id` (`user_id`);
+
+--
+-- Índices de tabela `post_likes`
+--
+ALTER TABLE `post_likes`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `unique_like` (`post_id`,`user_id`),
+  ADD KEY `idx_post_id` (`post_id`),
+  ADD KEY `idx_user_id` (`user_id`);
+
+--
+-- Índices de tabela `post_media`
+--
+ALTER TABLE `post_media`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idx_post_id` (`post_id`),
+  ADD KEY `idx_media_type` (`media_type`),
+  ADD KEY `idx_media_order` (`media_order`);
+
+--
+-- Índices de tabela `usuarios`
+--
+ALTER TABLE `usuarios`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `email` (`email`),
+  ADD UNIQUE KEY `username` (`username`),
+  ADD KEY `idx_usuarios_username` (`username`),
+  ADD KEY `idx_username` (`username`);
+
+--
+-- AUTO_INCREMENT para tabelas despejadas
+--
+
+--
+-- AUTO_INCREMENT de tabela `grupos`
+--
+ALTER TABLE `grupos`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT de tabela `posts`
+--
+ALTER TABLE `posts`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+
+--
+-- AUTO_INCREMENT de tabela `post_comentarios`
+--
+ALTER TABLE `post_comentarios`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT de tabela `post_compartilhamentos`
+--
+ALTER TABLE `post_compartilhamentos`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de tabela `post_likes`
+--
+ALTER TABLE `post_likes`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT de tabela `post_media`
+--
+ALTER TABLE `post_media`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de tabela `usuarios`
+--
+ALTER TABLE `usuarios`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- Restrições para tabelas despejadas
+--
+
+--
+-- Restrições para tabelas `posts`
+--
+ALTER TABLE `posts`
+  ADD CONSTRAINT `fk_posts_user_id` FOREIGN KEY (`user_id`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE;
+
+--
+-- Restrições para tabelas `post_comentarios`
+--
+ALTER TABLE `post_comentarios`
+  ADD CONSTRAINT `post_comentarios_ibfk_1` FOREIGN KEY (`post_id`) REFERENCES `posts` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `post_comentarios_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `post_comentarios_ibfk_3` FOREIGN KEY (`parent_id`) REFERENCES `post_comentarios` (`id`) ON DELETE CASCADE;
+
+--
+-- Restrições para tabelas `post_compartilhamentos`
+--
+ALTER TABLE `post_compartilhamentos`
+  ADD CONSTRAINT `post_compartilhamentos_ibfk_1` FOREIGN KEY (`post_id`) REFERENCES `posts` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `post_compartilhamentos_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE;
+
+--
+-- Restrições para tabelas `post_likes`
+--
+ALTER TABLE `post_likes`
+  ADD CONSTRAINT `post_likes_ibfk_1` FOREIGN KEY (`post_id`) REFERENCES `posts` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `post_likes_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE;
+
+--
+-- Restrições para tabelas `post_media`
+--
+ALTER TABLE `post_media`
+  ADD CONSTRAINT `post_media_ibfk_1` FOREIGN KEY (`post_id`) REFERENCES `posts` (`id`) ON DELETE CASCADE;
+COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

@@ -48,3 +48,18 @@
   background-size: 100px 100px;
   background-position: 0 0, 50px 50px;
 }
+
+/* Profile specific tweaks */
+.profile-action-btn {
+  @apply px-3 py-1 rounded-md border border-gray-200 shadow-sm bg-white text-sm;
+}
+
+.profile-stats {
+  @apply divide-y divide-gray-100;
+}
+
+@layer components {
+  .card-smooth {
+    @apply bg-white rounded-lg shadow-md border border-gray-100;
+  }
+}

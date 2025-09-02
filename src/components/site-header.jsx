@@ -1,5 +1,6 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Link, useLocation, useNavigate } from "react-router-dom"
+import config from '../config/config'
 import { Button } from "./ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet"
 import { Menu } from "lucide-react"
@@ -20,13 +21,32 @@ export function SiteHeader() {
 	const navigate = useNavigate()
 	const { user, logout } = useAuth()
 	const [isOpen, setIsOpen] = useState(false)
+
+	// badge state for community notifications/posts
+	const [communityBadge, setCommunityBadge] = useState(0)
+
+	useEffect(() => {
+		const fetchBadge = async () => {
+			try {
+				const res = await fetch(`${config.API_BASE_URL}/posts/unread_count`)
+				if (res.ok) {
+					const j = await res.json()
+					setCommunityBadge(Number(j.count) || 0)
+				}
+			} catch (e) {
+				// endpoint may not exist; ignore
+			}
+		}
+		fetchBadge()
+	}, [])
 	const isAuthPage = location.pathname === '/login' || location.pathname === '/cadastro'
 
 	return (
 		<header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
 			<div className="container flex h-14 items-center justify-between">
-				<div className="flex items-center">
-					<Link to="/" className="flex items-center space-x-2">
+				<div className="flex items-center gap-4">
+					{/* logo */}
+					<Link to="/" className="flex items-center">
 						<span>
 							<img src="/logo-sem-fundo.png" alt="logo" width="140px"/>
 						</span>
@@ -49,6 +69,27 @@ export function SiteHeader() {
 							{item.name}
 						</Link>
 					))}
+					{/* Comunidade link styled like other nav items */}
+					<Link
+						to="/comunidade"
+						className={cn(
+							"transition-colors rounded-md px-3 py-2 hover:bg-[#87A05F] hover:text-white",
+							location.pathname === '/comunidade' ? "text-foreground" : "text-foreground/60",
+						)}
+					>
+						<span className="flex items-center gap-2">
+							<svg className="w-4 h-4 text-foreground/80" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+								<path d="M17 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+								<circle cx="12" cy="7" r="4"></circle>
+							</svg>
+							<span className="text-sm font-medium">Comunidade</span>
+							{communityBadge > 0 && (
+								<span className="inline-flex items-center justify-center ml-2 px-2 py-0.5 text-xs font-semibold leading-none text-white bg-red-500 rounded-full" aria-hidden>
+									{communityBadge > 99 ? '99+' : communityBadge}
+								</span>
+							)}
+						</span>
+					</Link>
 				</nav>
 
 				{/* Desktop Auth Buttons */}
@@ -75,7 +116,10 @@ export function SiteHeader() {
 					</SheetTrigger>
 					<SheetContent side="right" className="w-[300px] sm:w-[400px]">
 						<nav className="flex flex-col space-y-4">
-							{navigation.map((item) => (
+							{[
+								{ name: 'Comunidade', href: '/comunidade' },
+								...navigation
+							].map((item) => (
 								<Link
 									key={item.name}
 									to={item.href}

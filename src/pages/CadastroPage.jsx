@@ -79,9 +79,8 @@ export default function CadastroPage() {
               <p className="text-gray-700">Crie sua conta e comece a empreender hoje mesmo</p>
             </div>
             <Tabs defaultValue="empreendedora" className="w-full">
-              <TabsList className="grid w-full grid-cols-2">
+              <TabsList className="grid w-full grid-cols-1">
                 <TabsTrigger value="empreendedora">Empreendedora</TabsTrigger>
-                <TabsTrigger value="cliente">Cliente</TabsTrigger>
               </TabsList>
               <TabsContent value="empreendedora">
                 <Card>
@@ -188,105 +187,6 @@ export default function CadastroPage() {
                       <div className="text-center text-sm">
                         Já tem uma conta?{" "}
                         <Link to="/login" className="text-coral hover:underline">
-                          Faça login
-                        </Link>
-                      </div>
-                    </CardFooter>
-                  </form>
-                </Card>
-              </TabsContent>
-              <TabsContent value="cliente">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Cadastro de Cliente</CardTitle>
-                    <CardDescription>Crie sua conta para explorar produtos e serviços exclusivos.</CardDescription>
-                  </CardHeader>
-                  <form onSubmit={(e) => handleSubmit(e, "cliente")}>
-                    <CardContent className="space-y-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="nome-cliente">Nome completo</Label>
-                        <Input
-                          id="nome-cliente"
-                          name="nome"
-                          type="text"
-                          placeholder="Seu nome completo"
-                          value={formData.nome}
-                          onChange={handleInputChange}
-                          required
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="email-cliente">Email</Label>
-                        <Input
-                          id="email-cliente"
-                          name="email"
-                          type="email"
-                          placeholder="seu@email.com"
-                          value={formData.email}
-                          onChange={handleInputChange}
-                          required
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="telefone-cliente">Telefone</Label>
-                        <Input
-                          id="telefone-cliente"
-                          name="telefone"
-                          type="tel"
-                          placeholder="(11) 99999-9999"
-                          value={formData.telefone}
-                          onChange={handleInputChange}
-                          required
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="senha-cliente">Senha</Label>
-                        <Input
-                          id="senha-cliente"
-                          name="senha"
-                          type="password"
-                          value={formData.senha}
-                          onChange={handleInputChange}
-                          required
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="confirmar-senha-cliente">Confirmar senha</Label>
-                        <Input
-                          id="confirmar-senha-cliente"
-                          name="confirmarSenha"
-                          type="password"
-                          value={formData.confirmarSenha}
-                          onChange={handleInputChange}
-                          required
-                        />
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <Checkbox
-                          id="termos-cliente"
-                          name="termos"
-                          checked={formData.termos}
-                          onCheckedChange={(checked) => setFormData((prev) => ({ ...prev, termos: checked }))}
-                        />
-                        <Label htmlFor="termos-cliente" className="text-sm">
-                          Aceito os{" "}
-                          <Link to="/termos" className="text-olive hover:underline">
-                            termos de uso
-                          </Link>{" "}
-                          e{" "}
-                          <Link to="/privacidade" className="text-olive hover:underline">
-                            política de privacidade
-                          </Link>
-                        </Label>
-                      </div>
-                    </CardContent>
-                    <CardFooter className="flex flex-col space-y-4">
-                      <Button type="submit" className="w-full bg-olive hover:bg-olive/90" disabled={!formData.termos}>
-                        Criar conta
-                      </Button>
-                      <div className="text-center text-sm">
-                        Já tem uma conta?{" "}
-                        <Link to="/login" className="text-olive hover:underline">
                           Faça login
                         </Link>
                       </div>

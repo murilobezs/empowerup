@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import config from '../config/config';
 
 const TrendingPage = () => {
   const [trending, setTrending] = useState([]);
@@ -7,7 +8,7 @@ const TrendingPage = () => {
   useEffect(() => {
     const loadTrending = async () => {
       try {
-        const response = await fetch('http://localhost/empowerup/api/trending/');
+        const response = await fetch(`${config.API_BASE_URL}/trending/`);
         if (response.ok) {
           const data = await response.json();
           setTrending(data);

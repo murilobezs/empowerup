@@ -7,22 +7,20 @@ import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Textarea } from '../components/ui/textarea';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../components/ui/dialog';
 import { 
   Users, 
   MessageCircle, 
   Users2, 
   TrendingUp, 
-  Heart, 
-  Share2, 
+  Heart,  
   Edit2, 
   Trash2,
-  Plus,
-  Calendar,
   BarChart3,
   Shield,
   LogOut
 } from 'lucide-react';
+import config from '../config/config';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -35,7 +33,19 @@ const AdminDashboard = () => {
   const [editingItem, setEditingItem] = useState(null);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
 
-  const API_BASE = 'http://localhost/empowerup/api/admin';
+  const API_BASE = `${config.API_BASE_URL}/admin`;
+
+  const fetchStats = async () => {
+    try {
+      const response = await fetch(`${API_BASE}/stats.php`);
+      const data = await response.json();
+      if (data.success) {
+        setStats(data.data);
+      }
+    } catch (error) {
+      console.error('Erro ao buscar estatísticas:', error);
+    }
+  };
 
   useEffect(() => {
     // Verificar se o admin está logado
@@ -54,18 +64,6 @@ const AdminDashboard = () => {
   const handleLogout = () => {
     localStorage.removeItem('admin_logged_in');
     navigate('/admin/login');
-  };
-
-  const fetchStats = async () => {
-    try {
-      const response = await fetch(`${API_BASE}/stats.php`);
-      const data = await response.json();
-      if (data.success) {
-        setStats(data.data);
-      }
-    } catch (error) {
-      console.error('Erro ao buscar estatísticas:', error);
-    }
   };
 
   const fetchUsuarios = async () => {

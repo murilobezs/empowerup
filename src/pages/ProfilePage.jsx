@@ -1,4 +1,13 @@
-import React, { useState, useEffect, useCallback } from 'react';import { useParams, useNavigate } from 'react-router-dom';import { useAuth } from '../contexts/AuthContext';import { usePosts } from '../hooks/usePosts';import { ProfileLayout } from '../components/layout';import { Loading, ErrorMessage, EmptyState } from '../components/common';import SocialPost from '../components/SocialPost';import { Button } from '../components/ui/button';import apiService from '../services/api';import { Edit } from 'lucide-react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
+import { usePosts } from '../hooks/usePosts';
+import { ProfileLayout } from '../components/layout';
+import { Loading, ErrorMessage, EmptyState } from '../components/common';
+import SocialPost from '../components/SocialPost';
+import { Button } from '../components/ui/button';
+import apiService from '../services/api';
+import { Edit } from 'lucide-react';
 
 const ProfilePage = () => {
   const { username } = useParams();
@@ -19,14 +28,14 @@ const ProfilePage = () => {
     deletePost
   } = usePosts();
 
-  const loadProfileUser = useCallback(async (username) => {
+  const loadProfileUser = useCallback(async (usernameToLoad) => {
     try {
       setLoading(true);
       setError(null);
-      
-      const response = await apiService.searchUsers(username);
+
+      const response = await apiService.searchUsers(usernameToLoad);
       if (response.success && response.users?.length > 0) {
-        const user = response.users.find(u => u.username === username);
+        const user = response.users.find(u => u.username === usernameToLoad);
         if (user) {
           setProfileUser(user);
           fetchPosts({ user_id: user.id });
@@ -54,6 +63,15 @@ const ProfilePage = () => {
   }, [username, currentUser, isOwnProfile, fetchPosts, loadProfileUser]);
 
   const targetUser = profileUser || currentUser;
+
+  const [activeTab, setActiveTab] = useState('posts');
+
+  const tabs = [
+    { key: 'posts', label: 'Posts', count: posts.length },
+    { key: 'replies', label: 'Respostas' },
+    { key: 'media', label: 'Mídia' },
+    { key: 'likes', label: 'Curtidas' }
+  ];
 
   if (loading) {
     return (
@@ -83,51 +101,40 @@ const ProfilePage = () => {
   }
 
   return (
-    <ProfileLayout>
-      <div className="max-w-4xl mx-auto space-y-6">
-        <div className="bg-white rounded-lg shadow-sm border p-6">
-          <div className="flex flex-col md:flex-row items-start md:items-center space-y-4 md:space-y-0 md:space-x-6">
-            <div className="relative">
-              <img
-                src={targetUser.foto_perfil || '/api/placeholder/120/120'}
-                alt={targetUser.nome}
-                className="w-24 h-24 rounded-full object-cover border-4 border-gray-100"
-              />
-            </div>
-
-            <div className="flex-1 space-y-3">
-              <div>
-                <h1 className="text-2xl font-bold text-gray-900">{targetUser.nome}</h1>
-                <p className="text-gray-600">@{targetUser.username}</p>
-              </div>
-
-              {targetUser.bio && (
-                <p className="text-gray-700">{targetUser.bio}</p>
-              )}
-
-              <div className="flex space-x-6">
-                <div className="text-center">
-                  <div className="text-xl font-bold text-gray-900">{posts.length}</div>
-                  <div className="text-sm text-gray-600">Posts</div>
+    <ProfileLayout
+      user={targetUser}
+      coverImage={targetUser.capa}
+      tabs={tabs}
+      activeTab={activeTab}
+      onTabChange={setActiveTab}
+    >
+      <div className="max-w-4xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Main column */}
+        <div className="lg:col-span-2 space-y-6">
+          <div className="bg-white rounded-lg shadow-sm border p-4">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center space-x-4">
+                <div>
+                  <h2 className="text-lg font-semibold text-gray-900">{targetUser.nome}</h2>
+                  <div className="text-sm text-gray-600">@{targetUser.username}</div>
+                </div>
+                <div className="hidden sm:flex items-center space-x-4 text-sm text-gray-600">
+                  <div>{posts.length} publicações</div>
                 </div>
               </div>
+
+              <div>
+                {isOwnProfile ? (
+                  <Button onClick={() => navigate('/editar-perfil')} variant="outline" className="profile-action-btn">
+                    <Edit className="w-4 h-4 mr-2" />
+                    Editar perfil
+                  </Button>
+                ) : (
+                  <Button className="bg-coral hover:bg-coral/90 text-white">Seguir</Button>
+                )}
+              </div>
             </div>
 
-            <div className="flex flex-col space-y-2">
-              {isOwnProfile ? (
-                <Button onClick={() => navigate('/editar-perfil')} variant="outline">
-                  <Edit className="w-4 h-4 mr-2" />
-                  Editar Perfil
-                </Button>
-              ) : (
-                <Button>Seguir</Button>
-              )}
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-lg shadow-sm border">
-          <div className="p-6">
             <div className="space-y-6">
               {postsLoading ? (
                 <Loading text="Carregando posts..." />
@@ -156,6 +163,27 @@ const ProfilePage = () => {
             </div>
           </div>
         </div>
+
+        {/* Sidebar */}
+        <aside className="lg:col-span-1 space-y-4">
+          <div className="bg-white rounded-lg shadow-sm border p-4 profile-stats">
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="text-sm text-gray-600">Seguidores</div>
+                <div className="text-lg font-semibold text-gray-900">{targetUser.followers_count ?? targetUser.seguidores ?? 0}</div>
+              </div>
+              <div>
+                <div className="text-sm text-gray-600">Seguindo</div>
+                <div className="text-lg font-semibold text-gray-900">{targetUser.following_count ?? targetUser.seguindo ?? 0}</div>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-lg shadow-sm border p-4">
+            <h3 className="text-sm font-semibold text-gray-900 mb-2">Sobre</h3>
+            <p className="text-sm text-gray-700">{targetUser.bio || '—'}</p>
+          </div>
+        </aside>
       </div>
     </ProfileLayout>
   );
