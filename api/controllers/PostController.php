@@ -289,8 +289,7 @@ class PostController {
             }
             
             echo Helper::jsonResponse(true, '', [
-                'post' => Helper::formatPost($newPost, $user['id']),
-                'message' => 'Post criado com sucesso'
+                'post' => Helper::formatPost($newPost, $user['id'])
             ], 201);
             
         } catch (Exception $e) {

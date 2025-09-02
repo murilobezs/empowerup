@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 02/09/2025 às 03:01
+-- Tempo de geração: 03/09/2025 às 01:04
 -- Versão do servidor: 10.4.32-MariaDB
 -- Versão do PHP: 8.2.12
 
@@ -105,7 +105,12 @@ INSERT INTO `posts` (`id`, `user_id`, `autor`, `username`, `avatar`, `conteudo`,
 (19, 5, 'more', 'more', '/placeholder.svg?height=40&width=40', 'oiii', NULL, 'Geral', '[]', 0, 0, 0, '2025-08-20 00:27:55', NULL, NULL, NULL, 'none', NULL, NULL, NULL, NULL),
 (20, 5, 'more', 'more', '/placeholder.svg?height=40&width=40', 'cjhcjhvjhvjgij', NULL, 'Geral', '[]', 0, 0, 0, '2025-08-20 01:39:03', NULL, NULL, NULL, 'none', NULL, NULL, NULL, NULL),
 (21, 5, 'more', 'more', '/placeholder.svg?height=40&width=40', 'teste', NULL, 'Geral', '[]', 0, 0, 0, '2025-09-01 22:47:24', NULL, NULL, NULL, 'none', NULL, NULL, NULL, NULL),
-(22, 5, 'more', 'more', '/placeholder.svg?height=40&width=40', 'eu amo', NULL, 'Educação', '[]', 0, 0, 0, '2025-09-02 00:24:38', NULL, NULL, NULL, 'none', NULL, NULL, NULL, NULL);
+(22, 5, 'more', 'more', '/placeholder.svg?height=40&width=40', 'eu amo', NULL, 'Educação', '[]', 0, 0, 0, '2025-09-02 00:24:38', NULL, NULL, NULL, 'none', NULL, NULL, NULL, NULL),
+(23, 6, 'Marise Rezende Barbosa Jusevicius', 'mariserezendebarbosajusevicius', '/placeholder.svg?height=40&width=40', 'yjuiikuyki', NULL, 'Geral', '[]', 0, 0, 0, '2025-09-02 22:22:37', NULL, NULL, NULL, 'none', NULL, NULL, NULL, NULL),
+(24, 6, 'Marise Rezende Barbosa Jusevicius', 'mariserezendebarbosajusevicius', '/placeholder.svg?height=40&width=40', 'oiiiiiiiiiiiii', NULL, 'Geral', '[]', 0, 0, 0, '2025-09-02 22:22:49', NULL, NULL, NULL, 'none', NULL, NULL, NULL, NULL),
+(25, 6, 'Marise Rezende Barbosa Jusevicius', 'mariserezendebarbosajusevicius', '/placeholder.svg?height=40&width=40', 'amei!', NULL, 'Geral', '[]', 0, 0, 0, '2025-09-02 22:23:01', NULL, NULL, NULL, 'none', NULL, NULL, NULL, NULL),
+(26, 6, 'Marise Rezende Barbosa Jusevicius', 'mariserezendebarbosajusevicius', '/placeholder.svg?height=40&width=40', 'oii', NULL, 'Geral', '[]', 0, 0, 0, '2025-09-02 22:27:53', NULL, NULL, NULL, 'none', NULL, NULL, NULL, NULL),
+(27, 6, 'Marise Rezende Barbosa Jusevicius', 'mariserezendebarbosajusevicius', '/placeholder.svg?height=40&width=40', 'oii', NULL, 'Geral', '[]', 0, 0, 0, '2025-09-02 22:28:16', NULL, NULL, NULL, 'none', NULL, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -238,6 +243,51 @@ CREATE TABLE `post_media` (
 -- --------------------------------------------------------
 
 --
+-- Estrutura para tabela `schema_migrations`
+--
+
+CREATE TABLE `schema_migrations` (
+  `id` int(11) NOT NULL,
+  `migration` varchar(255) NOT NULL,
+  `run_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Despejando dados para a tabela `schema_migrations`
+--
+
+INSERT INTO `schema_migrations` (`id`, `migration`, `run_at`) VALUES
+(1, '001_create_schema_basics.php', '2025-09-02 21:42:38'),
+(2, '002_indexes_constraints.php', '2025-09-02 21:42:39'),
+(3, '003_user_tokens.php', '2025-09-02 21:42:41');
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura para tabela `user_tokens`
+--
+
+CREATE TABLE `user_tokens` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `token` varchar(255) NOT NULL,
+  `type` enum('email_verification','password_reset','refresh') NOT NULL,
+  `expires_at` datetime DEFAULT NULL,
+  `revoked` tinyint(1) DEFAULT 0,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Despejando dados para a tabela `user_tokens`
+--
+
+INSERT INTO `user_tokens` (`id`, `user_id`, `token`, `type`, `expires_at`, `revoked`, `created_at`) VALUES
+(1, 6, 'eb3f4e4cd89fac6ed14db4848e3cb273dbcbf342018e931e53608987e0833e18', 'email_verification', '2025-09-03 19:20:53', 0, '2025-09-02 22:20:53'),
+(2, 6, '222de2d91f315144693813da9667f0f66130ecd3ccfa566fd202d5f272af72f1', 'refresh', '2025-10-02 19:21:00', 0, '2025-09-02 22:21:00');
+
+-- --------------------------------------------------------
+
+--
 -- Estrutura para tabela `usuarios`
 --
 
@@ -247,6 +297,7 @@ CREATE TABLE `usuarios` (
   `username` varchar(50) DEFAULT NULL,
   `email` varchar(255) NOT NULL,
   `senha` varchar(255) NOT NULL,
+  `verified` tinyint(1) NOT NULL DEFAULT 0,
   `telefone` varchar(20) DEFAULT NULL,
   `bio` text DEFAULT NULL,
   `tipo` enum('empreendedora','cliente') NOT NULL,
@@ -259,10 +310,11 @@ CREATE TABLE `usuarios` (
 -- Despejando dados para a tabela `usuarios`
 --
 
-INSERT INTO `usuarios` (`id`, `nome`, `username`, `email`, `senha`, `telefone`, `bio`, `tipo`, `avatar_url`, `created_at`, `updated_at`) VALUES
-(1, 'murilo', 'murilo', 'murisud15@gmail.com', '$2y$10$tuxfPcY/dcR1H5ybuoUi0e2mrCn4lAXfs2YAkGIavGgUTNvHZbTyS', '11930850009', 'sou aluno', 'empreendedora', '/images/pfp/user/68759965eae9b_1752537445.jpg', '2025-06-24 03:19:32', '2025-07-14 23:57:30'),
-(4, 'dui', 'dui', 'giovanna@gmail.com', '$2y$10$zX7vJcaNy4OaJRsJftruuuTrMFZG/erAZtiMqyWySdjtnjl2Nsuo.', '1191234567', 'hii', 'empreendedora', '/images/pfp/user/68840f7b84a6b_1753485179.jpg', '2025-07-15 01:54:31', '2025-07-25 23:12:59'),
-(5, 'more', 'more', 'vivi@gmail.com', '$2y$10$87YSeobQCWXYol03cEQgX.RrAJ5GRTQKV/rNPdZQxxzc3N7gBHMVm', '11982833435', 'kgykiugtt', 'empreendedora', '/placeholder.svg?height=40&width=40', '2025-08-20 00:05:04', '2025-08-20 00:05:04');
+INSERT INTO `usuarios` (`id`, `nome`, `username`, `email`, `senha`, `verified`, `telefone`, `bio`, `tipo`, `avatar_url`, `created_at`, `updated_at`) VALUES
+(1, 'murilo', 'murilo', 'murisud15@gmail.com', '$2y$10$tuxfPcY/dcR1H5ybuoUi0e2mrCn4lAXfs2YAkGIavGgUTNvHZbTyS', 0, '11930850009', 'sou aluno', 'empreendedora', '/images/pfp/user/68759965eae9b_1752537445.jpg', '2025-06-24 03:19:32', '2025-07-14 23:57:30'),
+(4, 'dui', 'dui', 'giovanna@gmail.com', '$2y$10$zX7vJcaNy4OaJRsJftruuuTrMFZG/erAZtiMqyWySdjtnjl2Nsuo.', 0, '1191234567', 'hii', 'empreendedora', '/images/pfp/user/68840f7b84a6b_1753485179.jpg', '2025-07-15 01:54:31', '2025-07-25 23:12:59'),
+(5, 'more', 'more', 'vivi@gmail.com', '$2y$10$87YSeobQCWXYol03cEQgX.RrAJ5GRTQKV/rNPdZQxxzc3N7gBHMVm', 0, '(11) 98283-3435', 'kgykiugtt', 'empreendedora', '/images/pfp/user/68b6426dd2aa2_1756775021.jpg', '2025-08-20 00:05:04', '2025-09-02 01:04:33'),
+(6, 'Marise Rezende Barbosa Jusevicius', 'mariserezendebarbosajusevicius', 'gaga@gmail.com', '$2y$10$78s1o9Pl927o0ifXfM5X9eOJenycKXPw/WD60c9F/stHxsC6T77qK', 0, '11982833435', 'dhdtjyjyk', 'empreendedora', '/images/pfp/user/68b77034e5974_1756852276.jpg', '2025-09-02 22:20:53', '2025-09-02 22:31:17');
 
 --
 -- Índices para tabelas despejadas
@@ -320,7 +372,23 @@ ALTER TABLE `post_media`
   ADD PRIMARY KEY (`id`),
   ADD KEY `idx_post_id` (`post_id`),
   ADD KEY `idx_media_type` (`media_type`),
-  ADD KEY `idx_media_order` (`media_order`);
+  ADD KEY `idx_media_order` (`media_order`),
+  ADD KEY `idx_post_media_post_id` (`post_id`);
+
+--
+-- Índices de tabela `schema_migrations`
+--
+ALTER TABLE `schema_migrations`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `migration` (`migration`);
+
+--
+-- Índices de tabela `user_tokens`
+--
+ALTER TABLE `user_tokens`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idx_user_id` (`user_id`),
+  ADD KEY `idx_token` (`token`);
 
 --
 -- Índices de tabela `usuarios`
@@ -328,7 +396,9 @@ ALTER TABLE `post_media`
 ALTER TABLE `usuarios`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `email` (`email`),
+  ADD UNIQUE KEY `ux_usuarios_email` (`email`(191)),
   ADD UNIQUE KEY `username` (`username`),
+  ADD UNIQUE KEY `ux_usuarios_username` (`username`),
   ADD KEY `idx_usuarios_username` (`username`),
   ADD KEY `idx_username` (`username`);
 
@@ -346,7 +416,7 @@ ALTER TABLE `grupos`
 -- AUTO_INCREMENT de tabela `posts`
 --
 ALTER TABLE `posts`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
 -- AUTO_INCREMENT de tabela `post_comentarios`
@@ -373,10 +443,22 @@ ALTER TABLE `post_media`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT de tabela `schema_migrations`
+--
+ALTER TABLE `schema_migrations`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT de tabela `user_tokens`
+--
+ALTER TABLE `user_tokens`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
 -- AUTO_INCREMENT de tabela `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- Restrições para tabelas despejadas
@@ -415,6 +497,12 @@ ALTER TABLE `post_likes`
 --
 ALTER TABLE `post_media`
   ADD CONSTRAINT `post_media_ibfk_1` FOREIGN KEY (`post_id`) REFERENCES `posts` (`id`) ON DELETE CASCADE;
+
+--
+-- Restrições para tabelas `user_tokens`
+--
+ALTER TABLE `user_tokens`
+  ADD CONSTRAINT `fk_user_tokens_user` FOREIGN KEY (`user_id`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

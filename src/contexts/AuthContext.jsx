@@ -16,8 +16,37 @@ export const AuthProvider = ({ children }) => {
 
   function updateUser(newUserData) {
     const updatedUser = { ...user, ...newUserData };
-    setUser(updatedUser);
-    localStorage.setItem(config.AUTH.USER_KEY, JSON.stringify(updatedUser));
+    // Ensure normalized avatar fields
+    const normalized = normalizeUser(updatedUser);
+    setUser(normalized);
+    localStorage.setItem(config.AUTH.USER_KEY, JSON.stringify(normalized));
+  }
+
+  // Normalize user object so frontend uses consistent avatar fields
+  function normalizeUser(u) {
+    if (!u) return u;
+    const out = { ...u };
+    // API uses `avatar_url` (relative path like /images/...), some components expect `foto_perfil` as full/public URL
+    const avatarUrl = u.avatar_url || u.avatar || null;
+    if (avatarUrl) {
+      // Build full public URL based on API base (strip /api)
+      const apiBase = (config.API_BASE_URL || '').replace(/\/api\/?$/i, '');
+      const publicBase = apiBase || '';
+      // If avatarUrl already looks like an absolute URL, keep it
+      if (/^https?:\/\//.test(avatarUrl)) {
+        out.foto_perfil = avatarUrl;
+      } else {
+        out.foto_perfil = `${publicBase}/public${avatarUrl}`;
+      }
+      out.avatar_url = avatarUrl;
+    } else if (u.foto_perfil) {
+      // keep existing foto_perfil and attempt to set avatar_url if missing
+      out.foto_perfil = u.foto_perfil;
+      if (!out.avatar_url) {
+        out.avatar_url = u.foto_perfil.startsWith('/') ? u.foto_perfil : null;
+      }
+    }
+    return out;
   }
 
   useEffect(() => {
@@ -26,18 +55,21 @@ export const AuthProvider = ({ children }) => {
     if (savedUser) {
       try {
         const userData = JSON.parse(savedUser);
-        setUser(userData);
+        setUser(normalizeUser(userData));
 
         // Valida token imediatamente, mas somente desloga em caso de 401/403
         (async (token) => {
           try {
             const profile = await apiService.getProfile();
             // Se válido, atualizar usuário com profile (inline para evitar dependência de closure)
-            setUser(prev => {
-              const updated = { ...prev, ...profile };
-              localStorage.setItem(config.AUTH.USER_KEY, JSON.stringify(updated));
-              return updated;
-            });
+            const profileUser = profile && profile.user ? profile.user : null;
+            if (profileUser) {
+              setUser(prev => {
+                const updated = normalizeUser({ ...prev, ...profileUser });
+                localStorage.setItem(config.AUTH.USER_KEY, JSON.stringify(updated));
+                return updated;
+              });
+            }
           } catch (error) {
             console.error('Erro ao validar token:', error);
             const status = error && (error.status || (error.response && error.response.status));
@@ -70,8 +102,9 @@ export const AuthProvider = ({ children }) => {
           ...response.user,
           token: response.token
         };
-        setUser(userData);
-        localStorage.setItem(config.AUTH.USER_KEY, JSON.stringify(userData));
+        const normalized = normalizeUser(userData);
+        setUser(normalized);
+        localStorage.setItem(config.AUTH.USER_KEY, JSON.stringify(normalized));
         return { success: true, user: userData };
       } else {
         return { success: false, message: response.message };
@@ -94,8 +127,9 @@ export const AuthProvider = ({ children }) => {
           ...response.user,
           token: response.token
         };
-        setUser(newUser);
-        localStorage.setItem(config.AUTH.USER_KEY, JSON.stringify(newUser));
+        const normalized = normalizeUser(newUser);
+        setUser(normalized);
+        localStorage.setItem(config.AUTH.USER_KEY, JSON.stringify(normalized));
         return { success: true, user: newUser };
       } else {
         return { success: false, message: response.message };
@@ -115,7 +149,7 @@ export const AuthProvider = ({ children }) => {
       const response = await apiService.updateProfile(profileData);
       
       if (response.success) {
-        updateUser(response.user);
+        updateUser(normalizeUser(response.user));
         return { success: true, user: response.user };
       } else {
         return { success: false, message: response.message };
@@ -131,8 +165,11 @@ export const AuthProvider = ({ children }) => {
       const response = await apiService.updateAvatar(file);
       
       if (response.success) {
-        updateUser({ foto_perfil: response.foto_perfil });
-        return { success: true, foto_perfil: response.foto_perfil };
+        // API returns updated user under response.user
+        const respUser = response.user ? response.user : response;
+        const normalized = normalizeUser(respUser);
+        updateUser(normalized);
+        return { success: true, foto_perfil: normalized.foto_perfil };
       } else {
         return { success: false, message: response.message };
       }

@@ -75,8 +75,9 @@ class Validator {
      * Validar telefone
      */
     public function phone($field, $message = null) {
-        if (isset($this->data[$field]) && !preg_match('/^[\d\s\-\+\(\)]+$/', $this->data[$field])) {
-            $this->errors[$field][] = $message ?? "Formato de telefone inválido";
+        // Aceitar apenas dígitos (0-9). Não permitir espaços, sinais ou parênteses.
+        if (isset($this->data[$field]) && !preg_match('/^\d+$/', $this->data[$field])) {
+            $this->errors[$field][] = $message ?? "Formato de telefone inválido: use apenas números";
         }
         return $this;
     }
