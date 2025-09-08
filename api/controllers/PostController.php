@@ -56,7 +56,10 @@ class PostController {
                 SELECT p.*, 
                        u.nome as autor, 
                        u.username, 
-                       u.avatar_url as avatar
+                       u.avatar_url as avatar,
+                       (SELECT COUNT(*) FROM post_likes pl WHERE pl.post_id = p.id) as likes,
+                       (SELECT COUNT(*) FROM post_comentarios pc WHERE pc.post_id = p.id) as comentarios,
+                       (SELECT COUNT(*) FROM post_compartilhamentos ps WHERE ps.post_id = p.id) as compartilhamentos
             ";
             
             // Adicionar verificação de like se usuário logado
@@ -161,7 +164,10 @@ class PostController {
                 SELECT p.*, 
                        u.nome as autor, 
                        u.username, 
-                       u.avatar_url as avatar
+                       u.avatar_url as avatar,
+                       (SELECT COUNT(*) FROM post_likes pl WHERE pl.post_id = p.id) as likes,
+                       (SELECT COUNT(*) FROM post_comentarios pc WHERE pc.post_id = p.id) as comentarios,
+                       (SELECT COUNT(*) FROM post_compartilhamentos ps WHERE ps.post_id = p.id) as compartilhamentos
             ";
             
             if ($currentUserId) {
@@ -199,6 +205,72 @@ class PostController {
         } catch (Exception $e) {
             Helper::logError('Get post error: ' . $e->getMessage(), ['post_id' => $id]);
             echo Helper::jsonResponse(false, 'Erro ao buscar post', [], 500);
+        }
+    }
+    
+    /**
+     * Buscar posts curtidos pelo usuário atual
+     */
+    public function getLikedPosts() {
+        try {
+            $user = AuthMiddleware::required();
+            $page = intval($_GET['page'] ?? 1);
+            $limit = intval($_GET['limit'] ?? 10);
+            $offset = ($page - 1) * $limit;
+            
+            // Query para buscar posts curtidos pelo usuário
+            $query = "
+                SELECT p.*, 
+                       u.nome as autor, 
+                       u.username, 
+                       u.avatar_url as avatar,
+                       (SELECT COUNT(*) FROM post_likes pl WHERE pl.post_id = p.id) as likes,
+                       (SELECT COUNT(*) FROM post_comentarios pc WHERE pc.post_id = p.id) as comentarios,
+                       (SELECT COUNT(*) FROM post_compartilhamentos ps WHERE ps.post_id = p.id) as compartilhamentos,
+                       1 as isLiked,
+                       (SELECT COUNT(*) FROM user_follows uf WHERE uf.follower_id = ? AND uf.followed_id = p.user_id) as isFollowed
+                FROM posts p
+                INNER JOIN usuarios u ON p.user_id = u.id
+                INNER JOIN post_likes pl ON p.id = pl.post_id
+                WHERE pl.user_id = ?
+                ORDER BY pl.created_at DESC 
+                LIMIT ? OFFSET ?
+            ";
+            
+            $posts = $this->db->fetchAll($query, [$user['id'], $user['id'], $limit, $offset]);
+
+            // Anexar metadata de mídia para cada post
+            foreach ($posts as &$p) {
+                $media = $this->db->fetchAll('SELECT id, media_filename, media_type FROM post_media WHERE post_id = ?', [$p['id']]);
+                $p['media_files'] = $media ?: [];
+            }
+            
+            // Contar total de posts curtidos
+            $totalResult = $this->db->fetch(
+                'SELECT COUNT(*) as total FROM post_likes pl WHERE pl.user_id = ?',
+                [$user['id']]
+            );
+            $total = $totalResult['total'];
+            
+            // Formatar posts
+            $formattedPosts = array_map(function($post) use ($user) {
+                return Helper::formatPost($post, $user['id']);
+            }, $posts);
+            
+            echo Helper::jsonResponse(true, '', [
+                'posts' => $formattedPosts,
+                'pagination' => [
+                    'currentPage' => $page,
+                    'totalPages' => ceil($total / $limit),
+                    'totalPosts' => (int)$total,
+                    'hasNextPage' => ($page * $limit) < $total,
+                    'hasPrevPage' => $page > 1
+                ]
+            ]);
+            
+        } catch (Exception $e) {
+            Helper::logError('Get liked posts error: ' . $e->getMessage());
+            echo Helper::jsonResponse(false, 'Erro ao buscar posts curtidos', [], 500);
         }
     }
     

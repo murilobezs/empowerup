@@ -11,6 +11,7 @@ export const ROUTES = {
   PROFILE: '/perfil',
   MENSAGENS: '/mensagens',
   EDIT_PROFILE: '/editar-perfil',
+  SAVED_POSTS: '/posts-salvos',
   ABOUT: '/sobre',
   CONTACT: '/contato',
   EVENTS: '/eventos',

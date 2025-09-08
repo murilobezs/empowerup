@@ -3,58 +3,55 @@ import { PageLayout } from "../components/layout";
 import { Button } from "../components/ui/button";
 import { Card, CardContent } from "../components/ui/card";
 import { Badge } from "../components/ui/badge";
-import { Heart, Users, Target, Award } from "lucide-react";
+import { Heart, Users, Target, BookOpen, Search, Code, Lightbulb } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export default function AboutPage() {
+  const metodologias = [
+    {
+      icone: BookOpen,
+      titulo: "Pesquisa Bibliográfica e Exploratória",
+      descricao: "Estudamos profundamente o contexto do empreendedorismo feminino através de literatura especializada e dados de mercado.",
+    },
+    {
+      icone: Search,
+      titulo: "Pesquisa de Campo",
+      descricao: "Conversamos diretamente com microempreendedoras para entender suas necessidades, desafios e oportunidades reais.",
+    },
+    {
+      icone: Code,
+      titulo: "Metodologia Aplicada e Experimental",
+      descricao: "Desenvolvemos e testamos a plataforma EmpowerUp com base nos insights coletados, validando a efetividade da solução.",
+    },
+  ];
+
   const valores = [
     {
       icone: Heart,
-      titulo: "Empoderamento",
-      descricao: "Acreditamos no poder das mulheres empreendedoras e trabalhamos para amplificar suas vozes.",
+      titulo: "Empoderamento Feminino",
+      descricao: "Fortalecemos o protagonismo das mulheres no mercado de trabalho e no empreendedorismo.",
     },
     {
       icone: Users,
-      titulo: "Comunidade",
-      descricao: "Criamos um ambiente colaborativo onde empreendedoras se conectam e crescem juntas.",
+      titulo: "Conexão Humanizada",
+      descricao: "Conectamos mulheres a clientes e parceiros por meio de uma plataforma prática e acessível.",
     },
     {
       icone: Target,
-      titulo: "Inovação",
-      descricao: "Utilizamos tecnologia para criar soluções que facilitam o empreendedorismo feminino.",
+      titulo: "Desenvolvimento Integral",
+      descricao: "Trabalhamos tanto o desenvolvimento pessoal quanto profissional das microempreendedoras.",
     },
     {
-      icone: Award,
-      titulo: "Qualidade",
-      descricao: "Promovemos produtos e serviços de alta qualidade criados por mulheres talentosas.",
+      icone: Lightbulb,
+      titulo: "Inovação com Propósito",
+      descricao: "Digitalizamos soluções de RH para ampliar o alcance e a eficiência das ações de empoderamento.",
     },
-  ]
-
-  const equipe = [
-    {
-      nome: "Ana Carolina",
-      cargo: "CEO & Fundadora",
-      bio: "Empreendedora serial com mais de 10 anos de experiência em tecnologia e negócios.",
-      avatar: "/placeholder.svg?height=128&width=128",
-    },
-    {
-      nome: "Mariana Silva",
-      cargo: "CTO",
-      bio: "Desenvolvedora full-stack apaixonada por criar soluções que impactam positivamente a vida das pessoas.",
-      avatar: "/placeholder.svg?height=128&width=128",
-    },
-    {
-      nome: "Juliana Santos",
-      cargo: "Head de Marketing",
-      bio: "Especialista em marketing digital com foco em crescimento de comunidades online.",
-      avatar: "/placeholder.svg?height=128&width=128",
-    },
-  ]
+  ];
 
   return (
     <PageLayout 
-      title="Sobre Nós" 
-      description="Conheça a missão e visão do EmpowerUp"
+      title="Sobre o EmpowerUp" 
+      description="Conheça nossa história, missão e metodologia"
       showBreadcrumb={true}
     >
       <div className="space-y-20">
@@ -65,181 +62,172 @@ export default function AboutPage() {
               Nossa História
             </Badge>
             <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
-              Sobre a <span className="text-primary">EmpowerUp</span>
+              Do <span className="text-coral">"Através do Espelho"</span> ao <span className="text-olive">EmpowerUp</span>
             </h1>
             <p className="text-xl text-muted-foreground max-w-4xl mx-auto leading-relaxed">
-              Nascemos da paixão por empoderar mulheres empreendedoras e criar uma plataforma onde elas possam
-              prosperar, conectar-se e transformar seus sonhos em realidade.
+              Uma jornada de transformação digital que amplifica o impacto do empreendedorismo feminino
             </p>
           </div>
         </section>
 
-        {/* Nossa Missão */}
+        {/* Nossa Origem */}
         <section className="space-y-8">
           <div className="grid gap-12 md:grid-cols-2 items-center">
             <div className="space-y-6">
-              <Badge className="bg-olive hover:bg-olive/80">Nossa Missão</Badge>
+              <Badge className="bg-olive hover:bg-olive/80">Nossa Origem</Badge>
               <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
-                Empoderar mulheres através do empreendedorismo
+                Nascemos de uma base sólida
               </h2>
               <div className="space-y-4 text-muted-foreground leading-relaxed">
                 <p>
-                  Nossa missão é criar um ecossistema digital onde mulheres empreendedoras possam prosperar. Oferecemos
-                  as ferramentas, a comunidade e o suporte necessários para que cada mulher possa transformar sua paixão
-                  em um negócio de sucesso.
+                  O <strong className="text-coral">EmpowerUp</strong> nasceu como um desdobramento natural do projeto 
+                  <strong className="text-olive"> "Através do Espelho"</strong>, que já atuava no fortalecimento do 
+                  microempreendedorismo feminino e na valorização do protagonismo das mulheres no mercado de trabalho.
                 </p>
                 <p>
-                  Acreditamos que quando uma mulher empreende, ela não apenas transforma sua própria vida, mas também
-                  impacta positivamente sua família, comunidade e sociedade como um todo.
+                  A partir dessa base consolidada, surgimos com a proposta de <strong>transformar essa iniciativa em uma 
+                  plataforma digital</strong>, ampliando significativamente o alcance e a eficiência das ações de empoderamento.
+                </p>
+                <p>
+                  Hoje, os dois projetos atuam de forma <strong className="text-coral">complementar e sinérgica</strong>: 
+                  o "Através do Espelho" foca no desenvolvimento pessoal e profissional presencial, enquanto o EmpowerUp 
+                  digitaliza essa proposta, criando pontes digitais entre mulheres, clientes e parceiros.
                 </p>
               </div>
             </div>
             <div className="flex items-center justify-center">
-              <img
-                src="/placeholder.svg?height=400&width=500"
-                alt="Mulheres empreendedoras trabalhando juntas"
-                className="rounded-lg object-cover w-full max-w-md"
-              />
-            </div>
-          </div>
-        </section>
-
-        {/* Nossos Valores */}
-        <section className="bg-muted/50 rounded-lg p-8 md:p-12 space-y-8">
-          <div className="text-center space-y-4">
-            <Badge className="bg-sage hover:bg-sage/80">Nossos Valores</Badge>
-            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">O que nos move</h2>
-            <p className="max-w-2xl mx-auto text-muted-foreground text-lg leading-relaxed">
-              Nossos valores fundamentais guiam cada decisão e ação que tomamos na EmpowerUp
-            </p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {valores.map((valor, index) => {
-              const Icon = valor.icone
-              return (
-                <Card key={index} className="text-center h-full">
-                  <CardContent className="p-6 space-y-4 h-full flex flex-col">
-                    <div className="bg-primary/10 p-3 rounded-full w-12 h-12 flex items-center justify-center mx-auto">
-                      <Icon className="text-primary h-6 w-6" />
-                    </div>
-                    <h3 className="text-xl font-semibold">{valor.titulo}</h3>
-                    <p className="text-muted-foreground flex-1">{valor.descricao}</p>
-                  </CardContent>
-                </Card>
-              )
-            })}
-          </div>
-        </section>
-
-        {/* Nossa História */}
-        <section className="space-y-8">
-          <div className="grid gap-12 md:grid-cols-2 items-center">
-            <div className="flex items-center justify-center order-2 md:order-1">
-              <img
-                src="/placeholder.svg?height=400&width=500"
-                alt="Fundação da EmpowerUp"
-                className="rounded-lg object-cover w-full max-w-md"
-              />
-            </div>
-            <div className="space-y-6 order-1 md:order-2">
-              <Badge className="bg-coral-light hover:bg-coral-light/80">Nossa História</Badge>
-              <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Como tudo começou</h2>
-              <div className="space-y-4 text-muted-foreground leading-relaxed">
-                <p>
-                  A EmpowerUp nasceu em 2022 da experiência pessoal de nossa fundadora, Ana Carolina, que enfrentou
-                  dificuldades para divulgar seus produtos artesanais e conectar-se com outras empreendedoras.
-                </p>
-                <p>
-                  Percebendo que muitas mulheres passavam pelos mesmos desafios, ela decidiu criar uma plataforma que
-                  não apenas facilitasse a venda de produtos e serviços, mas também fomentasse uma verdadeira comunidade
-                  de apoio mútuo.
-                </p>
-                <p>
-                  Hoje, somos uma comunidade de milhares de mulheres empreendedoras que se apoiam, inspiram e crescem
-                  juntas, provando que quando mulheres se unem, coisas incríveis acontecem.
-                </p>
+              <div className="bg-gradient-to-br from-coral/20 to-olive/20 p-8 rounded-2xl">
+                <div className="grid grid-cols-2 gap-4 text-center">
+                  <div className="bg-white p-6 rounded-xl shadow-sm">
+                    <Users className="h-12 w-12 text-coral mx-auto mb-2" />
+                    <h3 className="font-semibold text-sm">Através do Espelho</h3>
+                    <p className="text-xs text-gray-600">Desenvolvimento Presencial</p>
+                  </div>
+                  <div className="bg-white p-6 rounded-xl shadow-sm">
+                    <Code className="h-12 w-12 text-olive mx-auto mb-2" />
+                    <h3 className="font-semibold text-sm">EmpowerUp</h3>
+                    <p className="text-xs text-gray-600">Plataforma Digital</p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Nossa Equipe */}
-        <section className="bg-muted/30 rounded-lg p-8 md:p-12 space-y-8">
+        {/* Projeto Intercurso */}
+        <section className="bg-gradient-to-r from-coral/5 to-olive/5 rounded-3xl p-8 md:p-12">
+          <div className="text-center space-y-6">
+            <Badge className="bg-gradient-to-r from-coral to-olive text-white">Projeto Intercurso</Badge>
+            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
+              RH + Tecnologia da Informação
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
+              O EmpowerUp é um <strong>projeto intercurso</strong> que une as expertises de 
+              <strong className="text-coral"> Recursos Humanos (RH)</strong> e 
+              <strong className="text-olive"> Informática para Internet (T.I.)</strong>, 
+              criando uma solução integrada e humanizada para o empreendedorismo feminino.
+            </p>
+            <div className="grid md:grid-cols-2 gap-8 mt-8">
+              <Card className="border-coral/20">
+                <CardContent className="p-6 text-center">
+                  <Heart className="h-12 w-12 text-coral mx-auto mb-4" />
+                  <h3 className="text-xl font-semibold mb-2">Recursos Humanos</h3>
+                  <p className="text-gray-600">
+                    Desenvolvimento pessoal e profissional, capacitação e empoderamento das microempreendedoras
+                  </p>
+                </CardContent>
+              </Card>
+              <Card className="border-olive/20">
+                <CardContent className="p-6 text-center">
+                  <Code className="h-12 w-12 text-olive mx-auto mb-4" />
+                  <h3 className="text-xl font-semibold mb-2">Tecnologia da Informação</h3>
+                  <p className="text-gray-600">
+                    Plataforma digital prática, acessível e humanizada para conectar empreendedoras a oportunidades
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </section>
+
+        {/* Metodologia */}
+        <section className="space-y-12">
           <div className="text-center space-y-4">
-            <Badge className="bg-olive hover:bg-olive/80">Nossa Equipe</Badge>
-            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Conheça quem está por trás</h2>
-            <p className="max-w-2xl mx-auto text-muted-foreground text-lg leading-relaxed">
-              Uma equipe apaixonada e dedicada a empoderar mulheres empreendedoras
+            <Badge className="bg-gray-100 text-gray-800">Nossa Metodologia</Badge>
+            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
+              Três Abordagens Metodológicas
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
+              Nosso projeto foi desenvolvido com rigor científico, utilizando metodologias complementares 
+              para garantir uma solução verdadeiramente efetiva.
             </p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {equipe.map((membro, index) => (
-              <Card key={index} className="text-center h-full">
-                <CardContent className="p-6 space-y-4 h-full flex flex-col">
-                  <div className="w-24 h-24 mx-auto rounded-full overflow-hidden border-4 border-primary/10">
-                    <img
-                      src={membro.avatar || "/placeholder.svg"}
-                      alt={membro.nome}
-                      className="w-full h-full object-cover"
-                    />
+          
+          <div className="grid gap-8 md:grid-cols-3">
+            {metodologias.map((metodologia, index) => (
+              <Card key={index} className="relative overflow-hidden group hover:shadow-lg transition-shadow">
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-center w-16 h-16 bg-gradient-to-br from-coral/20 to-olive/20 rounded-2xl mb-6 group-hover:scale-110 transition-transform">
+                    <metodologia.icone className="h-8 w-8 text-gray-700" />
                   </div>
-                  <div className="space-y-2">
-                    <h3 className="text-xl font-semibold">{membro.nome}</h3>
-                    <p className="text-primary font-medium">{membro.cargo}</p>
+                  <h3 className="text-xl font-semibold mb-3">{metodologia.titulo}</h3>
+                  <p className="text-muted-foreground leading-relaxed">{metodologia.descricao}</p>
+                  <div className="absolute top-4 right-4 w-8 h-8 bg-coral/10 rounded-full flex items-center justify-center">
+                    <span className="text-sm font-bold text-coral">{index + 1}</span>
                   </div>
-                  <p className="text-muted-foreground flex-1">{membro.bio}</p>
                 </CardContent>
               </Card>
             ))}
           </div>
         </section>
 
-        {/* Estatísticas */}
-        <section className="space-y-8">
+        {/* Nossos Valores */}
+        <section className="space-y-12">
           <div className="text-center space-y-4">
-            <Badge className="bg-coral hover:bg-coral/80">Nosso Impacto</Badge>
-            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Números que nos orgulham</h2>
+            <Badge className="bg-olive hover:bg-olive/80 text-white">Nossos Valores</Badge>
+            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
+              O que nos move
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
+              Nossos valores refletem nosso compromisso com o empoderamento feminino e a transformação social.
+            </p>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            <div className="text-center space-y-2">
-              <div className="text-4xl font-bold text-primary">5,000+</div>
-              <div className="text-muted-foreground">Empreendedoras</div>
-            </div>
-            <div className="text-center space-y-2">
-              <div className="text-4xl font-bold text-primary">15,000+</div>
-              <div className="text-muted-foreground">Produtos</div>
-            </div>
-            <div className="text-center space-y-2">
-              <div className="text-4xl font-bold text-primary">50,000+</div>
-              <div className="text-muted-foreground">Vendas</div>
-            </div>
-            <div className="text-center space-y-2">
-              <div className="text-4xl font-bold text-primary">98%</div>
-              <div className="text-muted-foreground">Satisfação</div>
-            </div>
+          
+          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
+            {valores.map((valor, index) => (
+              <Card key={index} className="text-center group hover:shadow-lg transition-all hover:-translate-y-1">
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-center w-16 h-16 bg-gradient-to-br from-coral/20 to-olive/20 rounded-2xl mb-4 mx-auto group-hover:scale-110 transition-transform">
+                    <valor.icone className="h-8 w-8 text-gray-700" />
+                  </div>
+                  <h3 className="text-xl font-semibold mb-3">{valor.titulo}</h3>
+                  <p className="text-muted-foreground leading-relaxed">{valor.descricao}</p>
+                </CardContent>
+              </Card>
+            ))}
           </div>
         </section>
 
-        {/* CTA Section */}
-        <section className="bg-gradient-to-r from-primary to-primary/80 text-primary-foreground rounded-lg p-8 md:p-12">
-          <div className="text-center space-y-6">
+        {/* Call to Action */}
+        <section className="bg-gradient-to-r from-coral to-olive rounded-3xl p-8 md:p-12 text-center text-white">
+          <div className="space-y-6">
             <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
-              Faça parte da nossa história
+              Faça parte desta transformação
             </h2>
-            <p className="max-w-2xl mx-auto text-lg leading-relaxed opacity-90">
-              Junte-se a milhares de mulheres empreendedoras que já estão transformando seus sonhos em realidade
+            <p className="text-xl opacity-90 max-w-3xl mx-auto">
+              Junte-se à nossa comunidade de mulheres empreendedoras e descubra como podemos crescer juntas.
             </p>
-            <div className="flex flex-col gap-4 sm:flex-row sm:justify-center">
-              <Button asChild size="lg" variant="secondary" className="bg-white text-primary hover:bg-white/90">
-                <Link to="/cadastro">Comece Agora</Link>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Button size="lg" variant="secondary" asChild className="bg-white text-coral hover:bg-gray-100">
+                <Link to="/cadastro">Começar Agora</Link>
               </Button>
-              <Button asChild variant="outline" size="lg" className="border-white text-white hover:bg-white/10">
-                <Link to="/contato">Entre em Contato</Link>
+              <Button size="lg" variant="outline" asChild className="border-white text-white hover:bg-white hover:text-coral">
+                <Link to="/comunidade">Explorar Comunidade</Link>
               </Button>
             </div>
           </div>
         </section>
       </div>
     </PageLayout>
-  )
+  );
 }

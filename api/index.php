@@ -248,6 +248,12 @@ $router->get('/posts/unread_count', function() {
     $controller->unreadCount();
 });
 
+// Endpoint para buscar posts curtidos pelo usuário
+$router->get('/posts/liked', function() {
+    $controller = new PostController();
+    $controller->getLikedPosts();
+});
+
 $router->get('/posts/search', function() {
     $controller = new PostController();
     $controller->searchPosts();
@@ -314,6 +320,38 @@ $router->get('/shares/posts/{postId}', function($postId) {
 $router->post('/shares/posts/{postId}', function($postId) {
     $controller = new LikeController();
     $controller->sharePost($postId);
+});
+
+// Rotas de salvamentos
+$router->get('/saves/posts', function() {
+    $controller = new SaveController();
+    $controller->getSavedPosts();
+});
+
+$router->post('/saves/posts/{postId}', function($postId) {
+    $controller = new SaveController();
+    $controller->toggleSave($postId);
+});
+
+$router->get('/saves/posts/{postId}/check', function($postId) {
+    $controller = new SaveController();
+    $controller->isPostSaved($postId);
+});
+
+// Rotas de notificações
+$router->get('/notifications', function() {
+    $controller = new NotificationController();
+    $controller->getNotifications();
+});
+
+$router->put('/notifications/{notificationId}/read', function($notificationId) {
+    $controller = new NotificationController();
+    $controller->markAsRead($notificationId);
+});
+
+$router->put('/notifications/read-all', function() {
+    $controller = new NotificationController();
+    $controller->markAllAsRead();
 });
 
 // Executar roteamento

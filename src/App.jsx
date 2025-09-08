@@ -22,6 +22,7 @@ const TrendingPage = React.lazy(() => import('./pages/TrendingPage'));
 const AdminDashboard = React.lazy(() => import('./pages/AdminDashboard'));
 const AdminLogin = React.lazy(() => import('./pages/AdminLogin'));
 const NotFoundPage = React.lazy(() => import('./pages/NotFoundPage'));
+const SavedPostsPage = React.lazy(() => import('./pages/SavedPostsPage'));
 
 /**
  * Componente principal da aplicação
@@ -144,6 +145,15 @@ function App() {
             element={
               <ProtectedRoute>
                 <TrendingPage />
+              </ProtectedRoute>
+            } 
+          />
+
+          <Route 
+            path={ROUTES.SAVED_POSTS} 
+            element={
+              <ProtectedRoute>
+                <SavedPostsPage />
               </ProtectedRoute>
             } 
           />

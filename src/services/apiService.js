@@ -16,8 +16,8 @@ class ApiService {
    */
   async request(endpoint, options = {}) {
     const url = `${this.baseURL}${endpoint}`;
-    
-    const config = {
+
+    const requestConfig = {
       headers: {
         'Content-Type': 'application/json',
         ...options.headers,
@@ -27,12 +27,12 @@ class ApiService {
 
     // Adicionar token de autorização se disponível
     const userData = JSON.parse(localStorage.getItem(config.AUTH.USER_KEY) || '{}');
-    if (userData.token) {
-      config.headers.Authorization = `Bearer ${userData.token}`;
+    if (userData && userData.token) {
+      requestConfig.headers.Authorization = `Bearer ${userData.token}`;
     }
 
     try {
-      const response = await fetch(url, config);
+  const response = await fetch(url, requestConfig);
       
       // Se não é JSON, retornar texto
       const contentType = response.headers.get('content-type');
@@ -63,8 +63,8 @@ class ApiService {
    */
   async uploadRequest(endpoint, formData, options = {}) {
     const url = `${this.baseURL}${endpoint}`;
-    
-    const config = {
+
+    const requestConfig = {
       method: 'POST',
       headers: {
         // Não definir Content-Type para FormData (o browser define automaticamente)
@@ -76,12 +76,12 @@ class ApiService {
 
     // Adicionar token de autorização se disponível
     const userData = JSON.parse(localStorage.getItem(config.AUTH.USER_KEY) || '{}');
-    if (userData.token) {
-      config.headers.Authorization = `Bearer ${userData.token}`;
+    if (userData && userData.token) {
+      requestConfig.headers.Authorization = `Bearer ${userData.token}`;
     }
 
     try {
-      const response = await fetch(url, config);
+      const response = await fetch(url, requestConfig);
       const data = await response.json();
 
       if (!response.ok) {
@@ -306,6 +306,33 @@ class ApiService {
     return this.request(`/likes/posts/${postId}${queryString ? '?' + queryString : ''}`);
   }
 
+  // ===== SEGUIR USUÁRIOS =====
+
+  /**
+   * Seguir/desseguir usuário
+   */
+  async toggleFollowUser(userId) {
+    return this.request(`/users/${userId}/follow`, {
+      method: 'POST',
+    });
+  }
+
+  /**
+   * Listar seguidores de um usuário
+   */
+  async getFollowers(userId, params = {}) {
+    const queryString = new URLSearchParams(params).toString();
+    return this.request(`/users/${userId}/followers${queryString ? '?' + queryString : ''}`);
+  }
+
+  /**
+   * Listar usuários que o usuário segue
+   */
+  async getFollowing(userId, params = {}) {
+    const queryString = new URLSearchParams(params).toString();
+    return this.request(`/users/${userId}/following${queryString ? '?' + queryString : ''}`);
+  }
+
   // ===== COMPARTILHAMENTOS =====
 
   /**
@@ -323,6 +350,32 @@ class ApiService {
   async getShares(postId, params = {}) {
     const queryString = new URLSearchParams(params).toString();
     return this.request(`/shares/posts/${postId}${queryString ? '?' + queryString : ''}`);
+  }
+
+  // ===== SALVAMENTOS =====
+
+  /**
+   * Salvar/dessalvar post
+   */
+  async toggleSavePost(postId) {
+    return this.request(`/saves/posts/${postId}`, {
+      method: 'POST',
+    });
+  }
+
+  /**
+   * Listar posts salvos do usuário
+   */
+  async getSavedPosts(params = {}) {
+    const queryString = new URLSearchParams(params).toString();
+    return this.request(`/saves/posts${queryString ? '?' + queryString : ''}`);
+  }
+
+  /**
+   * Verificar se post está salvo
+   */
+  async isPostSaved(postId) {
+    return this.request(`/saves/posts/${postId}/check`);
   }
 
   // ===== UTILITÁRIOS =====

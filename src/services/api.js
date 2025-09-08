@@ -24,12 +24,26 @@ class ApiService {
 
     // Adicionar token de autorização se disponível
     const userData = JSON.parse(localStorage.getItem(config.AUTH.USER_KEY) || '{}');
+    console.log('API Service - Request to:', endpoint);
+    console.log('API Service - localStorage key:', config.AUTH.USER_KEY);
+    console.log('API Service - userData exists:', !!userData);
+    console.log('API Service - token exists:', !!userData.token);
+    
     if (userData.token) {
       requestConfig.headers.Authorization = `Bearer ${userData.token}`;
+      console.log('API Service - Authorization header set with token:', userData.token.substring(0, 20) + '...');
+    } else {
+      console.log('API Service - No token found in userData for endpoint:', endpoint);
     }
 
+    console.log('API Service - Request headers:', requestConfig.headers);
+
     try {
+      console.log('API Service - Making request to:', url);
       const response = await fetch(url, requestConfig);
+      
+      console.log('API Service - Response status:', response.status);
+      console.log('API Service - Response headers:', Object.fromEntries(response.headers.entries()));
       
       // Se não é JSON, retornar texto
       const contentType = response.headers.get('content-type');
@@ -39,18 +53,22 @@ class ApiService {
         data = await response.json();
       } else {
         data = await response.text();
+        console.log('API Service - Non-JSON response:', data);
       }
+
+      console.log('API Service - Response data:', data);
 
       if (!response.ok) {
         const err = new Error(data.message || `HTTP error! status: ${response.status}`);
         err.status = response.status;
         err.data = data;
+        console.error('API Service - Request failed:', err);
         throw err;
       }
 
       return data;
     } catch (error) {
-      console.error('API Request Error:', error);
+      console.error('API Service - Request Error:', error);
       throw error;
     }
   }
@@ -73,24 +91,36 @@ class ApiService {
 
     // Adicionar token de autorização se disponível
     const userData = JSON.parse(localStorage.getItem(config.AUTH.USER_KEY) || '{}');
+    console.log('API Service Upload - Request to:', endpoint);
+    console.log('API Service Upload - userData exists:', !!userData);
+    console.log('API Service Upload - token exists:', !!userData.token);
+    
     if (userData.token) {
       requestConfig.headers.Authorization = `Bearer ${userData.token}`;
+      console.log('API Service Upload - Authorization header set');
+    } else {
+      console.log('API Service Upload - No token found in userData for endpoint:', endpoint);
     }
 
     try {
+      console.log('API Service Upload - Making request to:', url);
       const response = await fetch(url, requestConfig);
+      console.log('API Service Upload - Response status:', response.status);
+      
       const data = await response.json();
+      console.log('API Service Upload - Response data:', data);
 
       if (!response.ok) {
         const err = new Error(data.message || `HTTP error! status: ${response.status}`);
         err.status = response.status;
         err.data = data;
+        console.error('API Service Upload - Request failed:', err);
         throw err;
       }
 
       return data;
     } catch (error) {
-      console.error('Upload Request Error:', error);
+      console.error('API Service Upload - Request Error:', error);
       throw error;
     }
   }
@@ -320,6 +350,102 @@ class ApiService {
   async getShares(postId, params = {}) {
     const queryString = new URLSearchParams(params).toString();
     return this.request(`/shares/posts/${postId}${queryString ? '?' + queryString : ''}`);
+  }
+
+  // ===== SALVAMENTOS =====
+
+  /**
+   * Salvar/dessalvar post
+   */
+  async toggleSavePost(postId) {
+    return this.request(`/saves/posts/${postId}`, {
+      method: 'POST',
+    });
+  }
+
+  /**
+   * Buscar posts curtidos pelo usuário
+   */
+  async getLikedPosts(params = {}) {
+    const queryString = new URLSearchParams(params).toString();
+    return this.request(`/posts/liked${queryString ? '?' + queryString : ''}`);
+  }
+
+  /**
+   * Listar posts salvos
+   */
+  async getSavedPosts(params = {}) {
+    const queryString = new URLSearchParams(params).toString();
+    return this.request(`/saves/posts${queryString ? '?' + queryString : ''}`);
+  }
+
+  /**
+   * Verificar se post está salvo
+   */
+  async checkPostSaved(postId) {
+    return this.request(`/saves/posts/${postId}/check`);
+  }
+
+  // ===== USUÁRIOS =====
+
+  /**
+   * Seguir/deixar de seguir usuário
+   */
+  async toggleFollow(userId) {
+    return this.request(`/users/${userId}/follow`, {
+      method: 'POST',
+    });
+  }
+
+  /**
+   * Buscar perfil de usuário
+   */
+  async getUserProfile(userId) {
+    return this.request(`/users/${userId}`);
+  }
+
+  /**
+   * Listar seguidores
+   */
+  async getUserFollowers(userId, params = {}) {
+    const queryString = new URLSearchParams(params).toString();
+    return this.request(`/users/${userId}/followers${queryString ? '?' + queryString : ''}`);
+  }
+
+  /**
+   * Listar seguindo
+   */
+  async getUserFollowing(userId, params = {}) {
+    const queryString = new URLSearchParams(params).toString();
+    return this.request(`/users/${userId}/following${queryString ? '?' + queryString : ''}`);
+  }
+
+  // ===== NOTIFICAÇÕES =====
+
+  /**
+   * Listar notificações do usuário
+   */
+  async getNotifications(params = {}) {
+    const queryString = new URLSearchParams(params).toString();
+    return this.request(`/notifications${queryString ? '?' + queryString : ''}`);
+  }
+
+  /**
+   * Marcar notificação como lida
+   */
+  async markNotificationAsRead(notificationId) {
+    return this.request(`/notifications/${notificationId}/read`, {
+      method: 'PUT',
+    });
+  }
+
+  /**
+   * Marcar todas as notificações como lidas
+   */
+  async markAllNotificationsAsRead() {
+    return this.request('/notifications/read-all', {
+      method: 'PUT',
+    });
   }
 
   // ===== UTILITÁRIOS =====

@@ -47,6 +47,21 @@ class LikeController {
                 );
                 $liked = true;
                 $message = 'Post curtido';
+                
+                // Criar notificação para o autor do post
+                $postAuthor = $this->db->fetch(
+                    'SELECT user_id FROM posts WHERE id = ?',
+                    [$postId]
+                );
+                
+                if ($postAuthor) {
+                    NotificationController::createNotification(
+                        $postAuthor['user_id'],
+                        $user['id'],
+                        'like',
+                        $postId
+                    );
+                }
             }
             
             // Buscar contagem atualizada

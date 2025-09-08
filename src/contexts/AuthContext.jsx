@@ -52,38 +52,53 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     // Verificar se há um usuário salvo no localStorage
     const savedUser = localStorage.getItem(config.AUTH.USER_KEY);
+    console.log('AuthContext - Checking saved user:', !!savedUser);
+    
     if (savedUser) {
       try {
         const userData = JSON.parse(savedUser);
-        setUser(normalizeUser(userData));
+        console.log('AuthContext - Parsed user data:', userData);
+        console.log('AuthContext - User has token:', !!userData.token);
+        
+        const normalizedUser = normalizeUser(userData);
+        setUser(normalizedUser);
 
-        // Valida token imediatamente, mas somente desloga em caso de 401/403
-        (async (token) => {
+        // Se não tem token, fazer logout imediatamente
+        if (!userData.token) {
+          console.warn('AuthContext - No token found, logging out');
+          logout();
+          setLoading(false);
+          return;
+        }
+
+        // Valida token em background apenas se tiver token
+        (async () => {
           try {
+            console.log('AuthContext - Validating token in background...');
             const profile = await apiService.getProfile();
-            // Se válido, atualizar usuário com profile (inline para evitar dependência de closure)
-            const profileUser = profile && profile.user ? profile.user : null;
-            if (profileUser) {
-              setUser(prev => {
-                const updated = normalizeUser({ ...prev, ...profileUser });
-                localStorage.setItem(config.AUTH.USER_KEY, JSON.stringify(updated));
-                return updated;
-              });
+            console.log('AuthContext - Profile validation result:', profile);
+            // Se válido, atualizar usuário com profile mais recente
+            if (profile && profile.success && profile.user) {
+              const updated = normalizeUser({ ...normalizedUser, ...profile.user, token: userData.token });
+              setUser(updated);
+              localStorage.setItem(config.AUTH.USER_KEY, JSON.stringify(updated));
+              console.log('AuthContext - Token valid, user updated');
             }
           } catch (error) {
-            console.error('Erro ao validar token:', error);
+            console.error('AuthContext - Erro ao validar token:', error);
             const status = error && (error.status || (error.response && error.response.status));
+            console.log('AuthContext - Error status:', status);
             if (status === 401 || status === 403) {
-              console.warn('Token expirado/invalid. Efetuando logout.');
+              console.warn('AuthContext - Token expirado/invalid. Efetuando logout.');
               logout();
             } else {
-              console.warn('Falha temporária ao validar token; mantendo sessão local.', error);
+              console.warn('AuthContext - Falha temporária ao validar token; mantendo sessão local.', error);
             }
           }
-        })(userData.token);
+        })();
 
       } catch (error) {
-        console.error('Erro ao carregar usuário do localStorage:', error);
+        console.error('AuthContext - Erro ao carregar usuário do localStorage:', error);
         localStorage.removeItem(config.AUTH.USER_KEY);
       }
     }
@@ -95,22 +110,29 @@ export const AuthProvider = ({ children }) => {
   const login = async (credentials) => {
     try {
       setLoading(true);
+      console.log('AuthContext - Starting login process');
       const response = await apiService.login(credentials);
+      console.log('AuthContext - Login response:', response);
       
       if (response.success) {
         const userData = {
           ...response.user,
           token: response.token
         };
+        console.log('AuthContext - Saving user data with token:', !!userData.token);
+        
         const normalized = normalizeUser(userData);
         setUser(normalized);
         localStorage.setItem(config.AUTH.USER_KEY, JSON.stringify(normalized));
+        
+        console.log('AuthContext - User saved to localStorage');
         return { success: true, user: userData };
       } else {
+        console.log('AuthContext - Login failed:', response.message);
         return { success: false, message: response.message };
       }
     } catch (error) {
-      console.error('Erro no login:', error);
+      console.error('AuthContext - Erro no login:', error);
       return { success: false, message: error.message || 'Erro ao fazer login' };
     } finally {
       setLoading(false);
@@ -120,22 +142,29 @@ export const AuthProvider = ({ children }) => {
   const register = async (userData) => {
     try {
       setLoading(true);
+      console.log('AuthContext - Starting register process');
       const response = await apiService.register(userData);
+      console.log('AuthContext - Register response:', response);
       
       if (response.success) {
         const newUser = {
           ...response.user,
           token: response.token
         };
+        console.log('AuthContext - Saving new user data with token:', !!newUser.token);
+        
         const normalized = normalizeUser(newUser);
         setUser(normalized);
         localStorage.setItem(config.AUTH.USER_KEY, JSON.stringify(normalized));
+        
+        console.log('AuthContext - New user saved to localStorage');
         return { success: true, user: newUser };
       } else {
+        console.log('AuthContext - Register failed:', response.message);
         return { success: false, message: response.message };
       }
     } catch (error) {
-      console.error('Erro no registro:', error);
+      console.error('AuthContext - Erro no registro:', error);
       // Extrair erros de validação se houver
       const backendErrors = error.data && error.data.errors ? error.data.errors : null;
       return { success: false, message: error.data?.message || error.message || 'Erro ao registrar usuário', errors: backendErrors };

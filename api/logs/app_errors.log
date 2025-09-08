@@ -7,3 +7,336 @@
 [2025-09-02 10:50:46] Route callback error: Erro de conexão com o banco de dados
 [2025-09-02 10:50:46] Route callback error: Erro de conexão com o banco de dados
 [2025-09-02 11:35:10] Migration error: There is no active transaction
+[2025-09-08 16:40:15] Get posts error: Erro na consulta ao banco de dados
+[2025-09-08 16:40:15] Get posts error: Erro na consulta ao banco de dados
+[2025-09-08 16:47:25] Toggle save error: Erro na consulta ao banco de dados Context: {"post_id":"27"}
+[2025-09-08 16:47:28] Toggle save error: Erro na consulta ao banco de dados Context: {"post_id":"27"}
+[2025-09-08 16:47:30] Toggle save error: Erro na consulta ao banco de dados Context: {"post_id":"27"}
+[2025-09-08 16:47:30] Toggle save error: Erro na consulta ao banco de dados Context: {"post_id":"27"}
+[2025-09-08 16:47:31] Toggle save error: Erro na consulta ao banco de dados Context: {"post_id":"27"}
+[2025-09-08 16:47:31] Toggle save error: Erro na consulta ao banco de dados Context: {"post_id":"27"}
+[2025-09-08 16:47:31] Toggle save error: Erro na consulta ao banco de dados Context: {"post_id":"27"}
+[2025-09-08 16:47:31] Toggle save error: Erro na consulta ao banco de dados Context: {"post_id":"27"}
+[2025-09-08 16:47:35] Toggle save error: Erro na consulta ao banco de dados Context: {"post_id":"27"}
+[2025-09-08 16:47:37] Toggle save error: Erro na consulta ao banco de dados Context: {"post_id":"29"}
+[2025-09-08 17:21:11] Migration error: Migration 006_create_notifications.php does not return a callable
+[2025-09-08 17:22:59] Toggle like error: Erro na consulta ao banco de dados Context: {"post_id":"28"}
+[2025-09-08 17:22:59] Toggle like error: Erro na consulta ao banco de dados Context: {"post_id":"28"}
+[2025-09-08 17:23:18] PHP Error: Undefined array key "email" in C:\xampp\htdocs\empowerup\api\utils\Helper.php on line 98
+[2025-09-08 17:23:18] PHP Error: Undefined array key "email" in C:\xampp\htdocs\empowerup\api\utils\Helper.php on line 98
+[2025-09-08 17:24:46] PHP Error: Undefined array key "email" in C:\xampp\htdocs\empowerup\api\utils\Helper.php on line 98
+[2025-09-08 17:24:46] PHP Error: Undefined array key "email" in C:\xampp\htdocs\empowerup\api\utils\Helper.php on line 98
+[2025-09-08 17:25:35] PHP Error: Undefined array key "email" in C:\xampp\htdocs\empowerup\api\utils\Helper.php on line 98
+[2025-09-08 17:25:35] PHP Error: Undefined array key "email" in C:\xampp\htdocs\empowerup\api\utils\Helper.php on line 98
+[2025-09-08 17:25:56] PHP Error: Undefined array key "email" in C:\xampp\htdocs\empowerup\api\utils\Helper.php on line 98
+[2025-09-08 17:39:03] PHP Error: Undefined array key "email" in C:\xampp\htdocs\empowerup\api\utils\Helper.php on line 98
+[2025-09-08 17:39:04] PHP Error: Undefined array key "email" in C:\xampp\htdocs\empowerup\api\utils\Helper.php on line 98
+[2025-09-08 17:43:48] PHP Error: Undefined array key "email" in C:\xampp\htdocs\empowerup\api\utils\Helper.php on line 98
+[2025-09-08 17:43:48] PHP Error: Undefined array key "email" in C:\xampp\htdocs\empowerup\api\utils\Helper.php on line 98
+[2025-09-08 17:43:59] PHP Error: Undefined array key "email" in C:\xampp\htdocs\empowerup\api\utils\Helper.php on line 98
+[2025-09-08 17:43:59] PHP Error: Undefined array key "email" in C:\xampp\htdocs\empowerup\api\utils\Helper.php on line 98
+[2025-09-08 17:44:07] PHP Error: Undefined array key "email" in C:\xampp\htdocs\empowerup\api\utils\Helper.php on line 98
+[2025-09-08 18:04:32] Update profile error: Erro na consulta ao banco de dados Context: {"nome":"Giovanna Salles Arruda","email":"gigi_salles@gmail.com","telefone":"11930810005","bio":"oiee","website":"","localizacao":""}
+[2025-09-08 18:07:04] PHP Error: Undefined array key "email" in C:\xampp\htdocs\empowerup\api\utils\Helper.php on line 98
+[2025-09-08 18:07:04] PHP Error: Undefined array key "email" in C:\xampp\htdocs\empowerup\api\utils\Helper.php on line 98
+[2025-09-08 18:07:32] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 18:07:32] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 18:07:37] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 18:07:44] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 18:07:50] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 18:07:56] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 18:08:02] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 18:08:02] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 18:08:32] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 18:08:32] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 18:08:32] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 18:08:39] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 18:08:40] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 18:09:11] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 18:09:11] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 18:09:20] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 18:09:23] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 18:09:25] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 18:09:30] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 18:09:36] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 18:09:41] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 18:09:41] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 18:43:55] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 18:43:55] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 18:44:02] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 18:44:02] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 18:54:04] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 18:54:04] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 18:54:16] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 18:54:16] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:00:46] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:00:47] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:01:32] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:01:32] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:33:30] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:33:31] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:33:39] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:33:41] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:33:43] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:33:43] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:33:46] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:33:46] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:33:47] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:33:47] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:33:49] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:33:50] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:33:50] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:33:51] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:33:51] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:33:51] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:33:51] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:33:51] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:33:52] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:33:53] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:33:53] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:33:53] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:33:54] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:33:55] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:33:56] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:33:56] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:33:57] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:33:57] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:33:57] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:33:57] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:33:57] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:33:57] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:33:58] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:33:58] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:33:58] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:33:58] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:33:59] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:34:02] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:34:02] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:34:03] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:34:04] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:34:05] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:34:06] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:34:06] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:34:06] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:34:07] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:34:07] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:34:07] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:34:17] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:34:17] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:35:38] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:35:38] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:36:34] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:36:40] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:36:48] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:37:09] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:37:38] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:38:08] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:38:38] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:39:08] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:39:52] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:40:52] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:41:52] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:42:52] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:43:52] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:44:55] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:45:57] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:46:26] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:46:36] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:46:39] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:46:41] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:47:47] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:49:01] Debug Auth - Headers: {"host":"localhost","connection":"keep-alive","sec-ch-ua-platform":"\"Windows\"","authorization":"Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjksImVtYWlsIjoiZ2lnaV9zYWxsZXNAZ21haWwuY29tIiwiaWF0IjoxNzU3MzcwOTI4LCJleHAiOjE3NTc5NzU3Mjh9.dCQo_wO5qbWSqeI5PucXY7LrYUsDsZhzUQrX8EEniZs","user-agent":"Mozilla\/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit\/537.36 (KHTML, like Gecko) Chrome\/140.0.0.0 Safari\/537.36","sec-ch-ua":"\"Chromium\";v=\"140\", \"Not=A?Brand\";v=\"24\", \"Google Chrome\";v=\"140\"","sec-ch-ua-mobile":"?0","accept":"*\/*","origin":"http:\/\/localhost:3000","sec-fetch-site":"same-site","sec-fetch-mode":"cors","sec-fetch-dest":"empty","referer":"http:\/\/localhost:3000\/","accept-encoding":"gzip, deflate, br, zstd","accept-language":"pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7"}
+[2025-09-08 19:49:01] Debug Auth - AuthHeader: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjksImVtYWlsIjoiZ2lnaV9zYWxsZXNAZ21haWwuY29tIiwiaWF0IjoxNzU3MzcwOTI4LCJleHAiOjE3NTc5NzU3Mjh9.dCQo_wO5qbWSqeI5PucXY7LrYUsDsZhzUQrX8EEniZs
+[2025-09-08 19:49:01] Debug Auth - Token found: eyJ0eXAiOiJKV1QiLCJh...
+[2025-09-08 19:49:01] Debug Auth - JWT decoded successfully
+[2025-09-08 19:49:01] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:49:45] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:50:17] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:50:17] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:50:25] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:50:47] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:50:53] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:58:13] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:58:13] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:58:43] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:58:47] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:58:58] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:59:04] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:59:04] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:59:04] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:59:04] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:59:04] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:59:04] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:59:05] Iniciando getSavedPosts
+[2025-09-08 19:59:05] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:59:05] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:59:05] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:59:05] Iniciando getSavedPosts
+[2025-09-08 19:59:05] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:59:16] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:59:16] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:59:23] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:59:27] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:59:32] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 19:59:46] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 20:00:16] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 20:00:46] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 20:01:16] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 20:01:46] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 20:02:16] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 20:02:46] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 20:03:47] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 20:04:48] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 20:05:49] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 20:06:50] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 20:07:53] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 20:08:52] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 20:09:43] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 20:10:08] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 20:10:48] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 20:10:52] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 20:11:46] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 20:12:09] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 20:12:42] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 20:12:47] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 20:13:16] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 20:13:46] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 20:14:47] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 20:15:48] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 20:16:49] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 20:17:50] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 20:18:51] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 20:19:54] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 20:20:52] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 20:21:53] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 20:23:12] Auth headers check: {"host":"localhost","connection":"keep-alive","pragma":"no-cache","cache-control":"no-cache","sec-ch-ua-platform":"\"Windows\"","authorization":"Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiIxMCIsImVtYWlsIjoibWFyaS5sb2Jhb0BldGVjLnNwLmdvdi5iciIsImlhdCI6MTc1NzM3MjI4OCwiZXhwIjoxNzU3OTc3MDg4fQ.UznAdzfr1FucoG00Mms6ZdEaG3PSDow1YBJP4y8GobI","user-agent":"Mozilla\/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit\/537.36 (KHTML, like Gecko) Chrome\/140.0.0.0 Safari\/537.36","sec-ch-ua":"\"Chromium\";v=\"140\", \"Not=A?Brand\";v=\"24\", \"Google Chrome\";v=\"140\"","sec-ch-ua-mobile":"?0","accept":"*\/*","origin":"http:\/\/localhost:3000","sec-fetch-site":"same-site","sec-fetch-mode":"cors","sec-fetch-dest":"empty","referer":"http:\/\/localhost:3000\/","accept-encoding":"gzip, deflate, br, zstd","accept-language":"pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7"}
+[2025-09-08 20:23:12] Auth header found: YES - Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiIxMCIsImVtYWlsIjoibWFyaS5sb2Jhb0BldGVjLnNwLmdvdi5iciIsImlhdCI6MTc1NzM3MjI4OCwiZXhwIjoxNzU3OTc3MDg4fQ.UznAdzfr1FucoG00Mms6ZdEaG3PSDow1YBJP4y8GobI
+[2025-09-08 20:23:13] Token extracted: eyJ0eXAiOiJKV1QiLCJh...
+[2025-09-08 20:23:13] Token decoded successfully, userId: 10
+[2025-09-08 20:23:13] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 20:23:56] Auth headers check: {"host":"localhost","connection":"keep-alive","pragma":"no-cache","cache-control":"no-cache","sec-ch-ua-platform":"\"Windows\"","authorization":"Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiIxMCIsImVtYWlsIjoibWFyaS5sb2Jhb0BldGVjLnNwLmdvdi5iciIsImlhdCI6MTc1NzM3MjI4OCwiZXhwIjoxNzU3OTc3MDg4fQ.UznAdzfr1FucoG00Mms6ZdEaG3PSDow1YBJP4y8GobI","user-agent":"Mozilla\/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit\/537.36 (KHTML, like Gecko) Chrome\/140.0.0.0 Safari\/537.36","sec-ch-ua":"\"Chromium\";v=\"140\", \"Not=A?Brand\";v=\"24\", \"Google Chrome\";v=\"140\"","sec-ch-ua-mobile":"?0","accept":"*\/*","origin":"http:\/\/localhost:3000","sec-fetch-site":"same-site","sec-fetch-mode":"cors","sec-fetch-dest":"empty","referer":"http:\/\/localhost:3000\/","accept-encoding":"gzip, deflate, br, zstd","accept-language":"pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7"}
+[2025-09-08 20:23:56] Auth header found: YES - Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiIxMCIsImVtYWlsIjoibWFyaS5sb2Jhb0BldGVjLnNwLmdvdi5iciIsImlhdCI6MTc1NzM3MjI4OCwiZXhwIjoxNzU3OTc3MDg4fQ.UznAdzfr1FucoG00Mms6ZdEaG3PSDow1YBJP4y8GobI
+[2025-09-08 20:23:56] Token extracted: eyJ0eXAiOiJKV1QiLCJh...
+[2025-09-08 20:23:56] Token decoded successfully, userId: 10
+[2025-09-08 20:23:56] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 20:25:51] Auth headers check: {"host":"localhost","connection":"keep-alive","pragma":"no-cache","cache-control":"no-cache","sec-ch-ua-platform":"\"Windows\"","authorization":"Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiIxMCIsImVtYWlsIjoibWFyaS5sb2Jhb0BldGVjLnNwLmdvdi5iciIsImlhdCI6MTc1NzM3MjI4OCwiZXhwIjoxNzU3OTc3MDg4fQ.UznAdzfr1FucoG00Mms6ZdEaG3PSDow1YBJP4y8GobI","user-agent":"Mozilla\/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit\/537.36 (KHTML, like Gecko) Chrome\/140.0.0.0 Safari\/537.36","sec-ch-ua":"\"Chromium\";v=\"140\", \"Not=A?Brand\";v=\"24\", \"Google Chrome\";v=\"140\"","sec-ch-ua-mobile":"?0","accept":"*\/*","origin":"http:\/\/localhost:3000","sec-fetch-site":"same-site","sec-fetch-mode":"cors","sec-fetch-dest":"empty","referer":"http:\/\/localhost:3000\/","accept-encoding":"gzip, deflate, br, zstd","accept-language":"pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7"}
+[2025-09-08 20:25:51] Auth header found: YES - Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiIxMCIsImVtYWlsIjoibWFyaS5sb2Jhb0BldGVjLnNwLmdvdi5iciIsImlhdCI6MTc1NzM3MjI4OCwiZXhwIjoxNzU3OTc3MDg4fQ.UznAdzfr1FucoG00Mms6ZdEaG3PSDow1YBJP4y8GobI
+[2025-09-08 20:25:51] Token extracted: eyJ0eXAiOiJKV1QiLCJh...
+[2025-09-08 20:25:51] Token decoded successfully, userId: 10
+[2025-09-08 20:25:51] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 20:25:54] Auth headers check: {"host":"localhost","connection":"keep-alive","sec-ch-ua-platform":"\"Windows\"","authorization":"Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiIxMCIsImVtYWlsIjoibWFyaS5sb2Jhb0BldGVjLnNwLmdvdi5iciIsImlhdCI6MTc1NzM3MjI4OCwiZXhwIjoxNzU3OTc3MDg4fQ.UznAdzfr1FucoG00Mms6ZdEaG3PSDow1YBJP4y8GobI","user-agent":"Mozilla\/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit\/537.36 (KHTML, like Gecko) Chrome\/140.0.0.0 Safari\/537.36","sec-ch-ua":"\"Chromium\";v=\"140\", \"Not=A?Brand\";v=\"24\", \"Google Chrome\";v=\"140\"","sec-ch-ua-mobile":"?0","accept":"*\/*","origin":"http:\/\/localhost:3000","sec-fetch-site":"same-site","sec-fetch-mode":"cors","sec-fetch-dest":"empty","referer":"http:\/\/localhost:3000\/","accept-encoding":"gzip, deflate, br, zstd","accept-language":"pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7"}
+[2025-09-08 20:25:54] Auth header found: YES - Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiIxMCIsImVtYWlsIjoibWFyaS5sb2Jhb0BldGVjLnNwLmdvdi5iciIsImlhdCI6MTc1NzM3MjI4OCwiZXhwIjoxNzU3OTc3MDg4fQ.UznAdzfr1FucoG00Mms6ZdEaG3PSDow1YBJP4y8GobI
+[2025-09-08 20:25:54] Token extracted: eyJ0eXAiOiJKV1QiLCJh...
+[2025-09-08 20:25:54] Token decoded successfully, userId: 10
+[2025-09-08 20:25:54] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 20:25:54] Auth headers check: {"host":"localhost","connection":"keep-alive","sec-ch-ua-platform":"\"Windows\"","authorization":"Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiIxMCIsImVtYWlsIjoibWFyaS5sb2Jhb0BldGVjLnNwLmdvdi5iciIsImlhdCI6MTc1NzM3MjI4OCwiZXhwIjoxNzU3OTc3MDg4fQ.UznAdzfr1FucoG00Mms6ZdEaG3PSDow1YBJP4y8GobI","user-agent":"Mozilla\/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit\/537.36 (KHTML, like Gecko) Chrome\/140.0.0.0 Safari\/537.36","sec-ch-ua":"\"Chromium\";v=\"140\", \"Not=A?Brand\";v=\"24\", \"Google Chrome\";v=\"140\"","sec-ch-ua-mobile":"?0","accept":"*\/*","origin":"http:\/\/localhost:3000","sec-fetch-site":"same-site","sec-fetch-mode":"cors","sec-fetch-dest":"empty","referer":"http:\/\/localhost:3000\/","accept-encoding":"gzip, deflate, br, zstd","accept-language":"pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7"}
+[2025-09-08 20:25:54] Auth header found: YES - Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiIxMCIsImVtYWlsIjoibWFyaS5sb2Jhb0BldGVjLnNwLmdvdi5iciIsImlhdCI6MTc1NzM3MjI4OCwiZXhwIjoxNzU3OTc3MDg4fQ.UznAdzfr1FucoG00Mms6ZdEaG3PSDow1YBJP4y8GobI
+[2025-09-08 20:25:54] Token extracted: eyJ0eXAiOiJKV1QiLCJh...
+[2025-09-08 20:25:54] Token decoded successfully, userId: 10
+[2025-09-08 20:25:54] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 20:26:16] Auth headers check: {"host":"localhost","connection":"keep-alive","sec-ch-ua-platform":"\"Windows\"","authorization":"Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiIxMCIsImVtYWlsIjoibWFyaS5sb2Jhb0BldGVjLnNwLmdvdi5iciIsImlhdCI6MTc1NzM3MjI4OCwiZXhwIjoxNzU3OTc3MDg4fQ.UznAdzfr1FucoG00Mms6ZdEaG3PSDow1YBJP4y8GobI","user-agent":"Mozilla\/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit\/537.36 (KHTML, like Gecko) Chrome\/140.0.0.0 Safari\/537.36","sec-ch-ua":"\"Chromium\";v=\"140\", \"Not=A?Brand\";v=\"24\", \"Google Chrome\";v=\"140\"","sec-ch-ua-mobile":"?0","accept":"*\/*","origin":"http:\/\/localhost:3000","sec-fetch-site":"same-site","sec-fetch-mode":"cors","sec-fetch-dest":"empty","referer":"http:\/\/localhost:3000\/","accept-encoding":"gzip, deflate, br, zstd","accept-language":"pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7"}
+[2025-09-08 20:26:16] Auth header found: YES - Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiIxMCIsImVtYWlsIjoibWFyaS5sb2Jhb0BldGVjLnNwLmdvdi5iciIsImlhdCI6MTc1NzM3MjI4OCwiZXhwIjoxNzU3OTc3MDg4fQ.UznAdzfr1FucoG00Mms6ZdEaG3PSDow1YBJP4y8GobI
+[2025-09-08 20:26:16] Token extracted: eyJ0eXAiOiJKV1QiLCJh...
+[2025-09-08 20:26:16] Token decoded successfully, userId: 10
+[2025-09-08 20:26:16] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 20:26:46] Auth headers check: {"host":"localhost","connection":"keep-alive","sec-ch-ua-platform":"\"Windows\"","authorization":"Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiIxMCIsImVtYWlsIjoibWFyaS5sb2Jhb0BldGVjLnNwLmdvdi5iciIsImlhdCI6MTc1NzM3MjI4OCwiZXhwIjoxNzU3OTc3MDg4fQ.UznAdzfr1FucoG00Mms6ZdEaG3PSDow1YBJP4y8GobI","user-agent":"Mozilla\/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit\/537.36 (KHTML, like Gecko) Chrome\/140.0.0.0 Safari\/537.36","sec-ch-ua":"\"Chromium\";v=\"140\", \"Not=A?Brand\";v=\"24\", \"Google Chrome\";v=\"140\"","sec-ch-ua-mobile":"?0","accept":"*\/*","origin":"http:\/\/localhost:3000","sec-fetch-site":"same-site","sec-fetch-mode":"cors","sec-fetch-dest":"empty","referer":"http:\/\/localhost:3000\/","accept-encoding":"gzip, deflate, br, zstd","accept-language":"pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7"}
+[2025-09-08 20:26:46] Auth header found: YES - Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiIxMCIsImVtYWlsIjoibWFyaS5sb2Jhb0BldGVjLnNwLmdvdi5iciIsImlhdCI6MTc1NzM3MjI4OCwiZXhwIjoxNzU3OTc3MDg4fQ.UznAdzfr1FucoG00Mms6ZdEaG3PSDow1YBJP4y8GobI
+[2025-09-08 20:26:46] Token extracted: eyJ0eXAiOiJKV1QiLCJh...
+[2025-09-08 20:26:46] Token decoded successfully, userId: 10
+[2025-09-08 20:26:46] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 20:27:47] Auth headers check: {"host":"localhost","connection":"keep-alive","sec-ch-ua-platform":"\"Windows\"","authorization":"Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiIxMCIsImVtYWlsIjoibWFyaS5sb2Jhb0BldGVjLnNwLmdvdi5iciIsImlhdCI6MTc1NzM3MjI4OCwiZXhwIjoxNzU3OTc3MDg4fQ.UznAdzfr1FucoG00Mms6ZdEaG3PSDow1YBJP4y8GobI","user-agent":"Mozilla\/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit\/537.36 (KHTML, like Gecko) Chrome\/140.0.0.0 Safari\/537.36","sec-ch-ua":"\"Chromium\";v=\"140\", \"Not=A?Brand\";v=\"24\", \"Google Chrome\";v=\"140\"","sec-ch-ua-mobile":"?0","accept":"*\/*","origin":"http:\/\/localhost:3000","sec-fetch-site":"same-site","sec-fetch-mode":"cors","sec-fetch-dest":"empty","referer":"http:\/\/localhost:3000\/","accept-encoding":"gzip, deflate, br, zstd","accept-language":"pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7"}
+[2025-09-08 20:27:47] Auth header found: YES - Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiIxMCIsImVtYWlsIjoibWFyaS5sb2Jhb0BldGVjLnNwLmdvdi5iciIsImlhdCI6MTc1NzM3MjI4OCwiZXhwIjoxNzU3OTc3MDg4fQ.UznAdzfr1FucoG00Mms6ZdEaG3PSDow1YBJP4y8GobI
+[2025-09-08 20:27:47] Token extracted: eyJ0eXAiOiJKV1QiLCJh...
+[2025-09-08 20:27:47] Token decoded successfully, userId: 10
+[2025-09-08 20:27:47] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 20:28:51] Auth headers check: {"host":"localhost","connection":"keep-alive","sec-ch-ua-platform":"\"Windows\"","authorization":"Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiIxMCIsImVtYWlsIjoibWFyaS5sb2Jhb0BldGVjLnNwLmdvdi5iciIsImlhdCI6MTc1NzM3MjI4OCwiZXhwIjoxNzU3OTc3MDg4fQ.UznAdzfr1FucoG00Mms6ZdEaG3PSDow1YBJP4y8GobI","user-agent":"Mozilla\/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit\/537.36 (KHTML, like Gecko) Chrome\/140.0.0.0 Safari\/537.36","sec-ch-ua":"\"Chromium\";v=\"140\", \"Not=A?Brand\";v=\"24\", \"Google Chrome\";v=\"140\"","sec-ch-ua-mobile":"?0","accept":"*\/*","origin":"http:\/\/localhost:3000","sec-fetch-site":"same-site","sec-fetch-mode":"cors","sec-fetch-dest":"empty","referer":"http:\/\/localhost:3000\/","accept-encoding":"gzip, deflate, br, zstd","accept-language":"pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7"}
+[2025-09-08 20:28:51] Auth header found: YES - Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiIxMCIsImVtYWlsIjoibWFyaS5sb2Jhb0BldGVjLnNwLmdvdi5iciIsImlhdCI6MTc1NzM3MjI4OCwiZXhwIjoxNzU3OTc3MDg4fQ.UznAdzfr1FucoG00Mms6ZdEaG3PSDow1YBJP4y8GobI
+[2025-09-08 20:28:51] Token extracted: eyJ0eXAiOiJKV1QiLCJh...
+[2025-09-08 20:28:51] Token decoded successfully, userId: 10
+[2025-09-08 20:28:51] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 20:29:49] Auth headers check: {"host":"localhost","connection":"keep-alive","sec-ch-ua-platform":"\"Windows\"","authorization":"Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiIxMCIsImVtYWlsIjoibWFyaS5sb2Jhb0BldGVjLnNwLmdvdi5iciIsImlhdCI6MTc1NzM3MjI4OCwiZXhwIjoxNzU3OTc3MDg4fQ.UznAdzfr1FucoG00Mms6ZdEaG3PSDow1YBJP4y8GobI","user-agent":"Mozilla\/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit\/537.36 (KHTML, like Gecko) Chrome\/140.0.0.0 Safari\/537.36","sec-ch-ua":"\"Chromium\";v=\"140\", \"Not=A?Brand\";v=\"24\", \"Google Chrome\";v=\"140\"","sec-ch-ua-mobile":"?0","accept":"*\/*","origin":"http:\/\/localhost:3000","sec-fetch-site":"same-site","sec-fetch-mode":"cors","sec-fetch-dest":"empty","referer":"http:\/\/localhost:3000\/","accept-encoding":"gzip, deflate, br, zstd","accept-language":"pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7"}
+[2025-09-08 20:29:49] Auth header found: YES - Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiIxMCIsImVtYWlsIjoibWFyaS5sb2Jhb0BldGVjLnNwLmdvdi5iciIsImlhdCI6MTc1NzM3MjI4OCwiZXhwIjoxNzU3OTc3MDg4fQ.UznAdzfr1FucoG00Mms6ZdEaG3PSDow1YBJP4y8GobI
+[2025-09-08 20:29:49] Token extracted: eyJ0eXAiOiJKV1QiLCJh...
+[2025-09-08 20:29:49] Token decoded successfully, userId: 10
+[2025-09-08 20:29:49] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 20:30:50] Auth headers check: {"host":"localhost","connection":"keep-alive","sec-ch-ua-platform":"\"Windows\"","authorization":"Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiIxMCIsImVtYWlsIjoibWFyaS5sb2Jhb0BldGVjLnNwLmdvdi5iciIsImlhdCI6MTc1NzM3MjI4OCwiZXhwIjoxNzU3OTc3MDg4fQ.UznAdzfr1FucoG00Mms6ZdEaG3PSDow1YBJP4y8GobI","user-agent":"Mozilla\/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit\/537.36 (KHTML, like Gecko) Chrome\/140.0.0.0 Safari\/537.36","sec-ch-ua":"\"Chromium\";v=\"140\", \"Not=A?Brand\";v=\"24\", \"Google Chrome\";v=\"140\"","sec-ch-ua-mobile":"?0","accept":"*\/*","origin":"http:\/\/localhost:3000","sec-fetch-site":"same-site","sec-fetch-mode":"cors","sec-fetch-dest":"empty","referer":"http:\/\/localhost:3000\/","accept-encoding":"gzip, deflate, br, zstd","accept-language":"pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7"}
+[2025-09-08 20:30:50] Auth header found: YES - Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiIxMCIsImVtYWlsIjoibWFyaS5sb2Jhb0BldGVjLnNwLmdvdi5iciIsImlhdCI6MTc1NzM3MjI4OCwiZXhwIjoxNzU3OTc3MDg4fQ.UznAdzfr1FucoG00Mms6ZdEaG3PSDow1YBJP4y8GobI
+[2025-09-08 20:30:50] Token extracted: eyJ0eXAiOiJKV1QiLCJh...
+[2025-09-08 20:30:50] Token decoded successfully, userId: 10
+[2025-09-08 20:30:50] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 20:33:19] Auth headers check: {"host":"localhost","connection":"keep-alive","sec-ch-ua-platform":"\"Windows\"","authorization":"Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiIxMCIsImVtYWlsIjoibWFyaS5sb2Jhb0BldGVjLnNwLmdvdi5iciIsImlhdCI6MTc1NzM3MjI4OCwiZXhwIjoxNzU3OTc3MDg4fQ.UznAdzfr1FucoG00Mms6ZdEaG3PSDow1YBJP4y8GobI","user-agent":"Mozilla\/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit\/537.36 (KHTML, like Gecko) Chrome\/140.0.0.0 Safari\/537.36","sec-ch-ua":"\"Chromium\";v=\"140\", \"Not=A?Brand\";v=\"24\", \"Google Chrome\";v=\"140\"","content-type":"application\/json","sec-ch-ua-mobile":"?0","accept":"*\/*","origin":"http:\/\/localhost:3000","sec-fetch-site":"same-site","sec-fetch-mode":"cors","sec-fetch-dest":"empty","referer":"http:\/\/localhost:3000\/","accept-encoding":"gzip, deflate, br, zstd","accept-language":"pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7"}
+[2025-09-08 20:33:19] Auth header found: YES - Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiIxMCIsImVtYWlsIjoibWFyaS5sb2Jhb0BldGVjLnNwLmdvdi5iciIsImlhdCI6MTc1NzM3MjI4OCwiZXhwIjoxNzU3OTc3MDg4fQ.UznAdzfr1FucoG00Mms6ZdEaG3PSDow1YBJP4y8GobI
+[2025-09-08 20:33:19] Token extracted: eyJ0eXAiOiJKV1QiLCJh...
+[2025-09-08 20:33:20] Token decoded successfully, userId: 10
+[2025-09-08 20:33:20] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 20:33:20] Auth headers check: {"host":"localhost","connection":"keep-alive","sec-ch-ua-platform":"\"Windows\"","authorization":"Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiIxMCIsImVtYWlsIjoibWFyaS5sb2Jhb0BldGVjLnNwLmdvdi5iciIsImlhdCI6MTc1NzM3MjI4OCwiZXhwIjoxNzU3OTc3MDg4fQ.UznAdzfr1FucoG00Mms6ZdEaG3PSDow1YBJP4y8GobI","user-agent":"Mozilla\/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit\/537.36 (KHTML, like Gecko) Chrome\/140.0.0.0 Safari\/537.36","sec-ch-ua":"\"Chromium\";v=\"140\", \"Not=A?Brand\";v=\"24\", \"Google Chrome\";v=\"140\"","content-type":"application\/json","sec-ch-ua-mobile":"?0","accept":"*\/*","origin":"http:\/\/localhost:3000","sec-fetch-site":"same-site","sec-fetch-mode":"cors","sec-fetch-dest":"empty","referer":"http:\/\/localhost:3000\/","accept-encoding":"gzip, deflate, br, zstd","accept-language":"pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7"}
+[2025-09-08 20:33:20] Auth header found: YES - Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiIxMCIsImVtYWlsIjoibWFyaS5sb2Jhb0BldGVjLnNwLmdvdi5iciIsImlhdCI6MTc1NzM3MjI4OCwiZXhwIjoxNzU3OTc3MDg4fQ.UznAdzfr1FucoG00Mms6ZdEaG3PSDow1YBJP4y8GobI
+[2025-09-08 20:33:20] Token extracted: eyJ0eXAiOiJKV1QiLCJh...
+[2025-09-08 20:33:20] Token decoded successfully, userId: 10
+[2025-09-08 20:33:20] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 20:33:31] Auth headers check: {"host":"localhost","connection":"keep-alive","sec-ch-ua-platform":"\"Windows\"","authorization":"Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiIxMCIsImVtYWlsIjoibWFyaS5sb2Jhb0BldGVjLnNwLmdvdi5iciIsImlhdCI6MTc1NzM3MjI4OCwiZXhwIjoxNzU3OTc3MDg4fQ.UznAdzfr1FucoG00Mms6ZdEaG3PSDow1YBJP4y8GobI","user-agent":"Mozilla\/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit\/537.36 (KHTML, like Gecko) Chrome\/140.0.0.0 Safari\/537.36","sec-ch-ua":"\"Chromium\";v=\"140\", \"Not=A?Brand\";v=\"24\", \"Google Chrome\";v=\"140\"","sec-ch-ua-mobile":"?0","accept":"*\/*","origin":"http:\/\/localhost:3000","sec-fetch-site":"same-site","sec-fetch-mode":"cors","sec-fetch-dest":"empty","referer":"http:\/\/localhost:3000\/","accept-encoding":"gzip, deflate, br, zstd","accept-language":"pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7"}
+[2025-09-08 20:33:31] Auth header found: YES - Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiIxMCIsImVtYWlsIjoibWFyaS5sb2Jhb0BldGVjLnNwLmdvdi5iciIsImlhdCI6MTc1NzM3MjI4OCwiZXhwIjoxNzU3OTc3MDg4fQ.UznAdzfr1FucoG00Mms6ZdEaG3PSDow1YBJP4y8GobI
+[2025-09-08 20:33:31] Token extracted: eyJ0eXAiOiJKV1QiLCJh...
+[2025-09-08 20:33:31] Token decoded successfully, userId: 10
+[2025-09-08 20:33:31] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 20:33:31] Auth headers check: {"host":"localhost","connection":"keep-alive","sec-ch-ua-platform":"\"Windows\"","authorization":"Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiIxMCIsImVtYWlsIjoibWFyaS5sb2Jhb0BldGVjLnNwLmdvdi5iciIsImlhdCI6MTc1NzM3MjI4OCwiZXhwIjoxNzU3OTc3MDg4fQ.UznAdzfr1FucoG00Mms6ZdEaG3PSDow1YBJP4y8GobI","user-agent":"Mozilla\/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit\/537.36 (KHTML, like Gecko) Chrome\/140.0.0.0 Safari\/537.36","sec-ch-ua":"\"Chromium\";v=\"140\", \"Not=A?Brand\";v=\"24\", \"Google Chrome\";v=\"140\"","sec-ch-ua-mobile":"?0","accept":"*\/*","origin":"http:\/\/localhost:3000","sec-fetch-site":"same-site","sec-fetch-mode":"cors","sec-fetch-dest":"empty","referer":"http:\/\/localhost:3000\/","accept-encoding":"gzip, deflate, br, zstd","accept-language":"pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7"}
+[2025-09-08 20:33:31] Auth header found: YES - Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiIxMCIsImVtYWlsIjoibWFyaS5sb2Jhb0BldGVjLnNwLmdvdi5iciIsImlhdCI6MTc1NzM3MjI4OCwiZXhwIjoxNzU3OTc3MDg4fQ.UznAdzfr1FucoG00Mms6ZdEaG3PSDow1YBJP4y8GobI
+[2025-09-08 20:33:31] Token extracted: eyJ0eXAiOiJKV1QiLCJh...
+[2025-09-08 20:33:31] Token decoded successfully, userId: 10
+[2025-09-08 20:33:31] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 20:33:52] Auth headers check: {"host":"localhost","connection":"keep-alive","sec-ch-ua-platform":"\"Windows\"","user-agent":"Mozilla\/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit\/537.36 (KHTML, like Gecko) Chrome\/140.0.0.0 Safari\/537.36","sec-ch-ua":"\"Chromium\";v=\"140\", \"Not=A?Brand\";v=\"24\", \"Google Chrome\";v=\"140\"","sec-ch-ua-mobile":"?0","accept":"*\/*","origin":"http:\/\/localhost:3000","sec-fetch-site":"same-site","sec-fetch-mode":"cors","sec-fetch-dest":"empty","referer":"http:\/\/localhost:3000\/","accept-encoding":"gzip, deflate, br, zstd","accept-language":"pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7"}
+[2025-09-08 20:33:52] Auth header found: NO - 
+[2025-09-08 20:33:52] Auth failed: No valid bearer token found
+[2025-09-08 20:33:58] Auth headers check: {"host":"localhost","connection":"keep-alive","sec-ch-ua-platform":"\"Windows\"","user-agent":"Mozilla\/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit\/537.36 (KHTML, like Gecko) Chrome\/140.0.0.0 Safari\/537.36","sec-ch-ua":"\"Chromium\";v=\"140\", \"Not=A?Brand\";v=\"24\", \"Google Chrome\";v=\"140\"","sec-ch-ua-mobile":"?0","accept":"*\/*","origin":"http:\/\/localhost:3000","sec-fetch-site":"same-site","sec-fetch-mode":"cors","sec-fetch-dest":"empty","referer":"http:\/\/localhost:3000\/","accept-encoding":"gzip, deflate, br, zstd","accept-language":"pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7"}
+[2025-09-08 20:33:58] Auth header found: NO - 
+[2025-09-08 20:33:58] Auth failed: No valid bearer token found
+[2025-09-08 20:33:58] Auth headers check: {"host":"localhost","connection":"keep-alive","sec-ch-ua-platform":"\"Windows\"","authorization":"Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEwLCJlbWFpbCI6Im1hcmkubG9iYW9AZXRlYy5zcC5nb3YuYnIiLCJpYXQiOjE3NTczNzQ0MjksImV4cCI6MTc1Nzk3OTIyOX0.Z1GIZuPj8Ci7rl-eXKmhmI9o6YyOK9CsLATcjuhbWPs","user-agent":"Mozilla\/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit\/537.36 (KHTML, like Gecko) Chrome\/140.0.0.0 Safari\/537.36","sec-ch-ua":"\"Chromium\";v=\"140\", \"Not=A?Brand\";v=\"24\", \"Google Chrome\";v=\"140\"","sec-ch-ua-mobile":"?0","accept":"*\/*","origin":"http:\/\/localhost:3000","sec-fetch-site":"same-site","sec-fetch-mode":"cors","sec-fetch-dest":"empty","referer":"http:\/\/localhost:3000\/","accept-encoding":"gzip, deflate, br, zstd","accept-language":"pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7"}
+[2025-09-08 20:33:58] Auth header found: YES - Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEwLCJlbWFpbCI6Im1hcmkubG9iYW9AZXRlYy5zcC5nb3YuYnIiLCJpYXQiOjE3NTczNzQ0MjksImV4cCI6MTc1Nzk3OTIyOX0.Z1GIZuPj8Ci7rl-eXKmhmI9o6YyOK9CsLATcjuhbWPs
+[2025-09-08 20:33:58] Token extracted: eyJ0eXAiOiJKV1QiLCJh...
+[2025-09-08 20:33:58] Token decoded successfully, userId: 10
+[2025-09-08 20:33:58] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 20:33:58] Auth headers check: {"host":"localhost","connection":"keep-alive","sec-ch-ua-platform":"\"Windows\"","authorization":"Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEwLCJlbWFpbCI6Im1hcmkubG9iYW9AZXRlYy5zcC5nb3YuYnIiLCJpYXQiOjE3NTczNzQ0MjksImV4cCI6MTc1Nzk3OTIyOX0.Z1GIZuPj8Ci7rl-eXKmhmI9o6YyOK9CsLATcjuhbWPs","user-agent":"Mozilla\/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit\/537.36 (KHTML, like Gecko) Chrome\/140.0.0.0 Safari\/537.36","sec-ch-ua":"\"Chromium\";v=\"140\", \"Not=A?Brand\";v=\"24\", \"Google Chrome\";v=\"140\"","sec-ch-ua-mobile":"?0","accept":"*\/*","origin":"http:\/\/localhost:3000","sec-fetch-site":"same-site","sec-fetch-mode":"cors","sec-fetch-dest":"empty","referer":"http:\/\/localhost:3000\/","accept-encoding":"gzip, deflate, br, zstd","accept-language":"pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7"}
+[2025-09-08 20:33:58] Auth header found: YES - Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEwLCJlbWFpbCI6Im1hcmkubG9iYW9AZXRlYy5zcC5nb3YuYnIiLCJpYXQiOjE3NTczNzQ0MjksImV4cCI6MTc1Nzk3OTIyOX0.Z1GIZuPj8Ci7rl-eXKmhmI9o6YyOK9CsLATcjuhbWPs
+[2025-09-08 20:33:58] Token extracted: eyJ0eXAiOiJKV1QiLCJh...
+[2025-09-08 20:33:58] Token decoded successfully, userId: 10
+[2025-09-08 20:33:58] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 20:34:04] Auth headers check: {"host":"localhost","connection":"keep-alive","content-length":"336","sec-ch-ua-platform":"\"Windows\"","authorization":"Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEwLCJlbWFpbCI6Im1hcmkubG9iYW9AZXRlYy5zcC5nb3YuYnIiLCJpYXQiOjE3NTczNzQ0MjksImV4cCI6MTc1Nzk3OTIyOX0.Z1GIZuPj8Ci7rl-eXKmhmI9o6YyOK9CsLATcjuhbWPs","user-agent":"Mozilla\/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit\/537.36 (KHTML, like Gecko) Chrome\/140.0.0.0 Safari\/537.36","sec-ch-ua":"\"Chromium\";v=\"140\", \"Not=A?Brand\";v=\"24\", \"Google Chrome\";v=\"140\"","content-type":"multipart\/form-data; boundary=----WebKitFormBoundaryP0hsRuytOhXACnYg","sec-ch-ua-mobile":"?0","accept":"*\/*","origin":"http:\/\/localhost:3000","sec-fetch-site":"same-site","sec-fetch-mode":"cors","sec-fetch-dest":"empty","referer":"http:\/\/localhost:3000\/","accept-encoding":"gzip, deflate, br, zstd","accept-language":"pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7"}
+[2025-09-08 20:34:04] Auth header found: YES - Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEwLCJlbWFpbCI6Im1hcmkubG9iYW9AZXRlYy5zcC5nb3YuYnIiLCJpYXQiOjE3NTczNzQ0MjksImV4cCI6MTc1Nzk3OTIyOX0.Z1GIZuPj8Ci7rl-eXKmhmI9o6YyOK9CsLATcjuhbWPs
+[2025-09-08 20:34:04] Token extracted: eyJ0eXAiOiJKV1QiLCJh...
+[2025-09-08 20:34:04] Token decoded successfully, userId: 10
+[2025-09-08 20:34:04] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 20:39:57] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 20:40:01] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 20:40:03] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 20:40:11] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 20:40:11] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 20:40:16] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 20:40:20] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 20:40:26] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 20:40:29] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 20:40:30] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 20:40:32] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 20:40:33] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 20:40:33] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 20:40:33] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 20:40:33] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 20:40:33] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 20:40:34] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 20:40:34] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 20:40:34] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 20:40:34] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 20:40:42] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 20:41:12] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 20:41:42] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 20:42:12] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 20:42:42] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 20:43:12] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 20:43:42] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 20:44:43] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 20:45:45] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 20:46:45] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 20:47:46] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 20:48:47] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 20:49:48] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 20:50:49] Auth token error: Erro na consulta ao banco de dados
+[2025-09-08 20:51:52] Auth token error: Erro na consulta ao banco de dados

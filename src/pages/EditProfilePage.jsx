@@ -12,7 +12,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card'
 import { Avatar, AvatarFallback, AvatarImage } from '../components/ui/avatar';
 import { Camera, Save, ArrowLeft } from 'lucide-react';
 import { ROUTES } from '../constants';
-import { utils, format } from '../utils';
+import { utils } from '../utils';
 
 /**
  * Página de edição de perfil
@@ -23,11 +23,21 @@ const EditProfilePage = () => {
   const [uploading, setUploading] = useState(false);
   const [toast, setToast] = useState({ show: false, message: '', type: 'info' });
 
+  // Formatar telefone no padrão brasileiro (xx) xxxxx-xxxx
+  const formatTelefone = (value) => {
+    const digits = value.replace(/\D/g, '').slice(0, 11);
+    let result = '';
+    if (digits.length > 0) result += '(' + digits.slice(0, 2);
+    if (digits.length >= 3) result += ') ' + digits.slice(2, 7);
+    else if (digits.length > 2) result += ') ' + digits.slice(2);
+    if (digits.length >= 8) result += '-' + digits.slice(7, 11);
+    return result;
+  };
+
   // Formulário de perfil
   const {
     values,
     errors,
-    handleChange,
     handleBlur,
     handleSubmit,
     getFieldProps,
@@ -38,7 +48,7 @@ const EditProfilePage = () => {
     {
       nome: user?.nome || '',
       email: user?.email || '',
-  telefone: user?.telefone || '',
+      telefone: user?.telefone ? formatTelefone(user.telefone) : '',
       bio: user?.bio || '',
       website: user?.website || '',
       localizacao: user?.localizacao || ''
@@ -46,7 +56,14 @@ const EditProfilePage = () => {
     {
       nome: validationRules.name,
       email: validationRules.email,
-      telefone: (value) => value ? validationRules.phone(value) : null,
+      telefone: (value) => {
+        if (!value) return null;
+        const digits = value.replace(/\D/g, '');
+        if (digits.length < 10 || digits.length > 11) {
+          return 'Telefone deve ter 10 ou 11 dígitos';
+        }
+        return null;
+      },
       bio: (value) => value && value.length > 500 ? 'Bio deve ter no máximo 500 caracteres' : null,
       website: (value) => {
         if (!value) return null;
@@ -63,10 +80,11 @@ const EditProfilePage = () => {
   // Atualizar valores do formulário quando usuário estiver disponível
   React.useEffect(() => {
     if (user) {
+      console.log('Dados do usuário no EditProfile:', user);
       setFormValues({
         nome: user.nome || '',
         email: user.email || '',
-        telefone: user.telefone ? format.phone(user.telefone) : '',
+        telefone: user.telefone ? formatTelefone(user.telefone) : '',
         bio: user.bio || '',
         website: user.website || '',
         localizacao: user.localizacao || ''
@@ -76,7 +94,13 @@ const EditProfilePage = () => {
 
   // Submeter formulário
   const onSubmit = async (formData) => {
-    const result = await updateProfile(formData);
+    // Limpar telefone para enviar apenas números
+    const dataToSend = {
+      ...formData,
+      telefone: formData.telefone ? formData.telefone.replace(/\D/g, '') : ''
+    };
+    
+    const result = await updateProfile(dataToSend);
     
     if (result.success) {
       showToast('Perfil atualizado com sucesso!', 'success');
@@ -243,9 +267,14 @@ const EditProfilePage = () => {
                   <Label htmlFor="telefone">Telefone</Label>
                   <Input
                     id="telefone"
-                    {...getFieldProps('telefone')}
+                    name="telefone"
+                    value={values.telefone || ''}
+                    onChange={(e) => {
+                      const formatted = formatTelefone(e.target.value);
+                      setValue('telefone', formatted);
+                    }}
+                    onBlur={handleBlur}
                     placeholder="(11) 99999-9999"
-                    onBlur={(e) => { handleBlur(e); setValue('telefone', format.phone(e.target.value)); }}
                   />
                   {errors.telefone && (
                     <p className="text-sm text-red-600 mt-1">{errors.telefone}</p>

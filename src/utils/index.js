@@ -323,3 +323,19 @@ export const errorHandler = {
     console.error(`[ERROR${context ? ` - ${context}` : ''}]:`, error);
   }
 };
+
+/**
+ * Formatar tempo relativo (ex: "2h", "1d", "agora")
+ */
+export const formatTimeAgo = (dateString) => {
+  const now = new Date();
+  const date = new Date(dateString);
+  const diffInSeconds = Math.floor((now - date) / 1000);
+
+  if (diffInSeconds < 60) return 'agora';
+  if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)}min`;
+  if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)}h`;
+  if (diffInSeconds < 2592000) return `${Math.floor(diffInSeconds / 86400)}d`;
+  
+  return date.toLocaleDateString('pt-BR');
+};

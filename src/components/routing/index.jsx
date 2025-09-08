@@ -7,7 +7,18 @@ import { Loading } from '../common';
  * Componente para rotas protegidas (apenas usuários logados)
  */
 export const ProtectedRoute = ({ children, redirectTo = '/login' }) => {
-  const { isAuthenticated, loading } = useAuth();
+  const { isAuthenticated, loading, user } = useAuth();
+
+  // Debug para identificar problemas de autenticação
+  React.useEffect(() => {
+    if (!loading) {
+      console.log('ProtectedRoute - Debug:', { 
+        isAuthenticated, 
+        hasUser: !!user, 
+        userFromLocalStorage: !!localStorage.getItem('empowerup_user') 
+      });
+    }
+  }, [loading, isAuthenticated, user]);
 
   if (loading) {
     return (
@@ -17,7 +28,8 @@ export const ProtectedRoute = ({ children, redirectTo = '/login' }) => {
     );
   }
 
-  if (!isAuthenticated) {
+  if (!isAuthenticated || !user) {
+    console.warn('ProtectedRoute - Redirecting to login:', { isAuthenticated, user: !!user });
     return <Navigate to={redirectTo} replace />;
   }
 

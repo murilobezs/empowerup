@@ -138,6 +138,22 @@ class CommentController {
                 [$commentId]
             );
             
+            // Criar notificação para o autor do post
+            $postAuthor = $this->db->fetch(
+                'SELECT user_id FROM posts WHERE id = ?',
+                [$postId]
+            );
+            
+            if ($postAuthor) {
+                NotificationController::createNotification(
+                    $postAuthor['user_id'],
+                    $user['id'],
+                    'comment',
+                    $postId,
+                    $commentId
+                );
+            }
+            
             echo Helper::jsonResponse(true, 'Comentário criado com sucesso', [
                 'comment' => Helper::formatComment($newComment, $user['id'])
             ], 201);

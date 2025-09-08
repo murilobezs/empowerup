@@ -14,7 +14,8 @@ import {
   Edit,
   Trash2,
   Reply,
-  X
+  X,
+  Bookmark
 } from 'lucide-react';
 import {
   DropdownMenu,
@@ -30,44 +31,61 @@ import {
 } from './ui/dialog';
 import apiService from '../services/api';
 
-const SocialPost = ({ post, currentUser, onLike, onComment, onShare, onDelete, onUpdate }) => {
+const SocialPost = ({ 
+  post, 
+  currentUser, 
+  onLike, 
+  onComment, 
+  onShare, 
+  onDelete, 
+  onUpdate, 
+  onSave,
+  showSaveButton = true,
+  isSaved = false
+}) => {
   const [showComments, setShowComments] = useState(false);
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
   const [replyTo, setReplyTo] = useState(null);
   const [showLikesList, setShowLikesList] = useState(false);
   const [likes, setLikes] = useState([]);
-  const [isLiked, setIsLiked] = useState(post.user_liked || false);
+  const [isLiked, setIsLiked] = useState(post.user_liked || post.isLiked || false);
   const [likeCount, setLikeCount] = useState(post.likes || 0);
   const [commentCount, setCommentCount] = useState(post.comentarios || 0);
   const [loadingComments, setLoadingComments] = useState(false);
-    const [loadingLikes, setLoadingLikes] = useState(false);
-    // Follow state
-    const [isFollowed, setIsFollowed] = useState(post.isFollowed || false);
+  const [loadingLikes, setLoadingLikes] = useState(false);
+  const [saved, setSaved] = useState(isSaved || post.user_saved || post.isSaved || false);
+  const [isFollowing, setIsFollowing] = useState(post.isFollowed || false);
+
+  // Sincronizar estado quando as props mudarem
+  useEffect(() => {
+    setIsLiked(post.user_liked || post.isLiked || false);
+    setLikeCount(post.likes || 0);
+    setSaved(isSaved || post.user_saved || post.isSaved || false);
+  }, [post.user_liked, post.isLiked, post.likes, isSaved, post.user_saved, post.isSaved]);
 
   // Carregar comentários quando abrir
   useEffect(() => {
     if (showComments && !loadingComments) {
       fetchComments();
     }
-  }, [showComments]);
+  }, [showComments, post.id]);
 
   // Carregar likes quando abrir modal
   useEffect(() => {
     if (showLikesList && !loadingLikes) {
       fetchLikes();
     }
-  }, [showLikesList]);
+  }, [showLikesList, post.id]);
 
   const fetchComments = async () => {
     setLoadingComments(true);
     try {
-      const response = await fetch(`http://localhost/empowerup/api/posts/comentarios.php?post_id=${post.id}`);
-      const data = await response.json();
+      const response = await apiService.getComments(post.id);
       
-      if (data.success) {
-        setComments(data.comentarios);
-        setCommentCount(data.total);
+      if (response.success) {
+        setComments(response.comments || []);
+        setCommentCount(response.total || response.comments?.length || 0);
       }
     } catch (error) {
       console.error('Erro ao carregar comentários:', error);
@@ -78,12 +96,11 @@ const SocialPost = ({ post, currentUser, onLike, onComment, onShare, onDelete, o
   const fetchLikes = async () => {
     setLoadingLikes(true);
     try {
-      const response = await fetch(`http://localhost/empowerup/api/posts/likes.php?post_id=${post.id}`);
-      const data = await response.json();
+      const response = await apiService.getLikes(post.id);
       
-      if (data.success) {
-        setLikes(data.likes);
-        setLikeCount(data.total);
+      if (response.success) {
+        setLikes(response.likes || []);
+        setLikeCount(response.total || 0);
       }
     } catch (error) {
       console.error('Erro ao carregar likes:', error);
@@ -94,28 +111,36 @@ const SocialPost = ({ post, currentUser, onLike, onComment, onShare, onDelete, o
   const handleLike = async () => {
     if (!currentUser) return;
 
-    try {
-      const method = isLiked ? 'DELETE' : 'POST';
-      const response = await fetch('http://localhost/empowerup/api/posts/likes.php', {
-        method,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          post_id: post.id,
-          user_id: currentUser.id
-        })
-      });
+    // Atualização otimista do estado para feedback imediato
+    const previousLiked = isLiked;
+    const previousCount = likeCount;
+    const newLiked = !isLiked;
+    const newCount = newLiked ? likeCount + 1 : likeCount - 1;
+    
+    setIsLiked(newLiked);
+    setLikeCount(newCount);
 
-      const data = await response.json();
+    try {
+      const response = await apiService.toggleLike(post.id);
       
-      if (data.success) {
-        setIsLiked(!isLiked);
-        setLikeCount(data.total_likes);
-        if (onLike) onLike(post.id, !isLiked);
+      if (response.success) {
+        // Confirmar com dados do servidor
+        setIsLiked(response.liked);
+        setLikeCount(response.likesCount || response.likes_count || newCount);
+        
+        if (onLike) {
+          onLike(post.id, response.liked, response.likesCount || response.likes_count || newCount);
+        }
+      } else {
+        // Reverter em caso de erro
+        setIsLiked(previousLiked);
+        setLikeCount(previousCount);
       }
     } catch (error) {
-      console.error('Erro ao curtir:', error);
+      console.error('Erro ao curtir post:', error);
+      // Reverter estado em caso de erro
+      setIsLiked(previousLiked);
+      setLikeCount(previousCount);
     }
   };
 
@@ -123,25 +148,15 @@ const SocialPost = ({ post, currentUser, onLike, onComment, onShare, onDelete, o
     if (!currentUser || !newComment.trim()) return;
 
     try {
-      const response = await fetch('http://localhost/empowerup/api/posts/comentarios.php', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          post_id: post.id,
-          user_id: currentUser.id,
-          conteudo: newComment.trim(),
-          parent_id: replyTo?.id || null
-        })
+      const response = await apiService.createComment(post.id, {
+        conteudo: newComment.trim(),
+        parent_id: replyTo?.id || null
       });
-
-      const data = await response.json();
       
-      if (data.success) {
+      if (response.success) {
         setNewComment('');
         setReplyTo(null);
-        setCommentCount(data.total_comentarios);
+        setCommentCount(prev => prev + 1);
         fetchComments(); // Recarregar comentários
         if (onComment) onComment(post.id);
       }
@@ -154,25 +169,59 @@ const SocialPost = ({ post, currentUser, onLike, onComment, onShare, onDelete, o
     if (!currentUser) return;
 
     try {
-      const response = await fetch('http://localhost/empowerup/api/posts/comentarios.php', {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          comentario_id: commentId,
-          user_id: currentUser.id
-        })
-      });
-
-      const data = await response.json();
+      const response = await apiService.deleteComment(commentId);
       
-      if (data.success) {
-        setCommentCount(data.total_comentarios);
+      if (response.success) {
+        setCommentCount(prev => Math.max(prev - 1, 0));
         fetchComments(); // Recarregar comentários
       }
     } catch (error) {
       console.error('Erro ao deletar comentário:', error);
+    }
+  };
+
+  const handleSave = async () => {
+    if (!currentUser) return;
+
+    // Atualização otimista do estado para feedback imediato
+    const previousSaved = saved;
+    const newSaved = !saved;
+    
+    setSaved(newSaved);
+
+    try {
+      const response = await apiService.toggleSavePost(post.id);
+      
+      if (response.success) {
+        // Confirmar com dados do servidor
+        setSaved(response.saved);
+        
+        if (onSave) {
+          onSave(post.id, response.saved);
+        }
+      } else {
+        // Reverter em caso de erro
+        setSaved(previousSaved);
+      }
+    } catch (error) {
+      console.error('Erro ao salvar post:', error);
+      // Reverter estado em caso de erro
+      setSaved(previousSaved);
+    }
+  };
+
+  const handleFollow = async () => {
+    if (!currentUser) return;
+    if (post.user_id === currentUser.id) return; // Não pode seguir a si mesmo
+
+    try {
+      const response = await apiService.toggleFollow(post.user_id);
+      
+      if (response.success) {
+        setIsFollowing(response.following);
+      }
+    } catch (error) {
+      console.error('Erro ao seguir usuário:', error);
     }
   };
 
@@ -310,14 +359,14 @@ const SocialPost = ({ post, currentUser, onLike, onComment, onShare, onDelete, o
       <Avatar className="w-8 h-8">
         <AvatarImage src={comment.avatar_url ? `http://localhost/empowerup/public${comment.avatar_url}` : ''} />
         <AvatarFallback className="text-xs bg-coral text-white">
-          {comment.nome.charAt(0)}
+          {comment.nome ? comment.nome.charAt(0) : comment.autor ? comment.autor.charAt(0) : '?'}
         </AvatarFallback>
       </Avatar>
       <div className="flex-1">
         <div className="bg-gray-50 rounded-lg p-3">
           <div className="flex items-center space-x-2 mb-1">
-            <span className="font-medium text-sm">{comment.nome}</span>
-            <span className="text-coral text-sm">@{comment.username}</span>
+            <span className="font-medium text-sm">{comment.nome || comment.autor || 'Usuário'}</span>
+            <span className="text-coral text-sm">@{comment.username || 'unknown'}</span>
             <span className="text-gray-500 text-xs">{formatTimeAgo(comment.created_at)}</span>
           </div>
           <p className="text-sm text-gray-800">{comment.conteudo}</p>
@@ -353,14 +402,14 @@ const SocialPost = ({ post, currentUser, onLike, onComment, onShare, onDelete, o
                 <Avatar className="w-6 h-6">
                   <AvatarImage src={resposta.avatar_url ? `http://localhost/empowerup/public${resposta.avatar_url}` : ''} />
                   <AvatarFallback className="text-xs bg-sage text-white">
-                    {resposta.nome.charAt(0)}
+                    {resposta.nome ? resposta.nome.charAt(0) : resposta.autor ? resposta.autor.charAt(0) : '?'}
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex-1">
                   <div className="bg-gray-100 rounded-lg p-2">
                     <div className="flex items-center space-x-2 mb-1">
-                      <span className="font-medium text-xs">{resposta.nome}</span>
-                      <span className="text-coral text-xs">@{resposta.username}</span>
+                      <span className="font-medium text-xs">{resposta.nome || resposta.autor || 'Usuário'}</span>
+                      <span className="text-coral text-xs">@{resposta.username || 'unknown'}</span>
                       <span className="text-gray-500 text-xs">{formatTimeAgo(resposta.created_at)}</span>
                     </div>
                     <p className="text-xs text-gray-800">{resposta.conteudo}</p>
@@ -407,35 +456,53 @@ const SocialPost = ({ post, currentUser, onLike, onComment, onShare, onDelete, o
               </div>
             </Link>
           
-          {/* Menu de opções */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="sm" className="rounded-full h-8 w-8 p-0">
-                <MoreHorizontal className="h-4 w-4" />
+          <div className="flex items-center space-x-2">
+            {/* Botão de seguir */}
+            {currentUser && post.user_id !== currentUser.id && (
+              <Button
+                variant={isFollowing ? "outline" : "default"}
+                size="sm"
+                onClick={handleFollow}
+                className={`${
+                  isFollowing 
+                    ? "border-coral text-coral hover:bg-coral hover:text-white" 
+                    : "bg-coral hover:bg-coral/90 text-white"
+                }`}
+              >
+                {isFollowing ? "Seguindo" : "Seguir"}
               </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              {currentUser && currentUser.id === post.user_id ? (
-                <>
-                  <DropdownMenuItem onClick={() => onUpdate && onUpdate(post)}>
-                    <Edit className="mr-2 h-4 w-4" />
-                    Editar
+            )}
+            
+            {/* Menu de opções */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="sm" className="rounded-full h-8 w-8 p-0">
+                  <MoreHorizontal className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                {currentUser && currentUser.id === post.user_id ? (
+                  <>
+                    <DropdownMenuItem onClick={() => onUpdate && onUpdate(post)}>
+                      <Edit className="mr-2 h-4 w-4" />
+                      Editar
+                    </DropdownMenuItem>
+                    <DropdownMenuItem 
+                      className="text-red-600"
+                      onClick={() => onDelete && onDelete(post.id)}
+                    >
+                      <Trash2 className="mr-2 h-4 w-4" />
+                      Deletar
+                    </DropdownMenuItem>
+                  </>
+                ) : (
+                  <DropdownMenuItem className="text-yellow-600">
+                    Reportar
                   </DropdownMenuItem>
-                  <DropdownMenuItem 
-                    className="text-red-600"
-                    onClick={() => onDelete && onDelete(post.id)}
-                  >
-                    <Trash2 className="mr-2 h-4 w-4" />
-                    Deletar
-                  </DropdownMenuItem>
-                </>
-              ) : (
-                <DropdownMenuItem className="text-yellow-600">
-                  Reportar
-                </DropdownMenuItem>
-              )}
-            </DropdownMenuContent>
-          </DropdownMenu>
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         </div>
 
         {/* Categoria */}
@@ -491,16 +558,19 @@ const SocialPost = ({ post, currentUser, onLike, onComment, onShare, onDelete, o
               variant="ghost"
               size="sm"
               onClick={handleLike}
-              className={`transition-colors ${
+              className={`transition-all duration-200 ${
                 isLiked 
-                  ? "text-red-500 hover:text-red-600" 
-                  : "text-coral hover:text-coral/80"
+                  ? "text-red-500 hover:text-red-600 bg-red-50 hover:bg-red-100" 
+                  : "text-coral hover:text-coral/80 hover:bg-coral/10"
               }`}
             >
-              <Heart className={`mr-2 h-4 w-4 ${isLiked ? "fill-current" : ""}`} />
+              <Heart className={`mr-2 h-4 w-4 transition-all duration-200 ${isLiked ? "fill-current scale-110" : ""}`} />
               <span 
                 className="cursor-pointer hover:underline"
-                onClick={() => setShowLikesList(true)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowLikesList(true);
+                }}
               >
                 {likeCount}
               </span>
@@ -525,6 +595,22 @@ const SocialPost = ({ post, currentUser, onLike, onComment, onShare, onDelete, o
               <Share2 className="mr-2 h-4 w-4" />
               {post.compartilhamentos || 0}
             </Button>
+
+            {showSaveButton && (
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className={`transition-all duration-200 ${
+                  saved 
+                    ? "text-blue-500 hover:text-blue-600 bg-blue-50 hover:bg-blue-100" 
+                    : "text-gray-500 hover:text-gray-600 hover:bg-gray-100"
+                }`}
+                onClick={handleSave}
+                title={saved ? "Remover dos salvos" : "Salvar post"}
+              >
+                <Bookmark className={`h-4 w-4 transition-all duration-200 ${saved ? "fill-current scale-110" : ""}`} />
+              </Button>
+            )}
           </div>
         </div>
 
@@ -611,16 +697,16 @@ const SocialPost = ({ post, currentUser, onLike, onComment, onShare, onDelete, o
                 </div>
               ) : likes.length > 0 ? (
                 likes.map((like) => (
-                  <div key={like.id} className="flex items-center space-x-3">
+                  <div key={like.id || like.user?.id} className="flex items-center space-x-3">
                     <Avatar className="w-10 h-10">
-                      <AvatarImage src={like.avatar_url ? `http://localhost/empowerup/public${like.avatar_url}` : ''} />
+                      <AvatarImage src={(like.avatar_url || like.user?.avatar_url) ? `http://localhost/empowerup/public${like.avatar_url || like.user?.avatar_url}` : ''} />
                       <AvatarFallback className="bg-coral text-white">
-                        {like.nome.charAt(0)}
+                        {(like.nome || like.user?.nome) ? (like.nome || like.user?.nome).charAt(0) : '?'}
                       </AvatarFallback>
                     </Avatar>
                     <div>
-                      <p className="font-medium">{like.nome}</p>
-                      <p className="text-sm text-coral">@{like.username}</p>
+                      <p className="font-medium">{like.nome || like.user?.nome || 'Usuário'}</p>
+                      <p className="text-sm text-coral">@{like.username || like.user?.username || 'unknown'}</p>
                     </div>
                   </div>
                 ))

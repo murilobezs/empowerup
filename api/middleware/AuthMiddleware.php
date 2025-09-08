@@ -63,7 +63,7 @@ class AuthMiddleware {
             // Verificar se o usuário ainda existe
             $db = Database::getInstance();
             $user = $db->fetch(
-                'SELECT id, nome, username, email, tipo, avatar_url FROM usuarios WHERE id = ?',
+                'SELECT id, nome, username, email, telefone, bio, website, localizacao, tipo, avatar_url FROM usuarios WHERE id = ?',
                 [$payload['userId']]
             );
 

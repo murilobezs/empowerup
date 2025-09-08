@@ -16,8 +16,10 @@ import {
   Bell,
   Bookmark,
   Mail,
-  User
-  ,CheckCircle, X
+  User,
+  CheckCircle, 
+  X,
+  Heart
 } from 'lucide-react'
 import { CreateGroupModal } from '../components/create-group-modal'
 import { useAuth } from '../contexts/AuthContext'
@@ -34,6 +36,7 @@ export default function ComunidadePage() {
   const [posts, setPosts] = useState([])
   const [groups, setGroups] = useState([])
   const [events, setEvents] = useState([])
+  const [notifications, setNotifications] = useState([])
   const [trending, setTrending] = useState([])
   const [showCreateGroup, setShowCreateGroup] = useState(false)
   const [selectedFilter, setSelectedFilter] = useState("todos")
@@ -123,19 +126,40 @@ export default function ComunidadePage() {
       }
     }
 
+    const fetchNotifications = async () => {
+      if (!user?.token) return
+      
+      try {
+        const response = await fetch(`${config.API_BASE_URL}/notifications/list.php`, {
+          headers: {
+            'Authorization': `Bearer ${user.token}`
+          }
+        })
+        if (response.ok) {
+          const data = await response.json()
+          if (data.success) {
+            setNotifications(data.notifications || [])
+          }
+        }
+      } catch (error) {
+        console.error("Erro ao carregar notificações:", error)
+      }
+    }
+
     const loadData = async () => {
       setLoading(true)
       await Promise.all([
         fetchPosts(),
         fetchGroups(),
         fetchEvents(),
-        fetchTrending()
+        fetchTrending(),
+        user ? fetchNotifications() : Promise.resolve()
       ])
       setLoading(false)
     }
     
     loadData()
-  }, [user?.id])
+  }, [user])
   // open username setup modal for new users
   const [showUsernameModal, setShowUsernameModal] = useState(false)
   useEffect(() => {
@@ -257,44 +281,48 @@ export default function ComunidadePage() {
   }
 
   // Handle like functionality
-  const handleLike = async (postId, isLiked) => {
+  const handleLike = async (postId, liked, likesCount) => {
     if (!user) {
       addToast('Faça login para curtir posts', 'warning')
       return
     }
 
-    try {
-      const method = isLiked ? 'DELETE' : 'POST'
-      const response = await fetch(`${config.API_BASE_URL}/posts/likes.php`, {
-        method,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          post_id: postId,
-          user_id: user.id
-        })
-      })
+    // Atualizar o post na lista com os novos valores
+    setPosts(prevPosts => 
+      prevPosts.map(post => 
+        post.id === postId 
+          ? { 
+              ...post, 
+              likes: likesCount,
+              user_liked: liked,
+              isLiked: liked
+            }
+          : post
+      )
+    )
+    addToast(liked ? 'Post curtido! ❤️' : 'Like removido', 'success')
+  }
 
-      const data = await response.json()
-      if (data.success) {
-        // Atualizar o post na lista
-        setPosts(prevPosts => 
-          prevPosts.map(post => 
-            post.id === postId 
-              ? { 
-                  ...post, 
-                  likes_count: isLiked ? post.likes_count - 1 : post.likes_count + 1,
-                  user_liked: !isLiked
-                }
-              : post
-          )
-        )
-      }
-    } catch (error) {
-      console.error('Erro ao curtir post:', error)
-      addToast('Erro ao curtir post', 'error')
+  // Handle save functionality
+  const handleSave = async (postId, saved) => {
+    if (!user) {
+      addToast('Faça login para salvar posts', 'warning')
+      return
     }
+
+    // Atualizar o post na lista com os novos valores
+    setPosts(prevPosts => 
+      prevPosts.map(post => 
+        post.id === postId 
+          ? { 
+              ...post, 
+              user_saved: saved,
+              isSaved: saved
+            }
+          : post
+      )
+    )
+    addToast(saved ? 'Post salvo!' : 'Post removido dos salvos', 'success')
   }
 
   // Handle comment functionality
@@ -305,15 +333,14 @@ export default function ComunidadePage() {
     }
 
     try {
-      const response = await fetch(`${config.API_BASE_URL}/posts/comentarios.php`, {
+      const response = await fetch(`${config.API_BASE_URL}/comments/posts/${postId}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${user.token}`
         },
         body: JSON.stringify({
-          post_id: postId,
-          user_id: user.id,
-          comentario: commentText,
+          conteudo: commentText,
           parent_id: parentId
         })
       })
@@ -321,12 +348,17 @@ export default function ComunidadePage() {
       const data = await response.json()
       if (data.success) {
         addToast('Comentário adicionado! 💬', 'success')
-        // Recarregar os posts para mostrar o novo comentário
-        const postsResponse = await fetch(`${config.API_BASE_URL}/posts/postagens_new.php${user?.id ? `?user_id=${user.id}` : ''}`)
-        if (postsResponse.ok) {
-          const postsData = await postsResponse.json()
-          setPosts(Array.isArray(postsData) ? postsData : [])
-        }
+        // Atualizar contagem de comentários no post
+        setPosts(prevPosts => 
+          prevPosts.map(post => 
+            post.id === postId 
+              ? { 
+                  ...post, 
+                  comentarios: post.comentarios + 1
+                }
+              : post
+          )
+        )
       }
     } catch (error) {
       console.error('Erro ao comentar:', error)
@@ -375,6 +407,36 @@ export default function ComunidadePage() {
     { label: "Saúde", value: "saude" },
     { label: "Educação", value: "educacao" },
   ]
+
+  const markAsRead = async (notificationId) => {
+    if (!user?.token) return
+    
+    try {
+      const response = await fetch(`${config.API_BASE_URL}/notifications/mark_read.php`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${user.token}`
+        },
+        body: JSON.stringify({ notification_id: notificationId })
+      })
+      
+      if (response.ok) {
+        const data = await response.json()
+        if (data.success) {
+          setNotifications(prev => 
+            prev.map(notif => 
+              notif.id === notificationId 
+                ? { ...notif, is_read: true }
+                : notif
+            )
+          )
+        }
+      }
+    } catch (error) {
+      console.error("Erro ao marcar notificação como lida:", error)
+    }
+  }
 
   if (loading) {
     return (
@@ -483,7 +545,7 @@ export default function ComunidadePage() {
                   </a>
                 </li>
                 <li>
-                  <a href="/salvos" className="flex items-center gap-3 p-3 rounded-full hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-coral">
+                  <a href="/posts-salvos" className="flex items-center gap-3 p-3 rounded-full hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-coral">
                     <Bookmark className="h-5 w-5 text-gray-700" />
                     <span>Salvos</span>
                   </a>
@@ -509,6 +571,12 @@ export default function ComunidadePage() {
                   <TabsTrigger value="posts" className="text-base px-3 py-2 rounded-md" role="tab">Posts</TabsTrigger>
                   <TabsTrigger value="grupos" className="text-base px-3 py-2 rounded-md" role="tab">Grupos</TabsTrigger>
                   <TabsTrigger value="eventos" className="text-base px-3 py-2 rounded-md" role="tab">Eventos</TabsTrigger>
+                  {user && (
+                    <TabsTrigger value="notificacoes" className="text-base px-3 py-2 rounded-md flex items-center gap-2" role="tab">
+                      <Bell className="h-4 w-4" />
+                      Notificações
+                    </TabsTrigger>
+                  )}
                 </TabsList>
 
                 <TabsContent value="posts" className="mt-0">
@@ -561,6 +629,9 @@ export default function ComunidadePage() {
                           onShare={handleShare}
                           onDelete={handleDeletePost}
                           onUpdate={handleUpdatePost}
+                          onSave={handleSave}
+                          showSaveButton={true}
+                          isSaved={post.user_saved || post.isSaved || false}
                         />
                       ))}
 
@@ -591,6 +662,80 @@ export default function ComunidadePage() {
                 <TabsContent value="eventos" className="mt-0">
                   {/* ...existing code... */}
                 </TabsContent>
+                
+                {/* Notificações */}
+                {user && (
+                  <TabsContent value="notificacoes" className="mt-0">
+                    <div className="space-y-4">
+                      {notifications.length > 0 ? (
+                        notifications.map((notification) => (
+                          <Card 
+                            key={notification.id} 
+                            className={`shadow-sm cursor-pointer transition-colors ${
+                              !notification.is_read ? 'bg-blue-50 border-blue-200' : 'bg-white'
+                            }`}
+                            onClick={() => markAsRead(notification.id)}
+                          >
+                            <CardContent className="p-4">
+                              <div className="flex items-start space-x-3">
+                                <div className="flex-shrink-0">
+                                  {notification.type === 'like' && (
+                                    <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
+                                      <Heart className="h-5 w-5 text-red-500" />
+                                    </div>
+                                  )}
+                                  {notification.type === 'comment' && (
+                                    <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                                      <MessageCircle className="h-5 w-5 text-blue-500" />
+                                    </div>
+                                  )}
+                                  {notification.type === 'follow' && (
+                                    <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                                      <User className="h-5 w-5 text-green-500" />
+                                    </div>
+                                  )}
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                  <p className="text-sm text-gray-900">
+                                    <span className="font-medium">{notification.from_user_name}</span>
+                                    {notification.type === 'like' && ' curtiu seu post'}
+                                    {notification.type === 'comment' && ' comentou em seu post'}
+                                    {notification.type === 'follow' && ' começou a seguir você'}
+                                  </p>
+                                  {notification.message && (
+                                    <p className="text-sm text-gray-600 mt-1">{notification.message}</p>
+                                  )}
+                                  <p className="text-xs text-gray-500 mt-2">
+                                    {new Date(notification.created_at).toLocaleDateString('pt-BR', {
+                                      day: '2-digit',
+                                      month: '2-digit',
+                                      year: 'numeric',
+                                      hour: '2-digit',
+                                      minute: '2-digit'
+                                    })}
+                                  </p>
+                                </div>
+                                {!notification.is_read && (
+                                  <div className="w-3 h-3 bg-blue-500 rounded-full flex-shrink-0"></div>
+                                )}
+                              </div>
+                            </CardContent>
+                          </Card>
+                        ))
+                      ) : (
+                        <Card className="shadow-sm">
+                          <CardContent className="p-12 text-center">
+                            <div className="text-gray-500">
+                              <Bell className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                              <h3 className="text-lg font-medium mb-2">Nenhuma notificação</h3>
+                              <p className="text-sm">Suas notificações aparecerão aqui</p>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      )}
+                    </div>
+                  </TabsContent>
+                )}
               </Tabs>
             </div>
           </section>

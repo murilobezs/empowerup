@@ -99,6 +99,8 @@ class Helper {
             // These fields may not be present in all contexts
             'telefone' => $user['telefone'] ?? null,
             'bio' => $user['bio'] ?? null,
+            'website' => $user['website'] ?? null,
+            'localizacao' => $user['localizacao'] ?? null,
             'tipo' => $user['tipo'],
             'avatar_url' => $user['avatar_url'],
             'created_at' => $user['created_at'] ?? null,
@@ -121,6 +123,7 @@ class Helper {
             'categoria' => $post['categoria'],
             'tags' => json_decode($post['tags'] ?? '[]', true),
             'likes' => (int)($post['likes'] ?? 0),
+            'likes_count' => (int)($post['likes'] ?? 0), // Compatibilidade
             'comentarios' => (int)($post['comentarios'] ?? 0),
             'compartilhamentos' => (int)($post['compartilhamentos'] ?? 0),
             'created_at' => $post['created_at'],
@@ -129,9 +132,11 @@ class Helper {
             'video_url' => $post['video_url'],
             'gif_url' => $post['gif_url'],
             'tipo_midia' => $post['tipo_midia'] ?? 'none',
+            'user_liked' => isset($post['isLiked']) ? (bool)$post['isLiked'] : false,
             'isLiked' => isset($post['isLiked']) ? (bool)$post['isLiked'] : false,
             'isFollowed' => isset($post['isFollowed']) ? (bool)$post['isFollowed'] : false,
-            'isOwner' => $currentUserId ? (int)$post['user_id'] === (int)$currentUserId : false
+            'isOwner' => $currentUserId ? (int)$post['user_id'] === (int)$currentUserId : false,
+            'media_files' => $post['media_files'] ?? []
         ];
     }
     

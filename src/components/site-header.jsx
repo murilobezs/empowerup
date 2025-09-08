@@ -22,23 +22,38 @@ export function SiteHeader() {
 	const { user, logout } = useAuth()
 	const [isOpen, setIsOpen] = useState(false)
 
-	// badge state for community notifications/posts
-	const [communityBadge, setCommunityBadge] = useState(0)
+	// badge state for notifications
+	const [notificationCount, setNotificationCount] = useState(0)
 
 	useEffect(() => {
-		const fetchBadge = async () => {
+		const fetchNotifications = async () => {
+			if (!user) {
+				setNotificationCount(0)
+				return
+			}
+			
 			try {
-				const res = await fetch(`${config.API_BASE_URL}/posts/unread_count`)
+				const res = await fetch(`${config.API_BASE_URL}/notifications`, {
+					headers: {
+						'Authorization': `Bearer ${user.token}`
+					}
+				})
 				if (res.ok) {
-					const j = await res.json()
-					setCommunityBadge(Number(j.count) || 0)
+					const data = await res.json()
+					setNotificationCount(data.unread_count || 0)
 				}
 			} catch (e) {
-				// endpoint may not exist; ignore
+				console.error('Erro ao buscar notificações:', e)
 			}
 		}
-		fetchBadge()
-	}, [])
+		fetchNotifications()
+		
+		// Atualizar a cada 30 segundos se usuário logado
+		const interval = user ? setInterval(fetchNotifications, 30000) : null
+		return () => {
+			if (interval) clearInterval(interval)
+		}
+	}, [user])
 	const isAuthPage = location.pathname === '/login' || location.pathname === '/cadastro'
 
 	return (
@@ -83,9 +98,9 @@ export function SiteHeader() {
 								<circle cx="12" cy="7" r="4"></circle>
 							</svg>
 							<span className="text-sm font-medium">Comunidade</span>
-							{communityBadge > 0 && (
+							{user && notificationCount > 0 && (
 								<span className="inline-flex items-center justify-center ml-2 px-2 py-0.5 text-xs font-semibold leading-none text-white bg-red-500 rounded-full" aria-hidden>
-									{communityBadge > 99 ? '99+' : communityBadge}
+									{notificationCount > 99 ? '99+' : notificationCount}
 								</span>
 							)}
 						</span>

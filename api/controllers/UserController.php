@@ -42,6 +42,13 @@ class UserController {
                 );
                 $following = true;
                 $message = 'Seguindo';
+                
+                // Criar notificação para o usuário seguido
+                NotificationController::createNotification(
+                    $targetId,
+                    $user['id'],
+                    'follow'
+                );
             }
             // Contar seguidores
             $count = $this->db->fetch(
@@ -290,7 +297,7 @@ class UserController {
             
             // Buscar usuário atualizado
             $updatedUser = $this->db->fetch(
-                'SELECT id, nome, username, email, telefone, bio, tipo, avatar_url, created_at, updated_at FROM usuarios WHERE id = ?',
+                'SELECT id, nome, username, email, telefone, bio, website, localizacao, tipo, avatar_url, created_at, updated_at FROM usuarios WHERE id = ?',
                 [$user['id']]
             );
             
