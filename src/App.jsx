@@ -12,6 +12,7 @@ const CadastroPage = React.lazy(() => import('./pages/CadastroPage'));
 const ComunidadePage = React.lazy(() => import('./pages/ComunidadePage'));
 const ProfilePage = React.lazy(() => import('./pages/ProfilePage'));
 const EditProfilePage = React.lazy(() => import('./pages/EditProfilePage'));
+const MensagensPage = React.lazy(() => import('./pages/MensagensPage'));
 const AboutPage = React.lazy(() => import('./pages/AboutPage'));
 const ContactPage = React.lazy(() => import('./pages/ContactPage'));
 const EventsPage = React.lazy(() => import('./pages/EventsPage'));
@@ -98,6 +99,15 @@ function App() {
             element={
               <ProtectedRoute>
                 <EditProfilePage />
+              </ProtectedRoute>
+            } 
+          />
+
+          <Route 
+            path={ROUTES.MENSAGENS} 
+            element={
+              <ProtectedRoute>
+                <MensagensPage />
               </ProtectedRoute>
             } 
           />

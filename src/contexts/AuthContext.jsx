@@ -136,7 +136,9 @@ export const AuthProvider = ({ children }) => {
       }
     } catch (error) {
       console.error('Erro no registro:', error);
-      return { success: false, message: error.message || 'Erro ao registrar usuário' };
+      // Extrair erros de validação se houver
+      const backendErrors = error.data && error.data.errors ? error.data.errors : null;
+      return { success: false, message: error.data?.message || error.message || 'Erro ao registrar usuário', errors: backendErrors };
     } finally {
       setLoading(false);
     }

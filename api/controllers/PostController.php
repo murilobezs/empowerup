@@ -62,10 +62,11 @@ class PostController {
             // Adicionar verificação de like se usuário logado
             if ($currentUserId) {
                 $query .= ",
-                       (SELECT COUNT(*) FROM post_likes pl WHERE pl.post_id = p.id AND pl.user_id = ?) as isLiked
+                       (SELECT COUNT(*) FROM post_likes pl WHERE pl.post_id = p.id AND pl.user_id = ?) as isLiked,
+                       (SELECT COUNT(*) FROM user_follows uf WHERE uf.follower_id = ? AND uf.followed_id = p.user_id) as isFollowed
                 ";
             } else {
-                $query .= ", 0 as isLiked";
+                $query .= ", 0 as isLiked, 0 as isFollowed";
             }
             
             $query .= "
@@ -76,6 +77,7 @@ class PostController {
             // Parâmetros da query
             $params = [];
             if ($currentUserId) {
+                $params[] = $currentUserId;
                 $params[] = $currentUserId;
             }
             
@@ -164,11 +166,12 @@ class PostController {
             
             if ($currentUserId) {
                 $query .= ",
-                       (SELECT COUNT(*) FROM post_likes pl WHERE pl.post_id = p.id AND pl.user_id = ?) as isLiked
+                       (SELECT COUNT(*) FROM post_likes pl WHERE pl.post_id = p.id AND pl.user_id = ?) as isLiked,
+                       (SELECT COUNT(*) FROM user_follows uf WHERE uf.follower_id = ? AND uf.followed_id = u.id) as isFollowed
                 ";
-                $params = [$currentUserId, $id];
+                $params = [$currentUserId, $currentUserId, $id];
             } else {
-                $query .= ", 0 as isLiked";
+                $query .= ", 0 as isLiked, 0 as isFollowed";
                 $params = [$id];
             }
             

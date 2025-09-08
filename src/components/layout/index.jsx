@@ -100,13 +100,19 @@ export const ProfileLayout = ({
       {/* Cover e Avatar */}
       <div className="relative">
         {/* Cover Image */}
-        <div className="h-48 md:h-64 bg-gradient-to-r from-purple-400 to-pink-400">
-          {coverImage && (
+        {/* Cover banner */}
+        <div className="h-48 md:h-64 bg-gray-200">
+          {coverImage ? (
             <img 
               src={coverImage} 
               alt="Cover" 
               className="w-full h-full object-cover"
             />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center text-gray-500">
+              {/* Default banner icon or text */}
+              <span className="text-xl">&nbsp;</span>
+            </div>
           )}
         </div>
         
@@ -116,11 +122,22 @@ export const ProfileLayout = ({
             <div className="flex items-end space-x-4">
               {/* Avatar */}
               <div className="relative">
-                <img
-                  src={user?.foto_perfil || '/placeholder-avatar.png'}
-                  alt={user?.nome}
-                  className="w-24 h-24 sm:w-32 sm:h-32 rounded-full border-4 border-white bg-white"
-                />
+                {/* Avatar with initial fallback */}
+                <div className="relative">
+                  <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-full border-4 border-white bg-white overflow-hidden">
+                    {user?.foto_perfil ? (
+                      <img
+                        src={user.foto_perfil}
+                        alt={user.nome}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-coral flex items-center justify-center text-white text-2xl font-bold">
+                        {user?.nome?.charAt(0) || ''}
+                      </div>
+                    )}
+                  </div>
+                </div>
               </div>
               
               {/* User Info */}

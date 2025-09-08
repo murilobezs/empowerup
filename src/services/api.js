@@ -42,7 +42,10 @@ class ApiService {
       }
 
       if (!response.ok) {
-        throw new Error(data.message || `HTTP error! status: ${response.status}`);
+        const err = new Error(data.message || `HTTP error! status: ${response.status}`);
+        err.status = response.status;
+        err.data = data;
+        throw err;
       }
 
       return data;
@@ -79,7 +82,10 @@ class ApiService {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || `HTTP error! status: ${response.status}`);
+        const err = new Error(data.message || `HTTP error! status: ${response.status}`);
+        err.status = response.status;
+        err.data = data;
+        throw err;
       }
 
       return data;

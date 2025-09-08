@@ -210,6 +210,21 @@ $router->get('/users/{id}', function($id) {
     $controller = new UserController();
     $controller->getUser($id);
 });
+    // Toggle follow/unfollow user
+    $router->post('/users/{id}/follow', function($id) {
+        $controller = new UserController();
+        $controller->toggleFollow($id);
+    });
+    // List followers of user
+    $router->get('/users/{id}/followers', function($id) {
+        $controller = new UserController();
+        $controller->getFollowers($id);
+    });
+    // List following of user
+    $router->get('/users/{id}/following', function($id) {
+        $controller = new UserController();
+        $controller->getFollowing($id);
+    });
 
 $router->put('/users/profile', function() {
     $controller = new UserController();

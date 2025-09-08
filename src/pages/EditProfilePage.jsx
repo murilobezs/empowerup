@@ -12,7 +12,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card'
 import { Avatar, AvatarFallback, AvatarImage } from '../components/ui/avatar';
 import { Camera, Save, ArrowLeft } from 'lucide-react';
 import { ROUTES } from '../constants';
-import { utils } from '../utils';
+import { utils, format } from '../utils';
 
 /**
  * Página de edição de perfil
@@ -28,14 +28,17 @@ const EditProfilePage = () => {
     values,
     errors,
     handleChange,
+    handleBlur,
     handleSubmit,
     getFieldProps,
+    setFormValues,
+    setValue,
     isSubmitting
   } = useForm(
     {
       nome: user?.nome || '',
       email: user?.email || '',
-      telefone: user?.telefone || '',
+  telefone: user?.telefone || '',
       bio: user?.bio || '',
       website: user?.website || '',
       localizacao: user?.localizacao || ''
@@ -56,6 +59,20 @@ const EditProfilePage = () => {
       }
     }
   );
+
+  // Atualizar valores do formulário quando usuário estiver disponível
+  React.useEffect(() => {
+    if (user) {
+      setFormValues({
+        nome: user.nome || '',
+        email: user.email || '',
+        telefone: user.telefone ? format.phone(user.telefone) : '',
+        bio: user.bio || '',
+        website: user.website || '',
+        localizacao: user.localizacao || ''
+      });
+    }
+  }, [user, setFormValues]);
 
   // Submeter formulário
   const onSubmit = async (formData) => {
@@ -228,6 +245,7 @@ const EditProfilePage = () => {
                     id="telefone"
                     {...getFieldProps('telefone')}
                     placeholder="(11) 99999-9999"
+                    onBlur={(e) => { handleBlur(e); setValue('telefone', format.phone(e.target.value)); }}
                   />
                   {errors.telefone && (
                     <p className="text-sm text-red-600 mt-1">{errors.telefone}</p>
@@ -266,6 +284,7 @@ const EditProfilePage = () => {
                     id="website"
                     {...getFieldProps('website')}
                     placeholder="https://seusite.com"
+                    required={false}
                   />
                   {errors.website && (
                     <p className="text-sm text-red-600 mt-1">{errors.website}</p>
@@ -278,6 +297,7 @@ const EditProfilePage = () => {
                     id="localizacao"
                     {...getFieldProps('localizacao')}
                     placeholder="Cidade, Estado"
+                    required={false}
                   />
                 </div>
               </CardContent>

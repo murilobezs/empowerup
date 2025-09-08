@@ -9,6 +9,134 @@ class UserController {
     public function __construct() {
         $this->db = Database::getInstance();
     }
+
+    /**
+     * Seguir ou deixar de seguir usuário
+     */
+    public function toggleFollow($id) {
+        try {
+            $user = AuthMiddleware::required();
+            $targetId = intval($id);
+            if ($user['id'] === $targetId) {
+                echo Helper::jsonResponse(false, 'Não é possível seguir a si mesmo', [], 400);
+                return;
+            }
+            // Verificar existência
+            $existing = $this->db->fetch(
+                'SELECT 1 FROM user_follows WHERE follower_id = ? AND followed_id = ?',
+                [$user['id'], $targetId]
+            );
+            if ($existing) {
+                // Unfollow
+                $this->db->execute(
+                    'DELETE FROM user_follows WHERE follower_id = ? AND followed_id = ?',
+                    [$user['id'], $targetId]
+                );
+                $following = false;
+                $message = 'Deixou de seguir';
+            } else {
+                // Follow
+                $this->db->insert(
+                    'INSERT INTO user_follows (follower_id, followed_id) VALUES (?, ?)',
+                    [$user['id'], $targetId]
+                );
+                $following = true;
+                $message = 'Seguindo';
+            }
+            // Contar seguidores
+            $count = $this->db->fetch(
+                'SELECT COUNT(*) as cnt FROM user_follows WHERE followed_id = ?',
+                [$targetId]
+            );
+            echo Helper::jsonResponse(true, $message, [
+                'following' => $following,
+                'followers_count' => (int)$count['cnt']
+            ]);
+        } catch (Exception $e) {
+            Helper::logError('Toggle follow error: ' . $e->getMessage(), ['target_id' => $id]);
+            echo Helper::jsonResponse(false, 'Erro ao seguir/desseguir usuário', [], 500);
+        }
+    }
+
+    /**
+     * Listar seguidores de um usuário
+     */
+    public function getFollowers($id) {
+        try {
+            $page = intval($_GET['page'] ?? 1);
+            $limit = intval($_GET['limit'] ?? 20);
+            $offset = ($page - 1) * $limit;
+            $followers = $this->db->fetchAll(
+                'SELECT u.id, u.nome, u.username, u.avatar_url
+                 FROM user_follows uf
+                 JOIN usuarios u ON uf.follower_id = u.id
+                 WHERE uf.followed_id = ?
+                 ORDER BY uf.created_at DESC
+                 LIMIT ? OFFSET ?',
+                [$id, $limit, $offset]
+            );
+            $total = $this->db->fetch(
+                'SELECT COUNT(*) as cnt FROM user_follows WHERE followed_id = ?',
+                [$id]
+            );
+            $list = array_map(function($u) {
+                return Helper::formatUser($u);
+            }, $followers);
+            echo Helper::jsonResponse(true, '', [
+                'followers' => $list,
+                'total' => (int)$total['cnt'],
+                'pagination' => [
+                    'currentPage' => $page,
+                    'totalPages' => ceil($total['cnt'] / $limit),
+                    'hasNextPage' => ($page * $limit) < $total['cnt'],
+                    'hasPrevPage' => $page > 1
+                ]
+            ]);
+        } catch (Exception $e) {
+            Helper::logError('Get followers error: ' . $e->getMessage(), ['user_id' => $id]);
+            echo Helper::jsonResponse(false, 'Erro ao buscar seguidores', [], 500);
+        }
+    }
+
+    /**
+     * Listar usuários que o usuário segue
+     */
+    public function getFollowing($id) {
+        try {
+            $page = intval($_GET['page'] ?? 1);
+            $limit = intval($_GET['limit'] ?? 20);
+            $offset = ($page - 1) * $limit;
+            $following = $this->db->fetchAll(
+                'SELECT u.id, u.nome, u.username, u.avatar_url
+                 FROM user_follows uf
+                 JOIN usuarios u ON uf.followed_id = u.id
+                 WHERE uf.follower_id = ?
+                 ORDER BY uf.created_at DESC
+                 LIMIT ? OFFSET ?',
+                [$id, $limit, $offset]
+            );
+            $total = $this->db->fetch(
+                'SELECT COUNT(*) as cnt FROM user_follows WHERE follower_id = ?',
+                [$id]
+            );
+            $list = array_map(function($u) {
+                return Helper::formatUser($u);
+            }, $following);
+            echo Helper::jsonResponse(true, '', [
+                'following' => $list,
+                'total' => (int)$total['cnt'],
+                'pagination' => [
+                    'currentPage' => $page,
+                    'totalPages' => ceil($total['cnt'] / $limit),
+                    'hasNextPage' => ($page * $limit) < $total['cnt'],
+                    'hasPrevPage' => $page > 1
+                ]
+            ]);
+        } catch (Exception $e) {
+            Helper::logError('Get following error: ' . $e->getMessage(), ['user_id' => $id]);
+            echo Helper::jsonResponse(false, 'Erro ao buscar seguindo', [], 500);
+        }
+    }
     
     /**
      * Buscar usuário por ID
@@ -25,8 +153,33 @@ class UserController {
                 return;
             }
             
+            // Fetch follow counts and relationship
+            $currentUser = AuthMiddleware::optional();
+            $currentUserId = $currentUser['id'] ?? null;
+            // Count followers and following
+            $followers = $this->db->fetch(
+                'SELECT COUNT(*) as cnt FROM user_follows WHERE followed_id = ?',
+                [$id]
+            );
+            $following = $this->db->fetch(
+                'SELECT COUNT(*) as cnt FROM user_follows WHERE follower_id = ?',
+                [$id]
+            );
+            // Check if current user follows this user
+            $isFollowed = false;
+            if ($currentUserId) {
+                $exists = $this->db->fetch(
+                    'SELECT 1 FROM user_follows WHERE follower_id = ? AND followed_id = ?',
+                    [$currentUserId, $id]
+                );
+                $isFollowed = (bool)$exists;
+            }
+            $formatted = Helper::formatUser($user);
+            $formatted['followers_count'] = (int)($followers['cnt'] ?? 0);
+            $formatted['following_count'] = (int)($following['cnt'] ?? 0);
+            $formatted['isFollowed'] = $isFollowed;
             echo Helper::jsonResponse(true, '', [
-                'user' => Helper::formatUser($user)
+                'user' => $formatted
             ]);
             
         } catch (Exception $e) {
@@ -68,6 +221,8 @@ class UserController {
             if (isset($data['telefone'])) {
                 $validator->phone('telefone', 'Formato de telefone inválido');
             }
+            // website and localization optional fields
+            // no validation required: sanitized and stored if present
             
             if ($validator->hasErrors()) {
                 echo Helper::jsonResponse(false, 'Dados inválidos', ['errors' => $validator->getErrors()], 400);
@@ -109,6 +264,15 @@ class UserController {
             if (isset($data['telefone'])) {
                 $updates[] = 'telefone = ?';
                 $values[] = Helper::sanitizeString($data['telefone']);
+            }
+            // Website and localization are optional
+            if (isset($data['website'])) {
+                $updates[] = 'website = ?';
+                $values[] = Helper::sanitizeString($data['website']);
+            }
+            if (isset($data['localizacao'])) {
+                $updates[] = 'localizacao = ?';
+                $values[] = Helper::sanitizeString($data['localizacao']);
             }
             
             if (empty($updates)) {

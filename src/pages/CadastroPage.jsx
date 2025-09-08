@@ -11,6 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs"
 import { Textarea } from "../components/ui/textarea"
 import { useAuth } from "../contexts/AuthContext"
 import apiService from "../services/apiService"
+import { Eye, EyeOff } from 'lucide-react'
 
 export default function CadastroPage() {
   const { register } = useAuth()
@@ -28,18 +29,37 @@ export default function CadastroPage() {
   const [infoMessage, setInfoMessage] = useState("")
   const [verificationStatus, setVerificationStatus] = useState(null) // null | 'pending' | 'success' | 'error'
   const [verificationMessage, setVerificationMessage] = useState("")
+  const [showSenha, setShowSenha] = useState(false)
+  const [showConfirmSenha, setShowConfirmSenha] = useState(false)
+  const [formErrors, setFormErrors] = useState({})
+
+  // Formata telefone no padrão brasileiro (xx) xxxxx-xxxx
+  const formatTelefone = (value) => {
+    const digits = value.replace(/\D/g, '').slice(0, 11)
+    let result = ''
+    if (digits.length > 0) result += '(' + digits.slice(0, 2)
+    if (digits.length >= 3) result += ') ' + digits.slice(2, 7)
+    else if (digits.length > 2) result += ') ' + digits.slice(2)
+    if (digits.length >= 8) result += '-' + digits.slice(7, 11)
+    return result
+  }
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target
+    let newValue = type === 'checkbox' ? checked : value
+    if (name === 'telefone') {
+      newValue = formatTelefone(newValue)
+    }
     setFormData((prev) => ({
       ...prev,
-      [name]: type === "checkbox" ? checked : value,
+      [name]: newValue,
     }))
   }
 
   const handleSubmit = async (e, tipo) => {
     e.preventDefault()
-    
+    setFormErrors({})
+
     // Validação de senha
     if (formData.senha !== formData.confirmarSenha) {
       alert('As senhas não coincidem')
@@ -50,27 +70,35 @@ export default function CadastroPage() {
       alert('Você deve aceitar os termos de uso')
       return
     }
-    
+
     try {
-      const result = await register({
+      const sanitizedTelefone = formData.telefone.replace(/\D/g, '')
+      const payload = {
         nome: formData.nome,
         email: formData.email,
         senha: formData.senha,
-        telefone: formData.telefone,
         bio: formData.bio,
         tipo
-      });
-      
+      }
+      // Incluir telefone apenas se fornecido
+      if (sanitizedTelefone) {
+        payload.telefone = sanitizedTelefone
+      }
+      const result = await register(payload)
       if (result.success) {
         // Mostrar instrução de verificação por email em vez de redirecionar automaticamente
         setRegistered(true)
         setInfoMessage('Cadastro realizado com sucesso. Enviamos um email com um link de verificação para o seu endereço — por favor, verifique sua caixa de entrada (e spam).')
       } else {
-        alert(result.message || 'Erro ao cadastrar');
+        // mostrar erros de validação se houver
+        if (result.errors) {
+          setFormErrors(result.errors)
+        }
+        alert(result.message || 'Erro ao cadastrar')
       }
     } catch (error) {
-      console.error('Erro:', error);
-      alert('Erro ao conectar com o servidor');
+      console.error('Erro:', error)
+      alert(error.message || 'Erro ao conectar com o servidor')
     }
   }
 
@@ -147,7 +175,17 @@ export default function CadastroPage() {
                     </CardContent>
                   ) : (
                     <form onSubmit={(e) => handleSubmit(e, "empreendedora")}>
-                    <CardContent className="space-y-4">
+                      {/* Resumo de erros de validação */}
+                      {Object.keys(formErrors).length > 0 && (
+                        <div className="bg-red-50 border border-red-200 text-red-800 p-3 rounded mb-4">
+                          {Object.entries(formErrors).map(([field, msgs]) =>
+                            msgs.map((msg, idx) => (
+                              <p key={`${field}-${idx}`} className="text-sm">{msg}</p>
+                            ))
+                          )}
+                        </div>
+                      )}
+                      <CardContent className="space-y-4">
                       <div className="space-y-2">
                         <Label htmlFor="nome-empreendedora">Nome completo</Label>
                         <Input
@@ -159,6 +197,7 @@ export default function CadastroPage() {
                           onChange={handleInputChange}
                           required
                         />
++  {formErrors.nome && <p className="text-red-600 text-sm">{formErrors.nome[0]}</p>}
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="email-empreendedora">Email</Label>
@@ -171,6 +210,7 @@ export default function CadastroPage() {
                           onChange={handleInputChange}
                           required
                         />
++  {formErrors.email && <p className="text-red-600 text-sm">{formErrors.email[0]}</p>}
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="telefone-empreendedora">Telefone</Label>
@@ -183,6 +223,7 @@ export default function CadastroPage() {
                           onChange={handleInputChange}
                           required
                         />
++  {formErrors.telefone && <p className="text-red-600 text-sm">{formErrors.telefone[0]}</p>}
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="bio-empreendedora">Sobre você e seu negócio</Label>
@@ -197,25 +238,55 @@ export default function CadastroPage() {
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="senha-empreendedora">Senha</Label>
+                      <div className="relative">
                         <Input
                           id="senha-empreendedora"
                           name="senha"
-                          type="password"
+                          type={showSenha ? 'text' : 'password'}
                           value={formData.senha}
                           onChange={handleInputChange}
+                          className="pr-10"
                           required
                         />
+                        {showSenha ? (
+                          <EyeOff
+                            className="absolute right-3 top-3 h-5 w-5 text-gray-500 cursor-pointer"
+                            onClick={() => setShowSenha(false)}
+                          />
+                        ) : (
+                          <Eye
+                            className="absolute right-3 top-3 h-5 w-5 text-gray-500 cursor-pointer"
+                            onClick={() => setShowSenha(true)}
+                          />
+                        )}
                       </div>
++  {formErrors.senha && <p className="text-red-600 text-sm">{formErrors.senha[0]}</p>}
+                      </div>
+
                       <div className="space-y-2">
                         <Label htmlFor="confirmar-senha-empreendedora">Confirmar senha</Label>
+                      <div className="relative">
                         <Input
                           id="confirmar-senha-empreendedora"
                           name="confirmarSenha"
-                          type="password"
+                          type={showConfirmSenha ? 'text' : 'password'}
                           value={formData.confirmarSenha}
                           onChange={handleInputChange}
+                          className="pr-10"
                           required
                         />
+                        {showConfirmSenha ? (
+                          <EyeOff
+                            className="absolute right-3 top-3 h-5 w-5 text-gray-500 cursor-pointer"
+                            onClick={() => setShowConfirmSenha(false)}
+                          />
+                        ) : (
+                          <Eye
+                            className="absolute right-3 top-3 h-5 w-5 text-gray-500 cursor-pointer"
+                            onClick={() => setShowConfirmSenha(true)}
+                          />
+                        )}
+                      </div>
                       </div>
                       <div className="flex items-center space-x-2">
                         <Checkbox

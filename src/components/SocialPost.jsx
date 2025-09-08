@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { Card, CardContent } from './ui/card';
 import { Button } from './ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
@@ -40,7 +41,9 @@ const SocialPost = ({ post, currentUser, onLike, onComment, onShare, onDelete, o
   const [likeCount, setLikeCount] = useState(post.likes || 0);
   const [commentCount, setCommentCount] = useState(post.comentarios || 0);
   const [loadingComments, setLoadingComments] = useState(false);
-  const [loadingLikes, setLoadingLikes] = useState(false);
+    const [loadingLikes, setLoadingLikes] = useState(false);
+    // Follow state
+    const [isFollowed, setIsFollowed] = useState(post.isFollowed || false);
 
   // Carregar comentários quando abrir
   useEffect(() => {
@@ -387,22 +390,22 @@ const SocialPost = ({ post, currentUser, onLike, onComment, onShare, onDelete, o
       <CardContent className="p-6">
         {/* Header do post */}
         <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center space-x-3">
-            <Avatar className="w-12 h-12">
-              <AvatarImage src={post.avatar ? `http://localhost/empowerup/public${post.avatar}` : ''} />
-              <AvatarFallback className="bg-coral text-white">
-                {post.autor.charAt(0)}
-              </AvatarFallback>
-            </Avatar>
-            <div>
-              <h3 className="font-semibold">{post.autor}</h3>
-              <div className="flex items-center space-x-2 text-sm text-gray-500">
-                <span>{post.username}</span>
-                <span>•</span>
-                <span>{post.tempo || formatTimeAgo(post.created_at)}</span>
+            <Link to={`/perfil/${post.username}`} className="flex items-center space-x-3 hover:underline">
+              <Avatar className="w-12 h-12">
+                <AvatarImage src={post.avatar ? `http://localhost/empowerup/public${post.avatar}` : ''} />
+                <AvatarFallback className="bg-coral text-white">
+                  {post.autor.charAt(0)}
+                </AvatarFallback>
+              </Avatar>
+              <div>
+                <h3 className="font-semibold text-gray-900">{post.autor}</h3>
+                <div className="flex items-center space-x-2 text-sm text-gray-500">
+                  <span>@{post.username}</span>
+                  <span>•</span>
+                  <span>{post.tempo || formatTimeAgo(post.created_at)}</span>
+                </div>
               </div>
-            </div>
-          </div>
+            </Link>
           
           {/* Menu de opções */}
           <DropdownMenu>

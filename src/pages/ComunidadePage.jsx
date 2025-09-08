@@ -65,9 +65,10 @@ export default function ComunidadePage() {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-  // fetch all posts via API endpoint
-  const url = `${config.API_BASE_URL}/posts${user?.id ? `?user_id=${user.id}` : ''}`
-  const response = await fetch(url)
+        // fetch all posts via API endpoint
+        // Always fetch posts from all users
+        const url = `${config.API_BASE_URL}/posts`
+        const response = await fetch(url)
         if (response.ok) {
           const result = await response.json()
           // Carregar posts do campo 'posts' da resposta da API

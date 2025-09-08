@@ -130,6 +130,7 @@ class Helper {
             'gif_url' => $post['gif_url'],
             'tipo_midia' => $post['tipo_midia'] ?? 'none',
             'isLiked' => isset($post['isLiked']) ? (bool)$post['isLiked'] : false,
+            'isFollowed' => isset($post['isFollowed']) ? (bool)$post['isFollowed'] : false,
             'isOwner' => $currentUserId ? (int)$post['user_id'] === (int)$currentUserId : false
         ];
     }

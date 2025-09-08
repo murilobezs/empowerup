@@ -9,6 +9,7 @@ export const ROUTES = {
   REGISTER: '/cadastro',
   FEED: '/comunidade',
   PROFILE: '/perfil',
+  MENSAGENS: '/mensagens',
   EDIT_PROFILE: '/editar-perfil',
   ABOUT: '/sobre',
   CONTACT: '/contato',
