@@ -202,7 +202,7 @@ export default function EventsPage() {
                   {event.imagem_url && (
                     <div className="w-full h-32 bg-gray-200 rounded-md overflow-hidden mb-3">
                       <img
-                        src={`http://localhost/empowerup/public${event.imagem_url}`}
+                        src={`https://www.empowerup.com.br/public${event.imagem_url}`}
                         alt={event.titulo}
                         className="w-full h-full object-cover"
                       />

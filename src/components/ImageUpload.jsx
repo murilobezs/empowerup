@@ -16,7 +16,7 @@ const ImageUpload = ({
   placeholder = "Clique para selecionar uma imagem"
 }) => {
   const [isUploading, setIsUploading] = useState(false);
-  const [preview, setPreview] = useState(currentImage ? `http://localhost/empowerup/public${currentImage}` : null);
+  const [preview, setPreview] = useState(currentImage ? `https://www.empowerup.com.br/public${currentImage}` : null);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const fileInputRef = useRef(null);
@@ -79,7 +79,7 @@ const ImageUpload = ({
       if (postId) formData.append('post_id', postId);
       if (groupId) formData.append('group_id', groupId);
 
-      const response = await fetch('http://localhost/empowerup/api/upload_image.php', {
+      const response = await fetch('https://www.empowerup.com.br/api/upload_image.php', {
         method: 'POST',
         body: formData,
       });
@@ -97,7 +97,7 @@ const ImageUpload = ({
         }
       } else {
         setError(result.message || 'Erro ao enviar imagem');
-        setPreview(currentImage ? `http://localhost/empowerup/public${currentImage}` : null);
+        setPreview(currentImage ? `https://www.empowerup.com.br/public${currentImage}` : null);
       }
     } catch (error) {
       console.error('Erro ao fazer upload:', error);
@@ -109,9 +109,9 @@ const ImageUpload = ({
   };
 
   const removeImage = async () => {
-    if (!preview || preview === (currentImage ? `http://localhost/empowerup/public${currentImage}` : null)) return;
+    if (!preview || preview === (currentImage ? `https://www.empowerup.com.br/public${currentImage}` : null)) return;
     
-    setPreview(currentImage ? `http://localhost/empowerup/public${currentImage}` : null);
+    setPreview(currentImage ? `https://www.empowerup.com.br/public${currentImage}` : null);
     setError('');
     setSuccess('');
     

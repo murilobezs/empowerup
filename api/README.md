@@ -54,9 +54,9 @@ api/
 ### Configurações Importantes
 ```php
 // config/config.php
-define('DB_HOST', 'localhost');
-define('DB_NAME', 'empowerup');
-define('DB_USER', 'root');
+define('DB_HOST', '127.0.0.1:3306');
+define('DB_NAME', 'u459313419_empowerup');
+define('DB_USER', 'u459313419_empowerup');
 define('DB_PASS', '');
 define('JWT_SECRET', 'sua_chave_secreta_aqui');
 ```

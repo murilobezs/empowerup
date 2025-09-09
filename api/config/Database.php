@@ -32,10 +32,10 @@ class Database {
     private function connect() {
         try {
             // Use config constants if available (config.php should define DB_* constants)
-            $this->host = defined('DB_HOST') ? DB_HOST : 'localhost';
-            $this->db_name = defined('DB_NAME') ? DB_NAME : 'empowerup';
-            $this->username = defined('DB_USER') ? DB_USER : 'root';
-            $this->password = defined('DB_PASS') ? DB_PASS : '';
+            $this->host = defined('DB_HOST') ? DB_HOST : '127.0.0.1:3306';
+            $this->db_name = defined('DB_NAME') ? DB_NAME : 'u459313419_empowerup';
+            $this->username = defined('DB_USER') ? DB_USER : 'u459313419_empowerup';
+            $this->password = defined('DB_PASS') ? DB_PASS : 'Empowerup2025@';
             $this->charset = defined('DB_CHARSET') ? DB_CHARSET : 'utf8mb4';
 
             $dsn = "mysql:host={$this->host};dbname={$this->db_name};charset={$this->charset}";

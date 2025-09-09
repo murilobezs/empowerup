@@ -4,10 +4,10 @@
  */
 
 // Configurações do banco de dados
-define('DB_HOST', 'localhost');
-define('DB_NAME', 'empowerup');
-define('DB_USER', 'root');
-define('DB_PASS', '');
+define('DB_HOST', '127.0.0.1:3306');
+define('DB_NAME', 'u459313419_empowerup');
+define('DB_USER', 'u459313419_empowerup');
+define('DB_PASS', 'Empowerup2025@');
 define('DB_CHARSET', 'utf8mb4');
 
 // Configurações JWT
@@ -41,7 +41,8 @@ define('CORS_ORIGINS', [
     'http://localhost:3000',
     'http://localhost:5173',
     'http://127.0.0.1:3000',
-    'http://127.0.0.1:5173'
+    'http://127.0.0.1:5173',
+    'https://www.empowerup.com.br'
 ]);
 
 // Rate limiting

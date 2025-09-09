@@ -14,7 +14,7 @@ export default function UsernameSetup({ user, onUsernameSet }) {
 
   const generateSuggestion = useCallback(async () => {
     try {
-      const response = await fetch(`http://localhost/empowerup/api/username.php?action=generate_username&nome=${encodeURIComponent(user.nome)}&email=${encodeURIComponent(user.email)}`)
+      const response = await fetch(`https://www.empowerup.com.br/api/username.php?action=generate_username&nome=${encodeURIComponent(user.nome)}&email=${encodeURIComponent(user.email)}`)
       const data = await response.json()
       
       if (data.success) {
@@ -42,7 +42,7 @@ export default function UsernameSetup({ user, onUsernameSet }) {
 
     setIsChecking(true)
     try {
-      const response = await fetch(`http://localhost/empowerup/api/username.php?action=check_username&username=${encodeURIComponent(usernameToCheck)}`)
+      const response = await fetch(`https://www.empowerup.com.br/api/username.php?action=check_username&username=${encodeURIComponent(usernameToCheck)}`)
       const data = await response.json()
       
       setIsAvailable(data.available)
@@ -71,7 +71,7 @@ export default function UsernameSetup({ user, onUsernameSet }) {
 
     setIsSaving(true)
     try {
-      const response = await fetch('http://localhost/empowerup/api/username.php', {
+      const response = await fetch('https://www.empowerup.com.br/api/username.php', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

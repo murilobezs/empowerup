@@ -177,7 +177,7 @@ export function SiteHeader() {
 						<DropdownMenu>
 							<DropdownMenuTrigger className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
 								<Avatar>
-									<AvatarImage src={user.avatar_url ? `http://localhost/empowerup/public${user.avatar_url}` : ''} />
+									<AvatarImage src={user.avatar_url ? `https://www.empowerup.com.br/public${user.avatar_url}` : ''} />
 									<AvatarFallback>{user.nome?.charAt(0)}</AvatarFallback>
 								</Avatar>
 								<span className="hidden sm:block text-sm font-medium">
@@ -187,7 +187,7 @@ export function SiteHeader() {
 							<DropdownMenuContent align="end" className="w-56">
 								<DropdownMenuItem onClick={() => navigate('/perfil')}>
 									<Avatar className="mr-2 h-4 w-4">
-										<AvatarImage src={user.avatar_url ? `http://localhost/empowerup/public${user.avatar_url}` : ''} />
+										<AvatarImage src={user.avatar_url ? `https://www.empowerup.com.br/public${user.avatar_url}` : ''} />
 										<AvatarFallback className="text-xs">{user.nome?.charAt(0)}</AvatarFallback>
 									</Avatar>
 									Meu Perfil

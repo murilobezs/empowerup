@@ -1,7 +1,7 @@
 // Configurações da aplicação
 const config = {
   // URL base da API
-  API_BASE_URL: process.env.REACT_APP_API_URL || 'http://localhost/empowerup/api',
+  API_BASE_URL: process.env.REACT_APP_API_URL || 'https://www.empowerup.com.br/api/',
   
   // Configurações de autenticação
   AUTH: {

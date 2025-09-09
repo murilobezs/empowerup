@@ -96,7 +96,7 @@ const SearchComponent = ({ onResultSelect, className = "" }) => {
   // Carregar trending topics
   const loadTrending = async () => {
     try {
-      const response = await fetch('http://localhost/empowerup/api/trending/');
+      const response = await fetch('https://www.empowerup.com.br/api/trending/');
       if (response.ok) {
         const data = await response.json();
         setTrending(data.trending || []);
@@ -120,7 +120,7 @@ const SearchComponent = ({ onResultSelect, className = "" }) => {
         ...filters
       });
 
-      const response = await fetch(`http://localhost/empowerup/api/search.php?${params}`);
+      const response = await fetch(`https://www.empowerup.com.br/api/search.php?${params}`);
       
       if (response.ok) {
         const data = await response.json();

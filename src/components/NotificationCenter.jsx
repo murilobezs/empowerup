@@ -159,7 +159,7 @@ const NotificationCenter = ({ currentUser }) => {
                       <Avatar className="w-10 h-10">
                         <AvatarImage 
                           src={notification.from_user?.avatar_url ? 
-                            `http://localhost/empowerup/public${notification.from_user.avatar_url}` : ''
+                            `https://www.empowerup.com.br/public${notification.from_user.avatar_url}` : ''
                           } 
                         />
                         <AvatarFallback className="bg-coral text-white">
