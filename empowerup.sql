@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 09/09/2025 às 03:06
+-- Tempo de geração: 09/09/2025 às 06:10
 -- Versão do servidor: 10.4.32-MariaDB
 -- Versão do PHP: 8.2.12
 
@@ -61,6 +61,91 @@ CREATE TABLE `denuncias` (
   `denunciado_id` int(11) NOT NULL,
   `motivo` varchar(255) DEFAULT NULL,
   `criado_em` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura para tabela `eventos`
+--
+
+CREATE TABLE `eventos` (
+  `id` int(11) NOT NULL,
+  `titulo` varchar(255) NOT NULL,
+  `descricao` text DEFAULT NULL,
+  `tipo` enum('workshop','palestra','curso','meetup','networking') NOT NULL,
+  `data_evento` datetime NOT NULL,
+  `data_fim` datetime DEFAULT NULL,
+  `local` varchar(255) DEFAULT NULL,
+  `endereco` text DEFAULT NULL,
+  `capacidade_maxima` int(11) DEFAULT 50,
+  `valor` decimal(10,2) DEFAULT 0.00,
+  `eh_gratuito` tinyint(1) DEFAULT 1,
+  `instrutor_nome` varchar(255) DEFAULT NULL,
+  `instrutor_bio` text DEFAULT NULL,
+  `instrutor_foto` varchar(255) DEFAULT NULL,
+  `requisitos` text DEFAULT NULL,
+  `material_necessario` text DEFAULT NULL,
+  `certificado` tinyint(1) DEFAULT 0,
+  `status` enum('ativo','cancelado','finalizado') DEFAULT 'ativo',
+  `imagem_url` varchar(500) DEFAULT NULL,
+  `link_online` varchar(500) DEFAULT NULL,
+  `eh_online` tinyint(1) DEFAULT 0,
+  `criado_por` int(11) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura para tabela `evento_categorias`
+--
+
+CREATE TABLE `evento_categorias` (
+  `id` int(11) NOT NULL,
+  `nome` varchar(100) NOT NULL,
+  `descricao` text DEFAULT NULL,
+  `cor` varchar(7) DEFAULT '#2563eb',
+  `icone` varchar(50) DEFAULT NULL,
+  `ativo` tinyint(1) DEFAULT 1,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Despejando dados para a tabela `evento_categorias`
+--
+
+INSERT INTO `evento_categorias` (`id`, `nome`, `descricao`, `cor`, `icone`, `ativo`, `created_at`) VALUES
+(1, 'Empreendedorismo', 'Eventos sobre empreendedorismo e negócios', '#2563eb', 'briefcase', 1, '2025-09-09 04:07:53'),
+(2, 'Tecnologia', 'Workshops e palestras sobre tecnologia', '#7c3aed', 'laptop', 1, '2025-09-09 04:07:53'),
+(3, 'Marketing', 'Estratégias de marketing e vendas', '#dc2626', 'megaphone', 1, '2025-09-09 04:07:53'),
+(4, 'Finanças', 'Educação financeira e investimentos', '#059669', 'dollar-sign', 1, '2025-09-09 04:07:53'),
+(5, 'Desenvolvimento Pessoal', 'Crescimento pessoal e profissional', '#ea580c', 'user', 1, '2025-09-09 04:07:53'),
+(6, 'Networking', 'Eventos para conexões e networking', '#0891b2', 'users', 1, '2025-09-09 04:07:53');
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura para tabela `evento_inscricoes`
+--
+
+CREATE TABLE `evento_inscricoes` (
+  `id` int(11) NOT NULL,
+  `evento_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `nome_completo` varchar(255) NOT NULL,
+  `telefone` varchar(20) NOT NULL,
+  `email` varchar(255) DEFAULT NULL,
+  `observacoes` text DEFAULT NULL,
+  `status` enum('confirmada','lista_espera','cancelada') DEFAULT 'confirmada',
+  `data_inscricao` timestamp NOT NULL DEFAULT current_timestamp(),
+  `data_presenca` timestamp NULL DEFAULT NULL,
+  `compareceu` tinyint(1) DEFAULT 0,
+  `avaliacao` int(11) DEFAULT NULL CHECK (`avaliacao` >= 1 and `avaliacao` <= 5),
+  `feedback` text DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -146,7 +231,21 @@ INSERT INTO `notifications` (`id`, `user_id`, `from_user_id`, `type`, `post_id`,
 (14, 7, 9, 'save', 28, NULL, NULL, 0, '2025-09-08 20:43:51'),
 (15, 6, 9, 'like', 27, NULL, NULL, 0, '2025-09-08 21:06:36'),
 (16, 6, 9, 'like', 26, NULL, NULL, 0, '2025-09-08 21:06:47'),
-(17, 6, 9, 'save', 26, NULL, NULL, 0, '2025-09-08 21:06:50');
+(17, 6, 9, 'save', 26, NULL, NULL, 0, '2025-09-08 21:06:50'),
+(18, 9, 10, 'follow', NULL, NULL, NULL, 0, '2025-09-09 01:32:40'),
+(19, 6, 10, 'follow', NULL, NULL, NULL, 0, '2025-09-09 01:33:08'),
+(20, 9, 10, 'save', 30, NULL, NULL, 0, '2025-09-09 01:36:35'),
+(21, 9, 10, 'save', 29, NULL, NULL, 0, '2025-09-09 01:36:36'),
+(22, 9, 10, 'like', 30, NULL, NULL, 0, '2025-09-09 01:36:52'),
+(23, 9, 10, 'like', 29, NULL, NULL, 0, '2025-09-09 01:37:07'),
+(24, 9, 10, 'follow', NULL, NULL, NULL, 0, '2025-09-09 01:53:32'),
+(25, 9, 10, 'follow', NULL, NULL, NULL, 0, '2025-09-09 01:53:46'),
+(26, 6, 10, 'follow', NULL, NULL, NULL, 0, '2025-09-09 01:54:03'),
+(27, 9, 10, 'follow', NULL, NULL, NULL, 0, '2025-09-09 01:54:31'),
+(28, 10, 11, 'follow', NULL, NULL, NULL, 0, '2025-09-09 02:38:23'),
+(29, 10, 11, 'like', 31, NULL, NULL, 0, '2025-09-09 02:38:23'),
+(30, 9, 11, 'follow', NULL, NULL, NULL, 0, '2025-09-09 02:38:30'),
+(31, 10, 11, 'save', 31, NULL, NULL, 0, '2025-09-09 02:40:11');
 
 -- --------------------------------------------------------
 
@@ -209,8 +308,11 @@ INSERT INTO `posts` (`id`, `user_id`, `autor`, `username`, `avatar`, `conteudo`,
 (26, 6, 'Marise Rezende Barbosa Jusevicius', 'mariserezendebarbosajusevicius', '/placeholder.svg?height=40&width=40', 'oii', NULL, 'Geral', '[]', 1, 0, 0, '2025-09-02 22:27:53', NULL, NULL, NULL, 'none', NULL, NULL, NULL, NULL),
 (27, 6, 'Marise Rezende Barbosa Jusevicius', 'mariserezendebarbosajusevicius', '/placeholder.svg?height=40&width=40', 'oii', NULL, 'Geral', '[]', 0, 0, 0, '2025-09-02 22:28:16', NULL, NULL, NULL, 'none', NULL, NULL, NULL, NULL),
 (28, 7, 'Matheus Miranda', 'matheusmiranda', '/placeholder.svg?height=40&width=40', 'huahhahahaha', NULL, 'Geral', '[]', 0, 1, 0, '2025-09-03 01:29:05', NULL, NULL, NULL, 'none', NULL, NULL, NULL, NULL),
-(29, 9, 'Giovanna Salles Arruda', 'giovannasallesarruda', '/placeholder.svg?height=40&width=40', 'gente que divonico!!!', NULL, 'Negócios', '[]', 1, 0, 0, '2025-09-07 23:24:45', NULL, NULL, NULL, 'none', NULL, NULL, NULL, NULL),
-(30, 9, 'Giovanna Salles Arruda', 'giovannasallesarruda', '/images/pfp/user/68be2b6f974fd_1757293423.jpg', 'gente oiii', NULL, 'Geral', '[]', 1, 0, 0, '2025-09-08 20:25:25', NULL, NULL, NULL, 'none', NULL, NULL, NULL, NULL);
+(29, 9, 'Giovanna Salles Arruda', 'giovannasallesarruda', '/placeholder.svg?height=40&width=40', 'gente que divonico!!!', NULL, 'Negócios', '[]', 2, 0, 0, '2025-09-07 23:24:45', NULL, NULL, NULL, 'none', NULL, NULL, NULL, NULL),
+(30, 9, 'Giovanna Salles Arruda', 'giovannasallesarruda', '/images/pfp/user/68be2b6f974fd_1757293423.jpg', 'gente oiii', NULL, 'Geral', '[]', 2, 0, 0, '2025-09-08 20:25:25', NULL, NULL, NULL, 'none', NULL, NULL, NULL, NULL),
+(31, 10, 'Mariana Lobo Nascimento', 'marianalobonascimento', '/placeholder.svg?height=40&width=40', 'sou nova aqui!', NULL, 'Geral', '[]', 2, 2, 0, '2025-09-09 01:30:32', NULL, NULL, NULL, 'none', NULL, NULL, NULL, NULL),
+(33, 11, 'Taylor Alison Swift', 'taylorswift13', '/placeholder.svg?height=40&width=40', 'Welcome to New York!', NULL, 'Negócios', '[]', 1, 0, 0, '2025-09-09 02:38:07', NULL, NULL, NULL, 'none', NULL, NULL, NULL, NULL),
+(34, 11, 'Taylor Alison Swift', 'taylorswift13', '/images/pfp/user/68bf9369566b6_1757385577.jpg', 'teste', NULL, 'Geral', '[]', 0, 1, 0, '2025-09-09 03:04:52', '/images/posts/68bf9954b363a_1757387092.jpg', NULL, NULL, 'imagem', NULL, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -238,7 +340,10 @@ INSERT INTO `post_comentarios` (`id`, `post_id`, `user_id`, `conteudo`, `parent_
 (3, 5, 4, 'arrasou viado!', NULL, '2025-08-01 20:48:51', '2025-08-01 20:48:51'),
 (4, 28, 9, 'oii', NULL, '2025-09-08 19:45:29', '2025-09-08 19:45:29'),
 (5, 25, 9, 'ola!', NULL, '2025-09-08 20:24:10', '2025-09-08 20:24:10'),
-(6, 20, 9, 'oi amore', NULL, '2025-09-08 20:24:31', '2025-09-08 20:24:31');
+(6, 20, 9, 'oi amore', NULL, '2025-09-08 20:24:31', '2025-09-08 20:24:31'),
+(7, 31, 10, 'teste coment', NULL, '2025-09-09 01:31:39', '2025-09-09 01:31:39'),
+(8, 31, 10, 'uhul', 7, '2025-09-09 01:32:09', '2025-09-09 01:32:09'),
+(9, 34, 11, 'arrasou miga', NULL, '2025-09-09 03:06:27', '2025-09-09 03:06:27');
 
 --
 -- Acionadores `post_comentarios`
@@ -313,7 +418,12 @@ CREATE TABLE `post_likes` (
 INSERT INTO `post_likes` (`id`, `post_id`, `user_id`, `created_at`) VALUES
 (15, 29, 9, '2025-09-08 19:46:52'),
 (32, 30, 9, '2025-09-08 21:06:31'),
-(34, 26, 9, '2025-09-08 21:06:47');
+(34, 26, 9, '2025-09-08 21:06:47'),
+(35, 31, 10, '2025-09-09 01:30:40'),
+(36, 30, 10, '2025-09-09 01:36:51'),
+(38, 29, 10, '2025-09-09 01:37:07'),
+(40, 33, 11, '2025-09-09 02:38:19'),
+(41, 31, 11, '2025-09-09 02:38:20');
 
 --
 -- Acionadores `post_likes`
@@ -375,7 +485,11 @@ INSERT INTO `post_saves` (`id`, `post_id`, `user_id`, `created_at`) VALUES
 (3, 20, 9, '2025-09-08 17:24:33'),
 (5, 28, 9, '2025-09-08 17:43:50'),
 (6, 30, 9, '2025-09-08 18:06:12'),
-(7, 26, 9, '2025-09-08 18:06:49');
+(7, 26, 9, '2025-09-08 18:06:49'),
+(9, 31, 10, '2025-09-08 22:36:16'),
+(10, 30, 10, '2025-09-08 22:36:34'),
+(11, 29, 10, '2025-09-08 22:36:36'),
+(12, 31, 11, '2025-09-08 23:40:11');
 
 -- --------------------------------------------------------
 
@@ -419,7 +533,11 @@ CREATE TABLE `user_follows` (
 INSERT INTO `user_follows` (`follower_id`, `followed_id`, `created_at`) VALUES
 (9, 5, '2025-09-08 17:24:41'),
 (9, 6, '2025-09-08 16:45:54'),
-(9, 7, '2025-09-08 17:23:29');
+(9, 7, '2025-09-08 17:23:29'),
+(10, 6, '2025-09-08 22:54:03'),
+(10, 9, '2025-09-08 22:54:31'),
+(11, 9, '2025-09-08 23:38:30'),
+(11, 10, '2025-09-08 23:38:22');
 
 -- --------------------------------------------------------
 
@@ -459,7 +577,11 @@ INSERT INTO `user_tokens` (`id`, `user_id`, `token`, `type`, `expires_at`, `revo
 (15, 9, '24c18ab80e95bb5ff901a4375a33a25f92e4e6c31f97d3488884f994fafc2e67', 'refresh', '2025-10-08 19:50:03', 0, '2025-09-08 22:50:03'),
 (16, 10, 'd3e2370210b2c53b2f5f811fdb53c9a6faaae15b103c2fdeaedbc13be01bd96c', 'email_verification', '2025-09-09 19:57:55', 0, '2025-09-08 22:57:55'),
 (17, 10, '8f526f643e2027a7a2d1240341e17390f61f6f3c41de8b3a785f0e35909ebf72', 'refresh', '2025-10-08 19:58:08', 0, '2025-09-08 22:58:08'),
-(18, 10, '0aec0e2c4f94da744059cd3495ffe4276a020cdacc9d62d343df54850a07ff13', 'refresh', '2025-10-08 20:33:49', 0, '2025-09-08 23:33:49');
+(18, 10, '0aec0e2c4f94da744059cd3495ffe4276a020cdacc9d62d343df54850a07ff13', 'refresh', '2025-10-08 20:33:49', 0, '2025-09-08 23:33:49'),
+(19, 10, '0a1d93f87e927325cf6469919e65d8fcf3a88841714bfba9bab202cebb8516b7', 'refresh', '2025-10-08 22:22:33', 0, '2025-09-09 01:22:33'),
+(20, 10, 'f438af518ca46b40d9761b4995d2f0acb87a39dd0188b2140ad7b4002ebaca70', 'refresh', '2025-10-08 23:34:18', 0, '2025-09-09 02:34:18'),
+(21, 11, '1b33b0cd93cd06054ee7c9778a0bd806770f7de5916230e584287c7eb9ea9a70', 'email_verification', '2025-09-09 23:37:39', 0, '2025-09-09 02:37:39'),
+(22, 11, '506f74fa58683df271fbb4b4bbebacedaaec7df054c4ac9ba94ecbf07d35c386', 'refresh', '2025-10-08 23:37:48', 0, '2025-09-09 02:37:48');
 
 -- --------------------------------------------------------
 
@@ -476,6 +598,8 @@ CREATE TABLE `usuarios` (
   `verified` tinyint(1) NOT NULL DEFAULT 0,
   `telefone` varchar(20) DEFAULT NULL,
   `bio` text DEFAULT NULL,
+  `website` varchar(255) DEFAULT NULL,
+  `localizacao` varchar(255) DEFAULT NULL,
   `tipo` enum('empreendedora','cliente') NOT NULL,
   `avatar_url` varchar(255) DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
@@ -486,15 +610,16 @@ CREATE TABLE `usuarios` (
 -- Despejando dados para a tabela `usuarios`
 --
 
-INSERT INTO `usuarios` (`id`, `nome`, `username`, `email`, `senha`, `verified`, `telefone`, `bio`, `tipo`, `avatar_url`, `created_at`, `updated_at`) VALUES
-(1, 'murilo', 'murilo', 'murisud15@gmail.com', '$2y$10$tuxfPcY/dcR1H5ybuoUi0e2mrCn4lAXfs2YAkGIavGgUTNvHZbTyS', 0, '11930850009', 'sou aluno', 'empreendedora', '/images/pfp/user/68759965eae9b_1752537445.jpg', '2025-06-24 03:19:32', '2025-07-14 23:57:30'),
-(4, 'dui', 'dui', 'giovanna@gmail.com', '$2y$10$zX7vJcaNy4OaJRsJftruuuTrMFZG/erAZtiMqyWySdjtnjl2Nsuo.', 0, '1191234567', 'hii', 'empreendedora', '/images/pfp/user/68840f7b84a6b_1753485179.jpg', '2025-07-15 01:54:31', '2025-07-25 23:12:59'),
-(5, 'more', 'more', 'vivi@gmail.com', '$2y$10$87YSeobQCWXYol03cEQgX.RrAJ5GRTQKV/rNPdZQxxzc3N7gBHMVm', 0, '(11) 98283-3435', 'kgykiugtt', 'empreendedora', '/images/pfp/user/68b6426dd2aa2_1756775021.jpg', '2025-08-20 00:05:04', '2025-09-02 01:04:33'),
-(6, 'Marise Rezende Barbosa Jusevicius', 'mariserezendebarbosajusevicius', 'gaga@gmail.com', '$2y$10$78s1o9Pl927o0ifXfM5X9eOJenycKXPw/WD60c9F/stHxsC6T77qK', 0, '11982833435', 'dhdtjyjyk', 'empreendedora', '/images/pfp/user/68b77034e5974_1756852276.jpg', '2025-09-02 22:20:53', '2025-09-02 22:31:17'),
-(7, 'Matheus Miranda', 'matheusmiranda', 'matheusmiranda02@gmail.com', '$2y$10$lgYsSLQjT8p0CHPSua.Ki.Gs1XCt79WA6CUttBVKH4I7U2yU8jmLu', 0, '11902289225', 'Não gosto', 'empreendedora', '/placeholder.svg?height=40&width=40', '2025-09-02 23:47:42', '2025-09-02 23:47:42'),
-(8, 'Gabruel Araujo', 'gabruelaraujo', 'gabsaraujo@gmail.com', '$2y$10$7INugAf.lF9VGjd16jl9iOwGD8/sdFwzVZju8qZBBDptgNWkPA1G.', 0, '11988965098', 'ulalala', 'empreendedora', '/placeholder.svg?height=40&width=40', '2025-09-03 01:32:04', '2025-09-03 01:32:04'),
-(9, 'Giovanna Salles Arruda', 'giovannasallesarruda', 'gigi_salles@gmail.com', '$2y$10$9fwoUUYNW8nNWVvZOXn.9uLLO1hLepmFV5BytEOhXS3F/YOEGGiZ6', 0, '11940314316', 'As vezes curto assitir a algumas séries', 'empreendedora', '/images/pfp/user/68be2b6f974fd_1757293423.jpg', '2025-09-07 23:23:56', '2025-09-08 01:03:44'),
-(10, 'Mariana Lobo Nascimento', 'marianalobonascimento', 'mari.lobao@etec.sp.gov.br', '$2y$10$nAHW4TZ02R6F3zABOYA.pORg30.6wy0Kj0xzmiWVw7taXFTDU05yC', 0, '11950710210', 'sou fa da Lana e gosto de gatos', 'empreendedora', '/placeholder.svg?height=40&width=40', '2025-09-08 22:57:55', '2025-09-08 22:57:55');
+INSERT INTO `usuarios` (`id`, `nome`, `username`, `email`, `senha`, `verified`, `telefone`, `bio`, `website`, `localizacao`, `tipo`, `avatar_url`, `created_at`, `updated_at`) VALUES
+(1, 'murilo', 'murilo', 'murisud15@gmail.com', '$2y$10$tuxfPcY/dcR1H5ybuoUi0e2mrCn4lAXfs2YAkGIavGgUTNvHZbTyS', 0, '11930850009', 'sou aluno', NULL, NULL, 'empreendedora', '/images/pfp/user/68759965eae9b_1752537445.jpg', '2025-06-24 03:19:32', '2025-07-14 23:57:30'),
+(4, 'dui', 'dui', 'giovanna@gmail.com', '$2y$10$zX7vJcaNy4OaJRsJftruuuTrMFZG/erAZtiMqyWySdjtnjl2Nsuo.', 0, '1191234567', 'hii', NULL, NULL, 'empreendedora', '/images/pfp/user/68840f7b84a6b_1753485179.jpg', '2025-07-15 01:54:31', '2025-07-25 23:12:59'),
+(5, 'more', 'more', 'vivi@gmail.com', '$2y$10$87YSeobQCWXYol03cEQgX.RrAJ5GRTQKV/rNPdZQxxzc3N7gBHMVm', 0, '(11) 98283-3435', 'kgykiugtt', NULL, NULL, 'empreendedora', '/images/pfp/user/68b6426dd2aa2_1756775021.jpg', '2025-08-20 00:05:04', '2025-09-02 01:04:33'),
+(6, 'Marise Rezende Barbosa Jusevicius', 'mariserezendebarbosajusevicius', 'gaga@gmail.com', '$2y$10$78s1o9Pl927o0ifXfM5X9eOJenycKXPw/WD60c9F/stHxsC6T77qK', 0, '11982833435', 'dhdtjyjyk', NULL, NULL, 'empreendedora', '/images/pfp/user/68b77034e5974_1756852276.jpg', '2025-09-02 22:20:53', '2025-09-02 22:31:17'),
+(7, 'Matheus Miranda', 'matheusmiranda', 'matheusmiranda02@gmail.com', '$2y$10$lgYsSLQjT8p0CHPSua.Ki.Gs1XCt79WA6CUttBVKH4I7U2yU8jmLu', 0, '11902289225', 'Não gosto', NULL, NULL, 'empreendedora', '/placeholder.svg?height=40&width=40', '2025-09-02 23:47:42', '2025-09-02 23:47:42'),
+(8, 'Gabruel Araujo', 'gabruelaraujo', 'gabsaraujo@gmail.com', '$2y$10$7INugAf.lF9VGjd16jl9iOwGD8/sdFwzVZju8qZBBDptgNWkPA1G.', 0, '11988965098', 'ulalala', NULL, NULL, 'empreendedora', '/placeholder.svg?height=40&width=40', '2025-09-03 01:32:04', '2025-09-03 01:32:04'),
+(9, 'Giovanna Salles Arruda', 'giovannasallesarruda', 'gigi_salles@gmail.com', '$2y$10$9fwoUUYNW8nNWVvZOXn.9uLLO1hLepmFV5BytEOhXS3F/YOEGGiZ6', 0, '11940314316', 'As vezes curto assitir a algumas séries', NULL, NULL, 'empreendedora', '/images/pfp/user/68be2b6f974fd_1757293423.jpg', '2025-09-07 23:23:56', '2025-09-08 01:03:44'),
+(10, 'Mariana Lobo Nascimento', 'marianalobonascimento', 'mari.lobao@etec.sp.gov.br', '$2y$10$nAHW4TZ02R6F3zABOYA.pORg30.6wy0Kj0xzmiWVw7taXFTDU05yC', 0, '11950710210', 'sou fa da Lana e gosto de gato', '', '', 'empreendedora', '/images/pfp/user/68bf8470d7616_1757381744.jpg', '2025-09-08 22:57:55', '2025-09-09 01:53:06'),
+(11, 'Taylor Alison Swift', 'taylorswift13', 'taylor@gmail.com', '$2y$10$yuTJeHYtDLAXzer6Elj9weuJQqZy93dQ89CkDKtF9Wf6HdKB6Q72m', 0, '11987562560', 'Sou cantora e artista multipremiada', '', '', 'empreendedora', '/images/pfp/user/68bf9369566b6_1757385577.jpg', '2025-09-09 02:37:39', '2025-09-09 02:39:41');
 
 --
 -- Índices para tabelas despejadas
@@ -521,6 +646,33 @@ ALTER TABLE `denuncias`
   ADD PRIMARY KEY (`id`),
   ADD KEY `denunciante_id` (`denunciante_id`),
   ADD KEY `denunciado_id` (`denunciado_id`);
+
+--
+-- Índices de tabela `eventos`
+--
+ALTER TABLE `eventos`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `criado_por` (`criado_por`),
+  ADD KEY `idx_eventos_data` (`data_evento`),
+  ADD KEY `idx_eventos_tipo` (`tipo`),
+  ADD KEY `idx_eventos_status` (`status`);
+
+--
+-- Índices de tabela `evento_categorias`
+--
+ALTER TABLE `evento_categorias`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `nome` (`nome`);
+
+--
+-- Índices de tabela `evento_inscricoes`
+--
+ALTER TABLE `evento_inscricoes`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `unique_inscricao` (`evento_id`,`user_id`),
+  ADD KEY `idx_inscricoes_evento` (`evento_id`),
+  ADD KEY `idx_inscricoes_user` (`user_id`),
+  ADD KEY `idx_inscricoes_status` (`status`);
 
 --
 -- Índices de tabela `grupos`
@@ -662,6 +814,24 @@ ALTER TABLE `denuncias`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT de tabela `eventos`
+--
+ALTER TABLE `eventos`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de tabela `evento_categorias`
+--
+ALTER TABLE `evento_categorias`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
+-- AUTO_INCREMENT de tabela `evento_inscricoes`
+--
+ALTER TABLE `evento_inscricoes`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT de tabela `grupos`
 --
 ALTER TABLE `grupos`
@@ -677,19 +847,19 @@ ALTER TABLE `mensagens`
 -- AUTO_INCREMENT de tabela `notifications`
 --
 ALTER TABLE `notifications`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
 
 --
 -- AUTO_INCREMENT de tabela `posts`
 --
 ALTER TABLE `posts`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
 
 --
 -- AUTO_INCREMENT de tabela `post_comentarios`
 --
 ALTER TABLE `post_comentarios`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT de tabela `post_compartilhamentos`
@@ -701,7 +871,7 @@ ALTER TABLE `post_compartilhamentos`
 -- AUTO_INCREMENT de tabela `post_likes`
 --
 ALTER TABLE `post_likes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
 
 --
 -- AUTO_INCREMENT de tabela `post_media`
@@ -713,7 +883,7 @@ ALTER TABLE `post_media`
 -- AUTO_INCREMENT de tabela `post_saves`
 --
 ALTER TABLE `post_saves`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT de tabela `schema_migrations`
@@ -725,13 +895,13 @@ ALTER TABLE `schema_migrations`
 -- AUTO_INCREMENT de tabela `user_tokens`
 --
 ALTER TABLE `user_tokens`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT de tabela `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- Restrições para tabelas despejadas
@@ -750,6 +920,19 @@ ALTER TABLE `conversa_participantes`
 ALTER TABLE `denuncias`
   ADD CONSTRAINT `denuncias_ibfk_1` FOREIGN KEY (`denunciante_id`) REFERENCES `usuarios` (`id`),
   ADD CONSTRAINT `denuncias_ibfk_2` FOREIGN KEY (`denunciado_id`) REFERENCES `usuarios` (`id`);
+
+--
+-- Restrições para tabelas `eventos`
+--
+ALTER TABLE `eventos`
+  ADD CONSTRAINT `eventos_ibfk_1` FOREIGN KEY (`criado_por`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE;
+
+--
+-- Restrições para tabelas `evento_inscricoes`
+--
+ALTER TABLE `evento_inscricoes`
+  ADD CONSTRAINT `evento_inscricoes_ibfk_1` FOREIGN KEY (`evento_id`) REFERENCES `eventos` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `evento_inscricoes_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE;
 
 --
 -- Restrições para tabelas `mensagens`
