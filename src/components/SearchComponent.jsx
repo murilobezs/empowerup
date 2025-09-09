@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Card, CardContent } from './ui/card';
 import { Input } from './ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
@@ -10,10 +10,9 @@ import {
   Hash, 
   MessageSquare,
   X,
-  Filter,
-  Calendar,
-  MapPin
+  Filter
 } from 'lucide-react';
+import config from '../config/config';
 
 const SearchComponent = ({ onResultSelect, className = "" }) => {
   const [query, setQuery] = useState('');
@@ -44,6 +43,76 @@ const SearchComponent = ({ onResultSelect, className = "" }) => {
     loadTrending();
   }, []);
 
+  // Carregar pesquisas recentes do localStorage
+  const loadRecentSearches = () => {
+    try {
+      const saved = localStorage.getItem('empowerup_recent_searches');
+      if (saved) {
+        setRecentSearches(JSON.parse(saved));
+      }
+    } catch (error) {
+      console.error('Erro ao carregar pesquisas recentes:', error);
+    }
+  };
+
+  // Salvar pesquisa recente
+  const saveRecentSearch = useCallback((searchQuery) => {
+    try {
+      const updated = [
+        searchQuery,
+        ...recentSearches.filter(s => s !== searchQuery)
+      ].slice(0, 10); // Manter apenas 10 recentes
+      
+      setRecentSearches(updated);
+      localStorage.setItem('empowerup_recent_searches', JSON.stringify(updated));
+    } catch (error) {
+      console.error('Erro ao salvar pesquisa recente:', error);
+    }
+  }, [recentSearches]);
+
+  // Carregar trending topics
+  const loadTrending = async () => {
+    try {
+      const response = await fetch(`${config.API_BASE_URL}/trending/`);
+      if (response.ok) {
+        const data = await response.json();
+        setTrending(data.trending || []);
+      }
+    } catch (error) {
+      console.error('Erro ao carregar trending:', error);
+    }
+  };
+
+  // Realizar pesquisa
+  const performSearch = useCallback(async (searchQuery) => {
+    if (!searchQuery.trim()) return;
+
+    setIsSearching(true);
+    setShowResults(true);
+    
+    try {
+      const params = new URLSearchParams({
+        q: searchQuery,
+        tab: activeTab,
+        ...filters
+      });
+
+      const response = await fetch(`${config.API_BASE_URL}/search.php?${params}`);
+      
+      if (response.ok) {
+        const data = await response.json();
+        setResults(data.results || { posts: [], users: [], groups: [], hashtags: [] });
+        saveRecentSearch(searchQuery);
+      } else {
+        console.error('Erro na pesquisa:', response.status);
+      }
+    } catch (error) {
+      console.error('Erro na pesquisa:', error);
+    } finally {
+      setIsSearching(false);
+    }
+  }, [activeTab, filters, saveRecentSearch]);
+
   // Debounce para pesquisa
   useEffect(() => {
     if (debounceRef.current) {
@@ -64,77 +133,7 @@ const SearchComponent = ({ onResultSelect, className = "" }) => {
         clearTimeout(debounceRef.current);
       }
     };
-  }, [query, filters]);
-
-  // Carregar pesquisas recentes do localStorage
-  const loadRecentSearches = () => {
-    try {
-      const saved = localStorage.getItem('empowerup_recent_searches');
-      if (saved) {
-        setRecentSearches(JSON.parse(saved));
-      }
-    } catch (error) {
-      console.error('Erro ao carregar pesquisas recentes:', error);
-    }
-  };
-
-  // Salvar pesquisa recente
-  const saveRecentSearch = (searchQuery) => {
-    try {
-      const updated = [
-        searchQuery,
-        ...recentSearches.filter(s => s !== searchQuery)
-      ].slice(0, 10); // Manter apenas 10 recentes
-      
-      setRecentSearches(updated);
-      localStorage.setItem('empowerup_recent_searches', JSON.stringify(updated));
-    } catch (error) {
-      console.error('Erro ao salvar pesquisa recente:', error);
-    }
-  };
-
-  // Carregar trending topics
-  const loadTrending = async () => {
-    try {
-      const response = await fetch('http://localhost/empowerup/api/trending/');
-      if (response.ok) {
-        const data = await response.json();
-        setTrending(data.trending || []);
-      }
-    } catch (error) {
-      console.error('Erro ao carregar trending:', error);
-    }
-  };
-
-  // Realizar pesquisa
-  const performSearch = async (searchQuery) => {
-    if (!searchQuery.trim()) return;
-
-    setIsSearching(true);
-    setShowResults(true);
-    
-    try {
-      const params = new URLSearchParams({
-        q: searchQuery,
-        tab: activeTab,
-        ...filters
-      });
-
-      const response = await fetch(`http://localhost/empowerup/api/search.php?${params}`);
-      
-      if (response.ok) {
-        const data = await response.json();
-        setResults(data.results || { posts: [], users: [], groups: [], hashtags: [] });
-        saveRecentSearch(searchQuery);
-      } else {
-        console.error('Erro na pesquisa:', response.status);
-      }
-    } catch (error) {
-      console.error('Erro na pesquisa:', error);
-    } finally {
-      setIsSearching(false);
-    }
-  };
+  }, [query, filters, performSearch]);
 
   // Remover pesquisa recente
   const removeRecentSearch = (searchQuery) => {

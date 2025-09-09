@@ -30,6 +30,7 @@ import {
   DialogTitle,
 } from './ui/dialog';
 import apiService from '../services/api';
+import config from '../config/config';
 
 const SocialPost = ({ 
   post, 
@@ -43,6 +44,18 @@ const SocialPost = ({
   showSaveButton = true,
   isSaved = false
 }) => {
+  // Helper function to construct image URLs
+  const getImageUrl = (imagePath) => {
+    if (!imagePath) return '';
+    const baseUrl = config.API_BASE_URL.replace('/api', '');
+    return `${baseUrl}/public${imagePath}`;
+  };
+
+  // Helper function to construct media URLs
+  const getMediaUrl = (mediaId) => {
+    return `${config.API_BASE_URL}/posts/media.php?id=${mediaId}`;
+  };
+
   const [showComments, setShowComments] = useState(false);
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
@@ -321,10 +334,10 @@ const SocialPost = ({
       return (
         <div className="rounded-xl overflow-hidden mt-3">
           <img
-            src={`http://localhost/empowerup/public${post.imagem_url}`}
+            src={getImageUrl(post.imagem_url)}
             alt="Imagem do post"
             className="w-full max-h-96 object-cover cursor-pointer hover:opacity-95 transition-opacity"
-            onClick={() => window.open(`http://localhost/empowerup/public${post.imagem_url}`, '_blank')}
+            onClick={() => window.open(getImageUrl(post.imagem_url), '_blank')}
           />
         </div>
       );
@@ -334,7 +347,7 @@ const SocialPost = ({
       return (
         <div className="rounded-xl overflow-hidden mt-3">
           <video
-            src={`http://localhost/empowerup/public${post.video_url}`}
+            src={getImageUrl(post.video_url)}
             controls
             className="w-full max-h-96 object-cover"
             poster="/placeholder.svg?height=300&width=500"
@@ -350,7 +363,7 @@ const SocialPost = ({
       if (mediaFiles.length === 1) {
         // Um arquivo - layout único
         const media = mediaFiles[0];
-        const mediaUrl = `http://localhost/empowerup/api/posts/media.php?id=${media.id}`;
+        const mediaUrl = getMediaUrl(media.id);
         
         if (media.media_type.startsWith('image/')) {
           return (
@@ -384,7 +397,7 @@ const SocialPost = ({
             'grid-cols-2'
           }`}>
             {mediaFiles.map((media, index) => {
-              const mediaUrl = `http://localhost/empowerup/api/posts/media.php?id=${media.id}`;
+              const mediaUrl = getMediaUrl(media.id);
               
               return (
                 <div 
@@ -421,7 +434,7 @@ const SocialPost = ({
   const renderComment = (comment) => (
     <div key={comment.id} className="flex space-x-3 py-3">
       <Avatar className="w-8 h-8">
-        <AvatarImage src={comment.avatar_url ? `http://localhost/empowerup/public${comment.avatar_url}` : ''} />
+        <AvatarImage src={getImageUrl(comment.avatar_url)} />
         <AvatarFallback className="text-xs bg-coral text-white">
           {comment.nome ? comment.nome.charAt(0) : comment.autor ? comment.autor.charAt(0) : '?'}
         </AvatarFallback>
@@ -464,7 +477,7 @@ const SocialPost = ({
             {comment.respostas.map(resposta => (
               <div key={resposta.id} className="flex space-x-3">
                 <Avatar className="w-6 h-6">
-                  <AvatarImage src={resposta.avatar_url ? `http://localhost/empowerup/public${resposta.avatar_url}` : ''} />
+                  <AvatarImage src={getImageUrl(resposta.avatar_url)} />
                   <AvatarFallback className="text-xs bg-sage text-white">
                     {resposta.nome ? resposta.nome.charAt(0) : resposta.autor ? resposta.autor.charAt(0) : '?'}
                   </AvatarFallback>
@@ -505,7 +518,7 @@ const SocialPost = ({
         <div className="flex items-center justify-between mb-4">
             <Link to={`/perfil/${post.username}`} className="flex items-center space-x-3 hover:underline">
               <Avatar className="w-12 h-12">
-                <AvatarImage src={post.avatar ? `http://localhost/empowerup/public${post.avatar}` : ''} />
+                <AvatarImage src={getImageUrl(post.avatar)} />
                 <AvatarFallback className="bg-coral text-white">
                   {post.autor.charAt(0)}
                 </AvatarFallback>
@@ -706,7 +719,7 @@ const SocialPost = ({
                 )}
                 <div className="flex space-x-3">
                   <Avatar className="w-8 h-8">
-                    <AvatarImage src={currentUser.avatar_url ? `http://localhost/empowerup/public${currentUser.avatar_url}` : ''} />
+                    <AvatarImage src={getImageUrl(currentUser.avatar_url)} />
                     <AvatarFallback className="bg-coral text-white text-xs">
                       {currentUser.nome.charAt(0)}
                     </AvatarFallback>
@@ -778,7 +791,7 @@ const SocialPost = ({
                 likes.map((like) => (
                   <div key={like.id || like.user?.id} className="flex items-center space-x-3">
                     <Avatar className="w-10 h-10">
-                      <AvatarImage src={(like.avatar_url || like.user?.avatar_url) ? `http://localhost/empowerup/public${like.avatar_url || like.user?.avatar_url}` : ''} />
+                      <AvatarImage src={getImageUrl(like.avatar_url || like.user?.avatar_url)} />
                       <AvatarFallback className="bg-coral text-white">
                         {(like.nome || like.user?.nome) ? (like.nome || like.user?.nome).charAt(0) : '?'}
                       </AvatarFallback>

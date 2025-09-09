@@ -22,6 +22,13 @@ export function SiteHeader() {
 	const { user, logout } = useAuth()
 	const [isOpen, setIsOpen] = useState(false)
 
+	// Helper function to construct image URLs
+	const getImageUrl = (imagePath) => {
+		if (!imagePath) return '';
+		const baseUrl = config.API_BASE_URL.replace('/api', '');
+		return `${baseUrl}/public${imagePath}`;
+	};
+
 	// badge state for notifications
 	const [notificationCount, setNotificationCount] = useState(0)
 
@@ -177,7 +184,7 @@ export function SiteHeader() {
 						<DropdownMenu>
 							<DropdownMenuTrigger className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
 								<Avatar>
-									<AvatarImage src={user.avatar_url ? `http://localhost/empowerup/public${user.avatar_url}` : ''} />
+									<AvatarImage src={getImageUrl(user.avatar_url)} />
 									<AvatarFallback>{user.nome?.charAt(0)}</AvatarFallback>
 								</Avatar>
 								<span className="hidden sm:block text-sm font-medium">
@@ -187,7 +194,7 @@ export function SiteHeader() {
 							<DropdownMenuContent align="end" className="w-56">
 								<DropdownMenuItem onClick={() => navigate('/perfil')}>
 									<Avatar className="mr-2 h-4 w-4">
-										<AvatarImage src={user.avatar_url ? `http://localhost/empowerup/public${user.avatar_url}` : ''} />
+										<AvatarImage src={getImageUrl(user.avatar_url)} />
 										<AvatarFallback className="text-xs">{user.nome?.charAt(0)}</AvatarFallback>
 									</Avatar>
 									Meu Perfil

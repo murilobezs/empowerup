@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import axios from "axios";
 
 export default function MensagensPage({ usuarioId }) {
@@ -28,15 +28,7 @@ export default function MensagensPage({ usuarioId }) {
     fetchConversas();
   }, []);
 
-  
-  useEffect(() => {
-    if (tipo && conversas.length > 0) {
-      const primeira = conversas.find((c) => c.tipo === tipo);
-      if (primeira) carregarMensagens(primeira.id);
-    }
-  }, [tipo, conversas]);
-
-  const carregarMensagens = async (conversaId) => {
+  const carregarMensagens = useCallback(async (conversaId) => {
     setConversaSelecionada(conversaId);
 
     
@@ -66,7 +58,15 @@ export default function MensagensPage({ usuarioId }) {
     } catch (err) {
       console.error("Erro ao buscar mensagens:", err);
     }
-  };
+  }, []);
+
+  // Effect to load messages when type or conversations change
+  useEffect(() => {
+    if (tipo && conversas.length > 0) {
+      const primeira = conversas.find((c) => c.tipo === tipo);
+      if (primeira) carregarMensagens(primeira.id);
+    }
+  }, [tipo, conversas, carregarMensagens]);
 
   const enviarMensagem = async () => {
     if (!novaMensagem.trim() || !conversaSelecionada) return;

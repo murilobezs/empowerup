@@ -4,6 +4,7 @@ import { Input } from "./ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card"
 import { Alert, AlertDescription } from "./ui/alert"
 import { Check, X, Loader2 } from "lucide-react"
+import config from '../config/config'
 
 export default function UsernameSetup({ user, onUsernameSet }) {
   const [username, setUsername] = useState("")
@@ -14,7 +15,7 @@ export default function UsernameSetup({ user, onUsernameSet }) {
 
   const generateSuggestion = useCallback(async () => {
     try {
-      const response = await fetch(`http://localhost/empowerup/api/username.php?action=generate_username&nome=${encodeURIComponent(user.nome)}&email=${encodeURIComponent(user.email)}`)
+      const response = await fetch(`${config.API_BASE_URL}/username.php?action=generate_username&nome=${encodeURIComponent(user.nome)}&email=${encodeURIComponent(user.email)}`)
       const data = await response.json()
       
       if (data.success) {
@@ -42,7 +43,7 @@ export default function UsernameSetup({ user, onUsernameSet }) {
 
     setIsChecking(true)
     try {
-      const response = await fetch(`http://localhost/empowerup/api/username.php?action=check_username&username=${encodeURIComponent(usernameToCheck)}`)
+      const response = await fetch(`${config.API_BASE_URL}/username.php?action=check_username&username=${encodeURIComponent(usernameToCheck)}`)
       const data = await response.json()
       
       setIsAvailable(data.available)
@@ -71,7 +72,7 @@ export default function UsernameSetup({ user, onUsernameSet }) {
 
     setIsSaving(true)
     try {
-      const response = await fetch('http://localhost/empowerup/api/username.php', {
+      const response = await fetch(`${config.API_BASE_URL}/username.php`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

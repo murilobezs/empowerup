@@ -240,7 +240,6 @@ export const utils = {
    */
   generateAvatarUrl: (name) => {
     if (!name) return '/placeholder-avatar.png';
-    const initials = name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
     return `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&size=128&background=random&format=svg`;
   }
 };
