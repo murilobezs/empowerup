@@ -18,6 +18,7 @@ export default function CadastroPage() {
   const navigate = useNavigate()
   const [formData, setFormData] = useState({
     nome: "",
+    username: "",
     email: "",
     senha: "",
     confirmarSenha: "",
@@ -80,6 +81,12 @@ export default function CadastroPage() {
         bio: formData.bio,
         tipo
       }
+      
+      // Incluir username se fornecido
+      if (formData.username.trim()) {
+        payload.username = formData.username.trim()
+      }
+      
       // Incluir telefone apenas se fornecido
       if (sanitizedTelefone) {
         payload.telefone = sanitizedTelefone
@@ -199,6 +206,24 @@ export default function CadastroPage() {
                         />
 +  {formErrors.nome && <p className="text-red-600 text-sm">{formErrors.nome[0]}</p>}
                       </div>
+                      
+                      <div className="space-y-2">
+                        <Label htmlFor="username-empreendedora">Username (opcional)</Label>
+                        <Input
+                          id="username-empreendedora"
+                          name="username"
+                          type="text"
+                          placeholder="meuusername (deixe vazio para gerar automaticamente)"
+                          value={formData.username}
+                          onChange={handleInputChange}
+                          maxLength={30}
+                        />
+                        <p className="text-xs text-gray-500">
+                          Apenas letras, números, _ ou . (3-30 caracteres)
+                        </p>
++  {formErrors.username && <p className="text-red-600 text-sm">{formErrors.username[0]}</p>}
+                      </div>
+                      
                       <div className="space-y-2">
                         <Label htmlFor="email-empreendedora">Email</Label>
                         <Input

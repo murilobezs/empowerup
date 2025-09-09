@@ -108,3 +108,109 @@
 [2025-09-08 22:39:49] Found 3 saved posts
 [2025-09-08 22:39:49] Returning response with 3 formatted posts
 [2025-09-08 22:47:54] Migration error: Migration 006_create_notifications.php does not return a callable
+[2025-09-08 22:53:08] Iniciando getSavedPosts
+[2025-09-08 22:53:08] User authenticated in getSavedPosts: 10 - marianalobonascimento
+[2025-09-08 22:53:08] Searching saved posts for user ID: 10
+[2025-09-08 22:53:08] Found 3 saved posts
+[2025-09-08 22:53:08] Returning response with 3 formatted posts
+[2025-09-08 22:53:08] Iniciando getSavedPosts
+[2025-09-08 22:53:08] User authenticated in getSavedPosts: 10 - marianalobonascimento
+[2025-09-08 22:53:08] Searching saved posts for user ID: 10
+[2025-09-08 22:53:08] Found 3 saved posts
+[2025-09-08 22:53:08] Returning response with 3 formatted posts
+[2025-09-08 22:53:08] PHP Error: Undefined array key "email" in C:\xampp\htdocs\empowerup\api\utils\Helper.php on line 98
+[2025-09-08 22:53:08] PHP Error: Undefined array key "email" in C:\xampp\htdocs\empowerup\api\utils\Helper.php on line 98
+[2025-09-08 22:53:35] PHP Error: Undefined array key "email" in C:\xampp\htdocs\empowerup\api\utils\Helper.php on line 98
+[2025-09-08 22:53:35] PHP Error: Undefined array key "email" in C:\xampp\htdocs\empowerup\api\utils\Helper.php on line 98
+[2025-09-08 22:53:35] PHP Error: Undefined array key "email" in C:\xampp\htdocs\empowerup\api\utils\Helper.php on line 98
+[2025-09-08 22:53:35] PHP Error: Undefined array key "email" in C:\xampp\htdocs\empowerup\api\utils\Helper.php on line 98
+[2025-09-08 22:53:48] PHP Error: Undefined array key "email" in C:\xampp\htdocs\empowerup\api\utils\Helper.php on line 98
+[2025-09-08 22:53:48] PHP Error: Undefined array key "email" in C:\xampp\htdocs\empowerup\api\utils\Helper.php on line 98
+[2025-09-08 22:53:48] PHP Error: Undefined array key "email" in C:\xampp\htdocs\empowerup\api\utils\Helper.php on line 98
+[2025-09-08 22:53:48] PHP Error: Undefined array key "email" in C:\xampp\htdocs\empowerup\api\utils\Helper.php on line 98
+[2025-09-08 22:54:05] PHP Error: Undefined array key "email" in C:\xampp\htdocs\empowerup\api\utils\Helper.php on line 98
+[2025-09-08 22:54:05] PHP Error: Undefined array key "email" in C:\xampp\htdocs\empowerup\api\utils\Helper.php on line 98
+[2025-09-08 22:54:17] Iniciando getSavedPosts
+[2025-09-08 22:54:17] User authenticated in getSavedPosts: 10 - marianalobonascimento
+[2025-09-08 22:54:17] Searching saved posts for user ID: 10
+[2025-09-08 22:54:17] Found 3 saved posts
+[2025-09-08 22:54:17] Returning response with 3 formatted posts
+[2025-09-08 22:54:17] PHP Error: Undefined array key "email" in C:\xampp\htdocs\empowerup\api\utils\Helper.php on line 98
+[2025-09-08 22:54:17] Iniciando getSavedPosts
+[2025-09-08 22:54:17] User authenticated in getSavedPosts: 10 - marianalobonascimento
+[2025-09-08 22:54:17] Searching saved posts for user ID: 10
+[2025-09-08 22:54:17] Found 3 saved posts
+[2025-09-08 22:54:17] Returning response with 3 formatted posts
+[2025-09-08 22:54:17] PHP Error: Undefined array key "email" in C:\xampp\htdocs\empowerup\api\utils\Helper.php on line 98
+[2025-09-08 22:54:27] PHP Error: Undefined array key "email" in C:\xampp\htdocs\empowerup\api\utils\Helper.php on line 98
+[2025-09-08 22:54:27] PHP Error: Undefined array key "email" in C:\xampp\htdocs\empowerup\api\utils\Helper.php on line 98
+[2025-09-08 22:54:41] PHP Error: Undefined array key "email" in C:\xampp\htdocs\empowerup\api\utils\Helper.php on line 98
+[2025-09-08 22:54:41] Iniciando getSavedPosts
+[2025-09-08 22:54:41] User authenticated in getSavedPosts: 10 - marianalobonascimento
+[2025-09-08 22:54:41] Searching saved posts for user ID: 10
+[2025-09-08 22:54:41] Found 3 saved posts
+[2025-09-08 22:54:41] Returning response with 3 formatted posts
+[2025-09-08 23:07:24] PHP Error: Undefined array key "email" in C:\xampp\htdocs\empowerup\api\utils\Helper.php on line 98
+[2025-09-08 23:07:23] Iniciando getSavedPosts
+[2025-09-08 23:07:24] User authenticated in getSavedPosts: 10 - marianalobonascimento
+[2025-09-08 23:07:24] Searching saved posts for user ID: 10
+[2025-09-08 23:07:25] Found 3 saved posts
+[2025-09-08 23:07:25] Returning response with 3 formatted posts
+[2025-09-08 23:09:30] Iniciando getSavedPosts
+[2025-09-08 23:09:30] User authenticated in getSavedPosts: 10 - marianalobonascimento
+[2025-09-08 23:09:30] Searching saved posts for user ID: 10
+[2025-09-08 23:09:31] PHP Error: Undefined array key "email" in C:\xampp\htdocs\empowerup\api\utils\Helper.php on line 98
+[2025-09-08 23:09:31] PHP Error: Undefined array key "email" in C:\xampp\htdocs\empowerup\api\utils\Helper.php on line 98
+[2025-09-08 23:09:31] Found 3 saved posts
+[2025-09-08 23:09:31] Returning response with 3 formatted posts
+[2025-09-08 23:09:31] Iniciando getSavedPosts
+[2025-09-08 23:09:31] User authenticated in getSavedPosts: 10 - marianalobonascimento
+[2025-09-08 23:09:31] Searching saved posts for user ID: 10
+[2025-09-08 23:09:31] Found 3 saved posts
+[2025-09-08 23:09:31] Returning response with 3 formatted posts
+[2025-09-08 23:38:54] Iniciando getSavedPosts
+[2025-09-08 23:38:53] PHP Error: Undefined array key "email" in C:\xampp\htdocs\empowerup\api\utils\Helper.php on line 98
+[2025-09-08 23:38:54] User authenticated in getSavedPosts: 11 - taylorswift13
+[2025-09-08 23:38:54] Searching saved posts for user ID: 11
+[2025-09-08 23:38:54] PHP Error: Undefined array key "email" in C:\xampp\htdocs\empowerup\api\utils\Helper.php on line 98
+[2025-09-08 23:38:54] Found 0 saved posts
+[2025-09-08 23:38:54] Returning response with 0 formatted posts
+[2025-09-08 23:38:54] Iniciando getSavedPosts
+[2025-09-08 23:38:54] User authenticated in getSavedPosts: 11 - taylorswift13
+[2025-09-08 23:38:54] Searching saved posts for user ID: 11
+[2025-09-08 23:38:54] Found 0 saved posts
+[2025-09-08 23:38:54] Returning response with 0 formatted posts
+[2025-09-08 23:39:43] Iniciando getSavedPosts
+[2025-09-08 23:39:43] User authenticated in getSavedPosts: 11 - taylorswift13
+[2025-09-08 23:39:43] Searching saved posts for user ID: 11
+[2025-09-08 23:39:43] Found 0 saved posts
+[2025-09-08 23:39:43] Returning response with 0 formatted posts
+[2025-09-08 23:39:43] Iniciando getSavedPosts
+[2025-09-08 23:39:43] User authenticated in getSavedPosts: 11 - taylorswift13
+[2025-09-08 23:39:43] Searching saved posts for user ID: 11
+[2025-09-08 23:39:43] Found 0 saved posts
+[2025-09-08 23:39:43] Returning response with 0 formatted posts
+[2025-09-08 23:39:44] PHP Error: Undefined array key "email" in C:\xampp\htdocs\empowerup\api\utils\Helper.php on line 98
+[2025-09-08 23:39:44] PHP Error: Undefined array key "email" in C:\xampp\htdocs\empowerup\api\utils\Helper.php on line 98
+[2025-09-08 23:39:59] Iniciando getSavedPosts
+[2025-09-08 23:39:59] PHP Error: Undefined array key "email" in C:\xampp\htdocs\empowerup\api\utils\Helper.php on line 98
+[2025-09-08 23:39:59] User authenticated in getSavedPosts: 11 - taylorswift13
+[2025-09-08 23:39:59] Searching saved posts for user ID: 11
+[2025-09-08 23:39:59] Found 0 saved posts
+[2025-09-08 23:39:59] Returning response with 0 formatted posts
+[2025-09-08 23:39:59] PHP Error: Undefined array key "email" in C:\xampp\htdocs\empowerup\api\utils\Helper.php on line 98
+[2025-09-08 23:39:59] Iniciando getSavedPosts
+[2025-09-08 23:39:59] User authenticated in getSavedPosts: 11 - taylorswift13
+[2025-09-08 23:39:59] Searching saved posts for user ID: 11
+[2025-09-08 23:39:59] Found 0 saved posts
+[2025-09-08 23:39:59] Returning response with 0 formatted posts
+[2025-09-08 23:40:23] Iniciando getSavedPosts
+[2025-09-08 23:40:23] User authenticated in getSavedPosts: 11 - taylorswift13
+[2025-09-08 23:40:23] Searching saved posts for user ID: 11
+[2025-09-08 23:40:23] Found 1 saved posts
+[2025-09-08 23:40:23] Returning response with 1 formatted posts
+[2025-09-08 23:40:23] Iniciando getSavedPosts
+[2025-09-08 23:40:23] User authenticated in getSavedPosts: 11 - taylorswift13
+[2025-09-08 23:40:23] Searching saved posts for user ID: 11
+[2025-09-08 23:40:23] Found 1 saved posts
+[2025-09-08 23:40:23] Returning response with 1 formatted posts

@@ -185,6 +185,11 @@ $router->post('/auth/logout', function() {
     $controller->logout();
 });
 
+$router->put('/auth/username', function() {
+    $controller = new AuthController();
+    $controller->updateUsername();
+});
+
 $router->get('/auth/profile', function() {
     $controller = new AuthController();
     $controller->profile();

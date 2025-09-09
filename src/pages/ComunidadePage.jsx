@@ -29,6 +29,7 @@ import { useToast } from '../components/ui/toast'
 import SocialPost from '../components/SocialPost'
 import EmpowerUpCreatePost from '../components/EmpowerUpCreatePost'
 import SearchComponent from '../components/SearchComponent'
+import EditPostModal from '../components/EditPostModal'
 import config from '../config/config'
 import { SiteHeader } from '../components/site-header'
 
@@ -44,6 +45,8 @@ export default function ComunidadePage() {
   const [showBanner, setShowBanner] = useState(true)
   const [bannerVisible, setBannerVisible] = useState(false)
   const [successModal, setSuccessModal] = useState({ visible: false, message: '' }) // Novo estado para o modal
+  const [editingPost, setEditingPost] = useState(null)
+  const [showEditModal, setShowEditModal] = useState(false)
   
   const { user, updateUser } = useAuth()
   const { addToast } = useToast()
@@ -385,10 +388,38 @@ export default function ComunidadePage() {
   }
 
   const handleUpdatePost = (post) => {
-    // Atualizar post na lista
-    setPosts(prevPosts => 
-      prevPosts.map(p => p.id === post.id ? post : p)
-    )
+    // Abrir modal de edição
+    setEditingPost(post)
+    setShowEditModal(true)
+  }
+
+  const handleSaveEditPost = async (postId, updatedData) => {
+    try {
+      const response = await fetch(`${config.API_BASE_URL}/posts/${postId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${user.token}`
+        },
+        body: JSON.stringify(updatedData)
+      })
+
+      const data = await response.json()
+
+      if (data.success) {
+        // Atualizar post na lista
+        setPosts(prevPosts => 
+          prevPosts.map(p => p.id === postId ? { ...p, ...data.post } : p)
+        )
+        addToast('Post atualizado com sucesso!', 'success')
+      } else {
+        throw new Error(data.message || 'Erro ao atualizar post')
+      }
+    } catch (error) {
+      console.error('Erro ao atualizar post:', error)
+      addToast('Erro ao atualizar post. Tente novamente.', 'error')
+      throw error
+    }
   }
 
   const filteredPosts = posts.filter((post) => {
@@ -869,6 +900,17 @@ export default function ComunidadePage() {
           </DialogContent>
         </Dialog>
       )}
+
+      {/* Modal de Edição de Post */}
+      <EditPostModal
+        isOpen={showEditModal}
+        onClose={() => {
+          setShowEditModal(false)
+          setEditingPost(null)
+        }}
+        post={editingPost}
+        onSave={handleSaveEditPost}
+      />
     </div>
   )
 }

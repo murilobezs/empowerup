@@ -55,19 +55,58 @@ class AuthController {
                 return;
             }
             
-            // Gerar username único
-            $username = Helper::generateUsername($data['nome']);
-            $usernameExists = $this->db->fetch(
-                'SELECT id FROM usuarios WHERE username = ?',
-                [$username]
-            );
+            // Verificar se telefone já existe (se fornecido)
+            if (isset($data['telefone']) && !empty($data['telefone'])) {
+                $existingPhone = $this->db->fetch(
+                    'SELECT id FROM usuarios WHERE telefone = ?',
+                    [$data['telefone']]
+                );
+                
+                if ($existingPhone) {
+                    echo Helper::jsonResponse(false, 'Telefone já está em uso', [], 400);
+                    return;
+                }
+            }
             
-            while ($usernameExists) {
-                $username = Helper::generateUsername($data['nome']) . rand(100, 999);
+            // Gerar ou validar username
+            $username = '';
+            if (isset($data['username']) && !empty($data['username'])) {
+                // Username fornecido pelo usuário - validar
+                $customUsername = Helper::sanitizeString($data['username']);
+                
+                // Validar formato do username
+                if (!preg_match('/^[a-zA-Z0-9_\.]{3,30}$/', $customUsername)) {
+                    echo Helper::jsonResponse(false, 'Username deve conter apenas letras, números, _ ou . e ter entre 3-30 caracteres', [], 400);
+                    return;
+                }
+                
+                // Verificar se username já existe
+                $usernameExists = $this->db->fetch(
+                    'SELECT id FROM usuarios WHERE username = ?',
+                    [$customUsername]
+                );
+                
+                if ($usernameExists) {
+                    echo Helper::jsonResponse(false, 'Username já está em uso', [], 400);
+                    return;
+                }
+                
+                $username = $customUsername;
+            } else {
+                // Gerar username único automaticamente
+                $username = Helper::generateUsername($data['nome']);
                 $usernameExists = $this->db->fetch(
                     'SELECT id FROM usuarios WHERE username = ?',
                     [$username]
                 );
+                
+                while ($usernameExists) {
+                    $username = Helper::generateUsername($data['nome']) . rand(100, 999);
+                    $usernameExists = $this->db->fetch(
+                        'SELECT id FROM usuarios WHERE username = ?',
+                        [$username]
+                    );
+                }
             }
             
             // Hash da senha
@@ -149,8 +188,7 @@ class AuthController {
             // Validar dados
             $validator = new Validator($data);
             $validator
-                ->required('email', 'Email é obrigatório')
-                ->email('email', 'Email inválido')
+                ->required('login', 'Email, telefone ou username é obrigatório')
                 ->required('senha', 'Senha é obrigatória');
             
             if ($validator->hasErrors()) {
@@ -158,20 +196,32 @@ class AuthController {
                 return;
             }
             
-            // Buscar usuário
-            $user = $this->db->fetch(
-                'SELECT * FROM usuarios WHERE email = ?',
-                [$data['email']]
-            );
+            // Buscar usuário por email, username ou telefone
+            $login = Helper::sanitizeString($data['login']);
+            $user = null;
+            
+            // Tentar buscar por email se contém @
+            if (strpos($login, '@') !== false) {
+                $user = $this->db->fetch(
+                    'SELECT * FROM usuarios WHERE email = ?',
+                    [$login]
+                );
+            } else {
+                // Buscar por username ou telefone
+                $user = $this->db->fetch(
+                    'SELECT * FROM usuarios WHERE username = ? OR telefone = ?',
+                    [$login, $login]
+                );
+            }
             
             if (!$user) {
-                echo Helper::jsonResponse(false, 'Email ou senha incorretos', [], 401);
+                echo Helper::jsonResponse(false, 'Credenciais incorretas', [], 401);
                 return;
             }
             
             // Verificar senha
             if (!Helper::verifyPassword($data['senha'], $user['senha'])) {
-                echo Helper::jsonResponse(false, 'Email ou senha incorretos', [], 401);
+                echo Helper::jsonResponse(false, 'Credenciais incorretas', [], 401);
                 return;
             }
             
@@ -417,6 +467,60 @@ class AuthController {
         } catch (Exception $e) {
             Helper::logError('Logout error: ' . $e->getMessage());
             echo Helper::jsonResponse(false, 'Erro ao realizar logout', [], 500);
+        }
+    }
+
+    /**
+     * Atualizar username do usuário
+     */
+    public function updateUsername() {
+        try {
+            $user = AuthMiddleware::required();
+            $data = json_decode(file_get_contents('php://input'), true);
+            
+            if (!$data || !isset($data['username'])) {
+                echo Helper::jsonResponse(false, 'Username é obrigatório', [], 400);
+                return;
+            }
+            
+            $newUsername = Helper::sanitizeString($data['username']);
+            
+            // Validar formato do username
+            if (!preg_match('/^[a-zA-Z0-9_\.]{3,30}$/', $newUsername)) {
+                echo Helper::jsonResponse(false, 'Username deve conter apenas letras, números, _ ou . e ter entre 3-30 caracteres', [], 400);
+                return;
+            }
+            
+            // Verificar se username já existe
+            $existingUser = $this->db->fetch(
+                'SELECT id FROM usuarios WHERE username = ? AND id != ?',
+                [$newUsername, $user['id']]
+            );
+            
+            if ($existingUser) {
+                echo Helper::jsonResponse(false, 'Username já está em uso', [], 400);
+                return;
+            }
+            
+            // Atualizar username
+            $this->db->execute(
+                'UPDATE usuarios SET username = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?',
+                [$newUsername, $user['id']]
+            );
+            
+            // Buscar usuário atualizado
+            $updatedUser = $this->db->fetch(
+                'SELECT id, nome, username, email, telefone, bio, tipo, avatar_url, created_at, updated_at FROM usuarios WHERE id = ?',
+                [$user['id']]
+            );
+            
+            echo Helper::jsonResponse(true, 'Username atualizado com sucesso', [
+                'user' => Helper::formatUser($updatedUser)
+            ]);
+            
+        } catch (Exception $e) {
+            Helper::logError('Update username error: ' . $e->getMessage());
+            echo Helper::jsonResponse(false, 'Erro ao atualizar username', [], 500);
         }
     }
 }

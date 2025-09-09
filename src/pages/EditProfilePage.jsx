@@ -10,7 +10,8 @@ import { Textarea } from '../components/ui/textarea';
 import { Label } from '../components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '../components/ui/avatar';
-import { Camera, Save, ArrowLeft } from 'lucide-react';
+import EditUsernameModal from '../components/EditUsernameModal';
+import { Camera, Save, ArrowLeft, Edit } from 'lucide-react';
 import { ROUTES } from '../constants';
 import { utils } from '../utils';
 
@@ -22,6 +23,7 @@ const EditProfilePage = () => {
   const { user, updateProfile, updateAvatar } = useAuth();
   const [uploading, setUploading] = useState(false);
   const [toast, setToast] = useState({ show: false, message: '', type: 'info' });
+  const [showEditUsername, setShowEditUsername] = useState(false);
 
   // Formatar telefone no padrão brasileiro (xx) xxxxx-xxxx
   const formatTelefone = (value) => {
@@ -144,6 +146,12 @@ const EditProfilePage = () => {
     }
   };
 
+  // Atualizar username
+  const handleUsernameUpdate = (updatedUser) => {
+    // Atualizar o contexto do usuário
+    updateProfile(updatedUser);
+  };
+
   // Mostrar toast
   const showToast = (message, type) => {
     setToast({ show: true, message, type });
@@ -248,6 +256,28 @@ const EditProfilePage = () => {
                   {errors.nome && (
                     <p className="text-sm text-red-600 mt-1">{errors.nome}</p>
                   )}
+                </div>
+
+                <div>
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="username">Username</Label>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setShowEditUsername(true)}
+                      className="flex items-center gap-2"
+                    >
+                      <Edit className="h-4 w-4" />
+                      Editar
+                    </Button>
+                  </div>
+                  <div className="flex items-center gap-2 px-3 py-2 bg-gray-50 border rounded-md">
+                    <span className="text-gray-600">@{user?.username}</span>
+                  </div>
+                  <p className="text-sm text-gray-500 mt-1">
+                    Seu username único para ser encontrado na plataforma
+                  </p>
                 </div>
 
                 <div>
@@ -366,6 +396,14 @@ const EditProfilePage = () => {
         type={toast.type}
         isVisible={toast.show}
         onClose={() => setToast({ ...toast, show: false })}
+      />
+
+      {/* Modal de Edição de Username */}
+      <EditUsernameModal
+        isOpen={showEditUsername}
+        onClose={() => setShowEditUsername(false)}
+        currentUsername={user?.username}
+        onSave={handleUsernameUpdate}
       />
     </PageLayout>
   );

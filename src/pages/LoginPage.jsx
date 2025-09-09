@@ -14,10 +14,11 @@ export default function LoginPage() {
   const { login } = useAuth()
   const navigate = useNavigate()
   const [formData, setFormData] = useState({
-    email: "",
+    login: "",
     senha: "",
     lembrar: false,
   })
+  const [showSenha, setShowSenha] = useState(false)
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target
@@ -32,7 +33,7 @@ export default function LoginPage() {
     
     try {
       const result = await login({
-        email: formData.email,
+        login: formData.login,
         senha: formData.senha
       });
       
@@ -72,13 +73,13 @@ export default function LoginPage() {
                   <form onSubmit={(e) => handleSubmit(e, "empreendedora")}>
                     <CardContent className="space-y-4">
                       <div className="space-y-2">
-                        <Label htmlFor="email-empreendedora">Email</Label>
+                        <Label htmlFor="login-empreendedora">Email, Username ou Telefone</Label>
                         <Input
-                          id="email-empreendedora"
-                          name="email"
-                          type="email"
-                          placeholder="seu@email.com"
-                          value={formData.email}
+                          id="login-empreendedora"
+                          name="login"
+                          type="text"
+                          placeholder="seu@email.com, @username ou telefone"
+                          value={formData.login}
                           onChange={handleInputChange}
                           required
                         />
@@ -90,14 +91,24 @@ export default function LoginPage() {
                             Esqueceu a senha?
                           </Link>
                         </div>
-                        <Input
-                          id="senha-empreendedora"
-                          name="senha"
-                          type="password"
-                          value={formData.senha}
-                          onChange={handleInputChange}
-                          required
-                        />
+                        <div className="relative">
+                          <Input
+                            id="senha-empreendedora"
+                            name="senha"
+                            type={showSenha ? 'text' : 'password'}
+                            value={formData.senha}
+                            onChange={handleInputChange}
+                            className="pr-10"
+                            required
+                          />
+                          <button
+                            type="button"
+                            className="absolute right-3 top-3 text-sm text-gray-500 hover:text-gray-700"
+                            onClick={() => setShowSenha(!showSenha)}
+                          >
+                            {showSenha ? 'Ocultar' : 'Mostrar'}
+                          </button>
+                        </div>
                       </div>
                       <div className="flex items-center space-x-2">
                         <Checkbox

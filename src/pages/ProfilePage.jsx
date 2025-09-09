@@ -4,8 +4,10 @@ import { useAuth } from '../contexts/AuthContext';
 import { ProfileLayout } from '../components/layout';
 import { Loading, ErrorMessage, EmptyState } from '../components/common';
 import SocialPost from '../components/SocialPost';
+import EditPostModal from '../components/EditPostModal';
 import { Button } from '../components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
+import { useToast } from '../components/ui/toast';
 import apiService from '../services/api';
 import { Edit, Heart, Bookmark, Users } from 'lucide-react';
 
@@ -22,6 +24,10 @@ const ProfilePage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [activeTab, setActiveTab] = useState('posts');
+  const [editingPost, setEditingPost] = useState(null);
+  const [showEditModal, setShowEditModal] = useState(false);
+
+  const { addToast } = useToast();
 
   const isOwnProfile = !username || username === currentUser?.username;
 
@@ -103,6 +109,26 @@ const ProfilePage = () => {
     };
     loadProfile();
   }, [username, currentUser, isOwnProfile]);
+
+  const handleSaveEditPost = async (postId, updatedData) => {
+    try {
+      const res = await apiService.updatePost(postId, updatedData);
+      if (res.success) {
+        setPosts(prev => prev.map(p => 
+          p.id === postId 
+            ? { ...p, ...res.post }
+            : p
+        ));
+        addToast('Post atualizado com sucesso!', 'success')
+      } else {
+        throw new Error(res.message || 'Erro ao atualizar post')
+      }
+    } catch (error) {
+      console.error('Erro ao atualizar post:', error)
+      addToast('Erro ao atualizar post. Tente novamente.', 'error')
+      throw error
+    }
+  };
 
   if (loading) {
     return (
@@ -235,19 +261,10 @@ const ProfilePage = () => {
                       console.error('Erro ao deletar:', e);
                     }
                   } : undefined}
-                  onUpdate={isOwnProfile ? async (postId, postData) => {
-                    try {
-                      const res = await apiService.updatePost(postId, postData);
-                      if (res.success) {
-                        setPosts(prev => prev.map(p => 
-                          p.id === postId 
-                            ? { ...p, ...res.post }
-                            : p
-                        ));
-                      }
-                    } catch (e) {
-                      console.error('Erro ao atualizar:', e);
-                    }
+                  onUpdate={isOwnProfile ? (post) => {
+                    // Abrir modal de edição
+                    setEditingPost(post)
+                    setShowEditModal(true)
                   } : undefined}
                   showActions={true}
                 />
@@ -370,6 +387,17 @@ const ProfilePage = () => {
           </TabsContent>
         </Tabs>
       </div>
+
+      {/* Modal de Edição de Post */}
+      <EditPostModal
+        isOpen={showEditModal}
+        onClose={() => {
+          setShowEditModal(false)
+          setEditingPost(null)
+        }}
+        post={editingPost}
+        onSave={handleSaveEditPost}
+      />
     </ProfileLayout>
   );
 };

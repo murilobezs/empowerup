@@ -3,7 +3,9 @@ import { useAuth } from '../contexts/AuthContext';
 import { PageLayout } from '../components/layout';
 import { Loading, ErrorMessage, EmptyState } from '../components/common';
 import SocialPost from '../components/SocialPost';
+import EditPostModal from '../components/EditPostModal';
 import { Button } from '../components/ui/button';
+import { useToast } from '../components/ui/toast';
 import { Bookmark, ArrowLeft, Trash2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import apiService from '../services/api';
@@ -19,6 +21,10 @@ const SavedPostsPage = () => {
   const [error, setError] = useState('');
   const [selectedPosts, setSelectedPosts] = useState([]);
   const [selectionMode, setSelectionMode] = useState(false);
+  const [editingPost, setEditingPost] = useState(null);
+  const [showEditModal, setShowEditModal] = useState(false);
+
+  const { addToast } = useToast();
 
   // Debug log para verificar se a página está sendo acessada
   useEffect(() => {
@@ -71,6 +77,32 @@ const SavedPostsPage = () => {
         ? prev.filter(id => id !== postId)
         : [...prev, postId]
     );
+  };
+
+  const handleUpdatePost = (post) => {
+    // Abrir modal de edição
+    setEditingPost(post)
+    setShowEditModal(true)
+  };
+
+  const handleSaveEditPost = async (postId, updatedData) => {
+    try {
+      const res = await apiService.updatePost(postId, updatedData);
+      if (res.success) {
+        setPosts(prev => prev.map(p => 
+          p.id === postId 
+            ? { ...p, ...res.post }
+            : p
+        ));
+        addToast('Post atualizado com sucesso!', 'success')
+      } else {
+        throw new Error(res.message || 'Erro ao atualizar post')
+      }
+    } catch (error) {
+      console.error('Erro ao atualizar post:', error)
+      addToast('Erro ao atualizar post. Tente novamente.', 'error')
+      throw error
+    }
   };
 
   const handleBulkRemove = async () => {
@@ -198,6 +230,7 @@ const SavedPostsPage = () => {
                     }
                   }}
                   onSave={() => handleUnsavePost(post.id)}
+                  onUpdate={user && user.id === post.user_id ? handleUpdatePost : undefined}
                   showActions={true}
                   showSaveButton={true}
                   isSaved={true}
@@ -250,6 +283,17 @@ const SavedPostsPage = () => {
           </div>
         )}
       </div>
+
+      {/* Modal de Edição de Post */}
+      <EditPostModal
+        isOpen={showEditModal}
+        onClose={() => {
+          setShowEditModal(false)
+          setEditingPost(null)
+        }}
+        post={editingPost}
+        onSave={handleSaveEditPost}
+      />
     </PageLayout>
   );
 };
