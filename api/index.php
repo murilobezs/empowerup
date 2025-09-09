@@ -236,7 +236,7 @@ $router->post('/users/avatar', function() {
     $controller->updateAvatar();
 });
 
-// Rotas de posts
+
 $router->get('/posts', function() {
     $controller = new PostController();
     $controller->getPosts();

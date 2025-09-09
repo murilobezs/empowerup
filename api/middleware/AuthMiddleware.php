@@ -19,6 +19,54 @@ class AuthMiddleware {
     }
     
     /**
+     * Verificar autenticação por sessão (alternativa ao token)
+     */
+    public static function sessionRequired() {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        
+        $user = self::authenticateBySession();
+        if (!$user) {
+            http_response_code(401);
+            echo Helper::jsonResponse(false, 'Usuário não autenticado', [], 401);
+            exit;
+        }
+        return $user;
+    }
+    
+    /**
+     * Autenticação híbrida: tenta token primeiro, depois sessão
+     */
+    public static function hybrid() {
+        // Primeiro tenta autenticação por token
+        $user = self::authenticate();
+        
+        if (!$user) {
+            // Se não funcionar, tenta por sessão
+            if (session_status() === PHP_SESSION_NONE) {
+                session_start();
+            }
+            $user = self::authenticateBySession();
+        }
+        
+        return $user;
+    }
+    
+    /**
+     * Autenticação híbrida obrigatória
+     */
+    public static function hybridRequired() {
+        $user = self::hybrid();
+        if (!$user) {
+            http_response_code(401);
+            echo Helper::jsonResponse(false, 'Autenticação necessária', [], 401);
+            exit;
+        }
+        return $user;
+    }
+    
+    /**
      * Autenticação opcional
      */
     public static function optional() {
@@ -63,7 +111,7 @@ class AuthMiddleware {
             // Verificar se o usuário ainda existe
             $db = Database::getInstance();
             $user = $db->fetch(
-                'SELECT id, nome, username, email, telefone, bio, website, localizacao, tipo, avatar_url FROM usuarios WHERE id = ?',
+                'SELECT id, nome, username, email, telefone, bio, tipo, avatar_url FROM usuarios WHERE id = ?',
                 [$payload['userId']]
             );
 
@@ -76,6 +124,35 @@ class AuthMiddleware {
         } catch (Exception $e) {
             // Registrar erro para diagnóstico sem vazar detalhes ao cliente
             Helper::logError('Auth token error: ' . $e->getMessage());
+            return null;
+        }
+    }
+    
+    /**
+     * Autenticação baseada em sessão
+     */
+    private static function authenticateBySession() {
+        if (!isset($_SESSION['user_id']) || empty($_SESSION['user_id'])) {
+            return null;
+        }
+
+        try {
+            $db = Database::getInstance();
+            $user = $db->fetch(
+                'SELECT id, nome, username, email, telefone, bio, tipo, avatar_url FROM usuarios WHERE id = ?',
+                [$_SESSION['user_id']]
+            );
+
+            if (!$user) {
+                // Limpar sessão se usuário não existe mais
+                unset($_SESSION['user_id']);
+                return null;
+            }
+
+            return $user;
+
+        } catch (Exception $e) {
+            Helper::logError('Session auth error: ' . $e->getMessage());
             return null;
         }
     }

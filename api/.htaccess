@@ -3,6 +3,12 @@ RewriteEngine On
 # Prevent Apache from redirecting directory requests (stops 301/302 for preflight to /posts/)
 DirectorySlash Off
 
+# Preserve Authorization header for PHP (common issue behind Apache/mod_php/mod_rewrite)
+<IfModule mod_setenvif.c>
+    # Pass Authorization header to PHP as HTTP_AUTHORIZATION
+    SetEnvIf Authorization "(.+)" HTTP_AUTHORIZATION=$1
+</IfModule>
+
 # Configurações de segurança
 # Note: ServerTokens and ServerSignature must be set in httpd.conf, not .htaccess
 
