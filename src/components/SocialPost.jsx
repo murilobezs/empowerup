@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { Card, CardContent } from './ui/card';
 import { Button } from './ui/button';
@@ -56,6 +56,9 @@ const SocialPost = ({
   const [loadingLikes, setLoadingLikes] = useState(false);
   const [saved, setSaved] = useState(isSaved || post.user_saved || post.isSaved || false);
   const [isFollowing, setIsFollowing] = useState(post.isFollowed || false);
+  
+  // Ref para controlar carregamento de comentários
+  const commentsLoadedRef = useRef(false);
 
   // Sincronizar estado quando as props mudarem
   useEffect(() => {
@@ -64,24 +67,15 @@ const SocialPost = ({
     setSaved(isSaved || post.user_saved || post.isSaved || false);
   }, [post.user_liked, post.isLiked, post.likes, isSaved, post.user_saved, post.isSaved]);
 
-  // Carregar comentários quando abrir
-  useEffect(() => {
-    if (showComments && !loadingComments) {
-      fetchComments();
-    }
-  }, [showComments, post.id]);
-
-  // Carregar likes quando abrir modal
-  useEffect(() => {
-    if (showLikesList && !loadingLikes) {
-      fetchLikes();
-    }
-  }, [showLikesList, post.id]);
-
-  const fetchComments = async () => {
+  const fetchComments = useCallback(async () => {
+    // Evitar carregamento duplicado
+    if (loadingComments || commentsLoadedRef.current) return;
+    
+    commentsLoadedRef.current = true;
     setLoadingComments(true);
+    
     try {
-      const response = await apiService.getComments(post.id);
+      const response = await apiService.getComments(post.id, { limit: 10 }); // Reduzir limite para 10
       
       if (response.success) {
         setComments(response.comments || []);
@@ -89,11 +83,13 @@ const SocialPost = ({
       }
     } catch (error) {
       console.error('Erro ao carregar comentários:', error);
+      // Reset ref em caso de erro para permitir nova tentativa
+      commentsLoadedRef.current = false;
     }
     setLoadingComments(false);
-  };
+  }, [post.id, loadingComments]);
 
-  const fetchLikes = async () => {
+  const fetchLikes = useCallback(async () => {
     setLoadingLikes(true);
     try {
       const response = await apiService.getLikes(post.id);
@@ -106,7 +102,21 @@ const SocialPost = ({
       console.error('Erro ao carregar likes:', error);
     }
     setLoadingLikes(false);
-  };
+  }, [post.id]);
+
+  // Carregar comentários quando abrir (apenas uma vez)
+  useEffect(() => {
+    if (showComments && !commentsLoadedRef.current && !loadingComments) {
+      fetchComments();
+    }
+  }, [showComments, fetchComments, loadingComments]);
+
+  // Carregar likes quando abrir modal
+  useEffect(() => {
+    if (showLikesList && !loadingLikes) {
+      fetchLikes();
+    }
+  }, [showLikesList, post.id, fetchLikes, loadingLikes]);
 
   const handleLike = async () => {
     if (!currentUser) return;
@@ -147,21 +157,88 @@ const SocialPost = ({
   const handleComment = async () => {
     if (!currentUser || !newComment.trim()) return;
 
+    const tempComment = {
+      id: `temp-${Date.now()}`,
+      conteudo: newComment.trim(),
+      author: currentUser.nome,
+      username: currentUser.username,
+      avatar_url: currentUser.avatar_url,
+      created_at: new Date().toISOString(),
+      parent_id: replyTo?.id || null,
+      replies: []
+    };
+
+    // Atualização otimística - adicionar comentário imediatamente
+    if (replyTo) {
+      // Adicionar como resposta
+      setComments(prev => prev.map(comment => 
+        comment.id === replyTo.id 
+          ? { ...comment, replies: [...comment.replies, tempComment] }
+          : comment
+      ));
+    } else {
+      // Adicionar como comentário principal
+      setComments(prev => [...prev, tempComment]);
+    }
+    
+    setCommentCount(prev => prev + 1);
+    const originalComment = newComment;
+    setNewComment('');
+    setReplyTo(null);
+
     try {
       const response = await apiService.createComment(post.id, {
-        conteudo: newComment.trim(),
+        conteudo: originalComment.trim(),
         parent_id: replyTo?.id || null
       });
       
       if (response.success) {
-        setNewComment('');
-        setReplyTo(null);
-        setCommentCount(prev => prev + 1);
-        fetchComments(); // Recarregar comentários
+        // Substituir comentário temporário pelo real
+        if (replyTo) {
+          setComments(prev => prev.map(comment => 
+            comment.id === replyTo.id 
+              ? { 
+                  ...comment, 
+                  replies: comment.replies.map(reply => 
+                    reply.id === tempComment.id ? response.comment : reply
+                  )
+                }
+              : comment
+          ));
+        } else {
+          setComments(prev => prev.map(comment => 
+            comment.id === tempComment.id ? response.comment : comment
+          ));
+        }
+        
         if (onComment) onComment(post.id);
+      } else {
+        // Remover comentário temporário em caso de erro
+        if (replyTo) {
+          setComments(prev => prev.map(comment => 
+            comment.id === replyTo.id 
+              ? { ...comment, replies: comment.replies.filter(reply => reply.id !== tempComment.id) }
+              : comment
+          ));
+        } else {
+          setComments(prev => prev.filter(comment => comment.id !== tempComment.id));
+        }
+        setCommentCount(prev => prev - 1);
       }
     } catch (error) {
       console.error('Erro ao comentar:', error);
+      
+      // Remover comentário temporário em caso de erro
+      if (replyTo) {
+        setComments(prev => prev.map(comment => 
+          comment.id === replyTo.id 
+            ? { ...comment, replies: comment.replies.filter(reply => reply.id !== tempComment.id) }
+            : comment
+        ));
+      } else {
+        setComments(prev => prev.filter(comment => comment.id !== tempComment.id));
+      }
+      setCommentCount(prev => prev - 1);
     }
   };
 
@@ -239,7 +316,34 @@ const SocialPost = ({
   };
 
   const renderMedia = () => {
-    // Novo sistema: mídia do banco BLOB
+    // Sistema de arquivos locais - prioridade para imagem_url e video_url
+    if (post.tipo_midia === 'imagem' && post.imagem_url) {
+      return (
+        <div className="rounded-xl overflow-hidden mt-3">
+          <img
+            src={`http://localhost/empowerup/public${post.imagem_url}`}
+            alt="Imagem do post"
+            className="w-full max-h-96 object-cover cursor-pointer hover:opacity-95 transition-opacity"
+            onClick={() => window.open(`http://localhost/empowerup/public${post.imagem_url}`, '_blank')}
+          />
+        </div>
+      );
+    }
+
+    if (post.tipo_midia === 'video' && post.video_url) {
+      return (
+        <div className="rounded-xl overflow-hidden mt-3">
+          <video
+            src={`http://localhost/empowerup/public${post.video_url}`}
+            controls
+            className="w-full max-h-96 object-cover"
+            poster="/placeholder.svg?height=300&width=500"
+          />
+        </div>
+      );
+    }
+
+    // Sistema antigo de BLOB - manter compatibilidade
     if (post.media_files && post.media_files.length > 0) {
       const mediaFiles = post.media_files;
       
@@ -309,46 +413,6 @@ const SocialPost = ({
           </div>
         );
       }
-    }
-
-    // Sistema antigo - manter compatibilidade
-    if (post.tipo_midia === 'imagem' && post.imagem_url) {
-      return (
-        <div className="rounded-xl overflow-hidden mt-3">
-          <img
-            src={`http://localhost/empowerup/public${post.imagem_url}`}
-            alt="Post"
-            className="w-full max-h-96 object-cover cursor-pointer hover:opacity-95 transition-opacity"
-            onClick={() => window.open(`http://localhost/empowerup/public${post.imagem_url}`, '_blank')}
-          />
-        </div>
-      );
-    }
-
-    if (post.tipo_midia === 'video' && post.video_url) {
-      return (
-        <div className="rounded-xl overflow-hidden mt-3 relative">
-          <video
-            src={`http://localhost/empowerup/public${post.video_url}`}
-            controls
-            className="w-full max-h-96 object-cover"
-            poster="/placeholder.svg?height=300&width=500"
-          />
-        </div>
-      );
-    }
-
-    if (post.tipo_midia === 'gif' && post.gif_url) {
-      return (
-        <div className="rounded-xl overflow-hidden mt-3">
-          <img
-            src={`http://localhost/empowerup/public${post.gif_url}`}
-            alt="GIF"
-            className="w-full max-h-96 object-cover cursor-pointer"
-            onClick={() => window.open(`http://localhost/empowerup/public${post.gif_url}`, '_blank')}
-          />
-        </div>
-      );
     }
 
     return null;
@@ -581,6 +645,12 @@ const SocialPost = ({
               size="sm" 
               className="text-olive hover:text-olive/80"
               onClick={() => setShowComments(!showComments)}
+              onMouseEnter={() => {
+                // Pré-carregar comentários no hover para melhor UX
+                if (!commentsLoadedRef.current && !loadingComments) {
+                  fetchComments();
+                }
+              }}
             >
               <MessageCircle className="mr-2 h-4 w-4" />
               {commentCount}
@@ -669,9 +739,18 @@ const SocialPost = ({
             {/* Lista de comentários */}
             <div className="space-y-4">
               {loadingComments ? (
-                <div className="text-center py-4">
-                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-coral mx-auto"></div>
-                  <p className="text-sm text-gray-500 mt-2">Carregando comentários...</p>
+                // Loading skeleton mais elaborado
+                <div className="space-y-3">
+                  {[1, 2, 3].map((i) => (
+                    <div key={i} className="flex space-x-3 animate-pulse">
+                      <div className="w-8 h-8 bg-gray-200 rounded-full"></div>
+                      <div className="flex-1 space-y-2">
+                        <div className="h-3 bg-gray-200 rounded w-1/4"></div>
+                        <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+                        <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               ) : comments.length > 0 ? (
                 comments.map(renderComment)

@@ -16,52 +16,54 @@ class CommentController {
     public function getComments($postId) {
         try {
             $page = intval($_GET['page'] ?? 1);
-            $limit = intval($_GET['limit'] ?? 20);
+            $limit = intval($_GET['limit'] ?? 10); // Reduzido de 20 para 10
             $offset = ($page - 1) * $limit;
             
             $currentUser = AuthMiddleware::optional();
             $currentUserId = $currentUser ? $currentUser['id'] : null;
             
-            // Buscar comentários principais (sem parent_id)
-            $comments = $this->db->fetchAll(
-                'SELECT c.*, u.nome as autor, u.username, u.avatar_url as avatar
+            // Query otimizada para buscar comentários e respostas em uma única consulta
+            $allComments = $this->db->fetchAll(
+                'SELECT c.*, u.nome as autor, u.username, u.avatar_url as avatar,
+                        CASE WHEN c.parent_id IS NULL THEN c.id ELSE c.parent_id END as main_comment_id
                  FROM post_comentarios c
                  INNER JOIN usuarios u ON c.user_id = u.id
-                 WHERE c.post_id = ? AND c.parent_id IS NULL
-                 ORDER BY c.created_at ASC
-                 LIMIT ? OFFSET ?',
-                [$postId, $limit, $offset]
+                 WHERE c.post_id = ?
+                 ORDER BY main_comment_id, c.parent_id IS NOT NULL, c.created_at ASC',
+                [$postId]
             );
             
-            // Buscar respostas para cada comentário
+            // Organizar comentários e respostas
             $commentsWithReplies = [];
+            $commentMap = [];
             
-            foreach ($comments as $comment) {
-                $replies = $this->db->fetchAll(
-                    'SELECT c.*, u.nome as autor, u.username, u.avatar_url as avatar
-                     FROM post_comentarios c
-                     INNER JOIN usuarios u ON c.user_id = u.id
-                     WHERE c.parent_id = ?
-                     ORDER BY c.created_at ASC',
-                    [$comment['id']]
-                );
-                
+            foreach ($allComments as $comment) {
                 $formattedComment = Helper::formatComment($comment, $currentUserId);
-                $formattedComment['replies'] = array_map(function($reply) use ($currentUserId) {
-                    return Helper::formatComment($reply, $currentUserId);
-                }, $replies);
                 
-                $commentsWithReplies[] = $formattedComment;
+                if ($comment['parent_id'] === null) {
+                    // Comentário principal
+                    $formattedComment['replies'] = [];
+                    $commentsWithReplies[] = $formattedComment;
+                    $commentMap[$comment['id']] = count($commentsWithReplies) - 1;
+                } else {
+                    // Resposta - adicionar ao comentário pai
+                    if (isset($commentMap[$comment['parent_id']])) {
+                        $commentsWithReplies[$commentMap[$comment['parent_id']]]['replies'][] = $formattedComment;
+                    }
+                }
             }
             
-            // Buscar total de comentários
+            // Aplicar paginação apenas nos comentários principais
+            $paginatedComments = array_slice($commentsWithReplies, $offset, $limit);
+            
+            // Buscar total de comentários (apenas principais para paginação)
             $totalComments = $this->db->fetch(
-                'SELECT COUNT(*) as total FROM post_comentarios WHERE post_id = ?',
+                'SELECT COUNT(*) as total FROM post_comentarios WHERE post_id = ? AND parent_id IS NULL',
                 [$postId]
             );
             
             echo Helper::jsonResponse(true, '', [
-                'comments' => $commentsWithReplies,
+                'comments' => $paginatedComments,
                 'total' => (int)$totalComments['total'],
                 'pagination' => [
                     'currentPage' => $page,

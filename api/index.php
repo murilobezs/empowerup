@@ -349,6 +349,48 @@ $router->get('/notifications', function() {
     $controller->getNotifications();
 });
 
+// Rotas de eventos
+$router->get('/events', function() {
+    $controller = new EventController();
+    $controller->getEvents();
+});
+
+$router->post('/events', function() {
+    $controller = new EventController();
+    $controller->createEvent();
+});
+
+$router->post('/events/{id}/subscribe', function($id) {
+    $controller = new EventController();
+    $controller->subscribeToEvent($id);
+});
+
+$router->delete('/events/{id}/subscribe', function($id) {
+    $controller = new EventController();
+    $controller->unsubscribeFromEvent($id);
+});
+
+$router->get('/events/{id}', function($id) {
+    $controller = new EventController();
+    $controller->getEvent($id);
+});
+
+$router->put('/events/{id}', function($id) {
+    $controller = new EventController();
+    $controller->updateEvent($id);
+});
+
+$router->delete('/events/{id}', function($id) {
+    $controller = new EventController();
+    $controller->deleteEvent($id);
+});
+
+// Rotas de inscrições em eventos (para admin)
+$router->get('/events/{id}/subscriptions', function($id) {
+    $controller = new EventController();
+    $controller->getEventSubscriptions($id);
+});
+
 $router->put('/notifications/{notificationId}/read', function($notificationId) {
     $controller = new NotificationController();
     $controller->markAsRead($notificationId);

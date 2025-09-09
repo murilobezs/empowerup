@@ -41,7 +41,6 @@ export const USER_TYPES = {
 export const POST_CATEGORIES = [
   'Geral',
   'Artesanato',
-  'Culinária',
   'Moda',
   'Beleza',
   'Tecnologia',

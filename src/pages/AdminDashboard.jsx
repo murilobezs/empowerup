@@ -21,6 +21,7 @@ import {
   LogOut
 } from 'lucide-react';
 import config from '../config/config';
+import { AdminEventManagement } from '../components/admin/AdminEventManagement';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -55,11 +56,16 @@ const AdminDashboard = () => {
       return;
     }
 
-    fetchStats();
-    fetchUsuarios();
-    fetchPosts();
-    fetchGrupos();
-  }, [navigate]);
+    const loadData = async () => {
+      await fetchStats();
+      await fetchUsuarios();
+      await fetchPosts();
+      await fetchGrupos();
+    };
+
+    loadData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem('admin_logged_in');
@@ -201,11 +207,12 @@ const AdminDashboard = () => {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="overview">Visão Geral</TabsTrigger>
             <TabsTrigger value="usuarios">Usuários</TabsTrigger>
             <TabsTrigger value="posts">Posts</TabsTrigger>
             <TabsTrigger value="grupos">Grupos</TabsTrigger>
+            <TabsTrigger value="eventos">Eventos</TabsTrigger>
           </TabsList>
 
           <TabsContent value="overview" className="space-y-6">
@@ -406,7 +413,7 @@ const AdminDashboard = () => {
                               <span className="text-xs text-gray-500">
                                 {grupo.membros} membros
                               </span>
-                              {grupo.ativo == 1 && (
+                              {grupo.ativo === 1 && (
                                 <Badge variant="success">Ativo</Badge>
                               )}
                             </div>
@@ -434,6 +441,11 @@ const AdminDashboard = () => {
                 </div>
               </CardContent>
             </Card>
+          </TabsContent>
+
+          {/* Aba de Eventos */}
+          <TabsContent value="eventos" className="space-y-4">
+            <AdminEventManagement />
           </TabsContent>
         </Tabs>
       </div>

@@ -378,6 +378,78 @@ class ApiService {
     return this.request(`/saves/posts/${postId}/check`);
   }
 
+  // ===== EVENTOS =====
+
+  /**
+   * Listar eventos
+   */
+  async getEvents(params = {}) {
+    const queryString = new URLSearchParams(params).toString();
+    return this.request(`/events${queryString ? '?' + queryString : ''}`);
+  }
+
+  /**
+   * Criar evento
+   */
+  async createEvent(eventData) {
+    return this.request('/events', {
+      method: 'POST',
+      body: JSON.stringify(eventData),
+    });
+  }
+
+  /**
+   * Atualizar evento
+   */
+  async updateEvent(eventId, eventData) {
+    return this.request(`/events/${eventId}`, {
+      method: 'PUT',
+      body: JSON.stringify(eventData),
+    });
+  }
+
+  /**
+   * Excluir evento
+   */
+  async deleteEvent(eventId) {
+    return this.request(`/events/${eventId}`, {
+      method: 'DELETE',
+    });
+  }
+
+  /**
+   * Buscar evento específico
+   */
+  async getEvent(eventId) {
+    return this.request(`/events/${eventId}`);
+  }
+
+  /**
+   * Inscrever-se em evento
+   */
+  async subscribeToEvent(eventId, subscriptionData) {
+    return this.request(`/events/${eventId}/subscribe`, {
+      method: 'POST',
+      body: JSON.stringify(subscriptionData),
+    });
+  }
+
+  /**
+   * Cancelar inscrição em evento
+   */
+  async unsubscribeFromEvent(eventId) {
+    return this.request(`/events/${eventId}/subscribe`, {
+      method: 'DELETE',
+    });
+  }
+
+  /**
+   * Listar inscrições de um evento (admin)
+   */
+  async getEventSubscriptions(eventId) {
+    return this.request(`/events/${eventId}/subscriptions`);
+  }
+
   // ===== UTILITÁRIOS =====
 
   /**

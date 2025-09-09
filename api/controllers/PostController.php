@@ -107,10 +107,9 @@ class PostController {
             
             $posts = $this->db->fetchAll($query, $params);
 
-            // Anexar metadata de mídia (post_media) para cada post
+            // Para compatibilidade com o frontend, adicionar media_files vazio para cada post
             foreach ($posts as &$p) {
-                $media = $this->db->fetchAll('SELECT id, media_filename, media_type FROM post_media WHERE post_id = ?', [$p['id']]);
-                $p['media_files'] = $media ?: [];
+                $p['media_files'] = [];
             }
             
             // Query para contar total
@@ -194,9 +193,8 @@ class PostController {
                 return;
             }
 
-            // Anexar metadata de mídia (post_media)
-            $media = $this->db->fetchAll('SELECT id, media_filename, media_type FROM post_media WHERE post_id = ?', [$post['id']]);
-            $post['media_files'] = $media ?: [];
+            // Para compatibilidade com o frontend, adicionar media_files vazio
+            $post['media_files'] = [];
             
             echo Helper::jsonResponse(true, '', [
                 'post' => Helper::formatPost($post, $currentUserId)
@@ -239,10 +237,9 @@ class PostController {
             
             $posts = $this->db->fetchAll($query, [$user['id'], $user['id'], $limit, $offset]);
 
-            // Anexar metadata de mídia para cada post
+            // Para compatibilidade com o frontend, adicionar media_files vazio para cada post
             foreach ($posts as &$p) {
-                $media = $this->db->fetchAll('SELECT id, media_filename, media_type FROM post_media WHERE post_id = ?', [$p['id']]);
-                $p['media_files'] = $media ?: [];
+                $p['media_files'] = [];
             }
             
             // Contar total de posts curtidos
@@ -332,19 +329,32 @@ class PostController {
                 ]
             );
 
-            // Salvar arquivos de mídia no banco (post_media)
+            // Salvar arquivos de mídia localmente
+            $imagemUrl = null;
+            $videoUrl = null;
+            
             if ($postId && isset($_FILES) && !empty($_FILES)) {
                 try {
                     if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-                        Helper::saveMediaToDb($postId, $_FILES['image']);
+                        $imagemUrl = Helper::processUpload($_FILES['image'], 'image');
+                        // Atualizar o post com a URL da imagem
+                        $this->db->execute(
+                            'UPDATE posts SET imagem_url = ? WHERE id = ?',
+                            [$imagemUrl, $postId]
+                        );
                     }
 
                     if (isset($_FILES['video']) && $_FILES['video']['error'] === UPLOAD_ERR_OK) {
-                        Helper::saveMediaToDb($postId, $_FILES['video']);
+                        $videoUrl = Helper::processUpload($_FILES['video'], 'video');
+                        // Atualizar o post com a URL do vídeo
+                        $this->db->execute(
+                            'UPDATE posts SET video_url = ? WHERE id = ?',
+                            [$videoUrl, $postId]
+                        );
                     }
                 } catch (Exception $e) {
                     // Log do erro, mas não falhar a criação do post
-                    Helper::logError('Erro ao salvar mídia no DB: ' . $e->getMessage(), ['post_id' => $postId]);
+                    Helper::logError('Erro ao salvar mídia localmente: ' . $e->getMessage(), ['post_id' => $postId]);
                 }
             }
             
@@ -357,10 +367,9 @@ class PostController {
                 [$postId]
             );
 
-            // Anexar arquivos de mídia (metadados) ao post
+            // Para compatibilidade com o frontend, manter a estrutura media_files vazia
             if ($newPost) {
-                $mediaRows = $this->db->fetchAll('SELECT id, media_filename, media_type FROM post_media WHERE post_id = ?', [$newPost['id']]);
-                $newPost['media_files'] = $mediaRows ?: [];
+                $newPost['media_files'] = [];
             }
             
             echo Helper::jsonResponse(true, '', [

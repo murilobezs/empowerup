@@ -214,3 +214,5 @@
 [2025-09-08 23:40:23] Searching saved posts for user ID: 11
 [2025-09-08 23:40:23] Found 1 saved posts
 [2025-09-08 23:40:23] Returning response with 1 formatted posts
+[2025-09-09 00:17:04] Uncaught exception: Class "CommentController" not found
+[2025-09-09 00:17:04] Uncaught exception: Class "CommentController" not found
