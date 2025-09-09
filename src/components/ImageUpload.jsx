@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import { Button } from './ui/button';
 import { Card, CardContent } from './ui/card';
 import { X, Image as ImageIcon, AlertCircle, CheckCircle } from 'lucide-react';
+import config from '../config/config';
 
 const ImageUpload = ({ 
   onUpload, 
@@ -15,8 +16,16 @@ const ImageUpload = ({
   className = "",
   placeholder = "Clique para selecionar uma imagem"
 }) => {
+  // Helper function to construct image URLs
+  const getImageUrl = (imagePath) => {
+    if (!imagePath) return null;
+    // Images are served from the same domain as the API
+    const baseUrl = config.API_BASE_URL.replace('/api', '');
+    return `${baseUrl}/public${imagePath}`;
+  };
+
   const [isUploading, setIsUploading] = useState(false);
-  const [preview, setPreview] = useState(currentImage ? `http://localhost/empowerup/public${currentImage}` : null);
+  const [preview, setPreview] = useState(getImageUrl(currentImage));
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const fileInputRef = useRef(null);
@@ -79,7 +88,7 @@ const ImageUpload = ({
       if (postId) formData.append('post_id', postId);
       if (groupId) formData.append('group_id', groupId);
 
-      const response = await fetch('http://localhost/empowerup/api/upload_image.php', {
+      const response = await fetch(`${config.API_BASE_URL}/upload_image.php`, {
         method: 'POST',
         body: formData,
       });
@@ -97,7 +106,7 @@ const ImageUpload = ({
         }
       } else {
         setError(result.message || 'Erro ao enviar imagem');
-        setPreview(currentImage ? `http://localhost/empowerup/public${currentImage}` : null);
+        setPreview(getImageUrl(currentImage));
       }
     } catch (error) {
       console.error('Erro ao fazer upload:', error);
@@ -109,9 +118,9 @@ const ImageUpload = ({
   };
 
   const removeImage = async () => {
-    if (!preview || preview === (currentImage ? `http://localhost/empowerup/public${currentImage}` : null)) return;
+    if (!preview || preview === getImageUrl(currentImage)) return;
     
-    setPreview(currentImage ? `http://localhost/empowerup/public${currentImage}` : null);
+    setPreview(getImageUrl(currentImage));
     setError('');
     setSuccess('');
     

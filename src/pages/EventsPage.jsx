@@ -20,11 +20,19 @@ import {
 } from "lucide-react";
 import { EventSubscriptionModal } from "../components/EventSubscriptionModal";
 import apiService from "../services/api";
+import config from "../config/config";
 import { useToast } from "../components/ui/toast";
 
 export default function EventsPage() {
   const { user } = useContext(AuthContext);
   const { addToast } = useToast();
+  
+  // Helper function to construct image URLs
+  const getImageUrl = (imagePath) => {
+    if (!imagePath) return '';
+    const baseUrl = config.API_BASE_URL.replace('/api', '');
+    return `${baseUrl}/public${imagePath}`;
+  };
   
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -202,7 +210,7 @@ export default function EventsPage() {
                   {event.imagem_url && (
                     <div className="w-full h-32 bg-gray-200 rounded-md overflow-hidden mb-3">
                       <img
-                        src={`http://localhost/empowerup/public${event.imagem_url}`}
+                        src={getImageUrl(event.imagem_url)}
                         alt={event.titulo}
                         className="w-full h-full object-cover"
                       />

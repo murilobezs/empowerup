@@ -19,8 +19,16 @@ import {
 } from './ui/dropdown-menu';
 import apiService from '../services/api';
 import { formatTimeAgo } from '../utils';
+import config from '../config/config';
 
 const NotificationCenter = ({ currentUser }) => {
+  // Helper function to construct image URLs
+  const getImageUrl = (imagePath) => {
+    if (!imagePath) return '';
+    const baseUrl = config.API_BASE_URL.replace('/api', '');
+    return `${baseUrl}/public${imagePath}`;
+  };
+
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -158,9 +166,7 @@ const NotificationCenter = ({ currentUser }) => {
                     <div className="flex items-start space-x-3">
                       <Avatar className="w-10 h-10">
                         <AvatarImage 
-                          src={notification.from_user?.avatar_url ? 
-                            `http://localhost/empowerup/public${notification.from_user.avatar_url}` : ''
-                          } 
+                          src={getImageUrl(notification.from_user?.avatar_url)} 
                         />
                         <AvatarFallback className="bg-coral text-white">
                           {notification.from_user?.nome ? 

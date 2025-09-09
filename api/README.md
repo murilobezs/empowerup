@@ -107,7 +107,7 @@ Authorization: Bearer seu_token_aqui
 
 ### Registrar Usuário
 ```bash
-curl -X POST http://localhost/empowerup/api/auth/register \
+curl -X POST https://www.empowerup.com.br/api/auth/register \
   -H "Content-Type: application/json" \
   -d '{
     "nome": "Maria Silva",
@@ -120,7 +120,7 @@ curl -X POST http://localhost/empowerup/api/auth/register \
 
 ### Criar Post
 ```bash
-curl -X POST http://localhost/empowerup/api/posts \
+curl -X POST https://www.empowerup.com.br/api/posts \
   -H "Authorization: Bearer seu_token" \
   -F "conteudo=Meu primeiro post!" \
   -F "categoria=Inspiração" \
@@ -129,7 +129,7 @@ curl -X POST http://localhost/empowerup/api/posts \
 
 ### Listar Posts
 ```bash
-curl -X GET "http://localhost/empowerup/api/posts?page=1&limit=10&categoria=Beleza"
+curl -X GET "https://www.empowerup.com.br/api/posts?page=1&limit=10&categoria=Beleza"
 ```
 
 ## 🛡️ Segurança
