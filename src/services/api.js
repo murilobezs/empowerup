@@ -12,7 +12,9 @@ class ApiService {
    * Método genérico para fazer requisições
    */
   async request(endpoint, options = {}) {
-    const url = `${this.baseURL}${endpoint}`;
+    // Adicionar /api ao endpoint automaticamente
+    const apiEndpoint = endpoint.startsWith('/api') ? endpoint : `/api${endpoint}`;
+    const url = `${this.baseURL}${apiEndpoint}`;
     
     const requestConfig = {
       headers: {
@@ -77,7 +79,9 @@ class ApiService {
    * Método para upload de arquivos
    */
   async uploadRequest(endpoint, formData, options = {}) {
-    const url = `${this.baseURL}${endpoint}`;
+    // Adicionar /api ao endpoint automaticamente
+    const apiEndpoint = endpoint.startsWith('/api') ? endpoint : `/api${endpoint}`;
+    const url = `${this.baseURL}${apiEndpoint}`;
     
     const requestConfig = {
       method: 'POST',

@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useRef } from "react";
-import axios from "axios";
+import React, { useState, useEffect, useRef, useCallback } from "react";
+import apiService from "../services/api";
+import config from "../config/config";
 
 export default function MensagensPage({ usuarioId }) {
   const [tipo, setTipo] = useState("privada");
@@ -9,16 +10,14 @@ export default function MensagensPage({ usuarioId }) {
   const [novaMensagem, setNovaMensagem] = useState("");
   const [loading, setLoading] = useState(true);
   const chatEndRef = useRef(null);
-  const sseRef = useRef(null);
-
-  const TOKEN = "Bearer TOKEN_AQUI"; 
+  const sseRef = useRef(null); 
 
   
   useEffect(() => {
     const fetchConversas = async () => {
       try {
-        const res = await axios.get("/api/conversas", { headers: { Authorization: TOKEN } });
-        setConversas(res.data.data.conversas);
+        const res = await apiService.request("/conversas");
+        setConversas(res.data.conversas);
       } catch (err) {
         console.error("Erro ao buscar conversas:", err);
       } finally {
@@ -28,15 +27,7 @@ export default function MensagensPage({ usuarioId }) {
     fetchConversas();
   }, []);
 
-  
-  useEffect(() => {
-    if (tipo && conversas.length > 0) {
-      const primeira = conversas.find((c) => c.tipo === tipo);
-      if (primeira) carregarMensagens(primeira.id);
-    }
-  }, [tipo, conversas]);
-
-  const carregarMensagens = async (conversaId) => {
+  const carregarMensagens = useCallback(async (conversaId) => {
     setConversaSelecionada(conversaId);
 
     
@@ -46,12 +37,12 @@ export default function MensagensPage({ usuarioId }) {
     }
 
     try {
-      const res = await axios.get(`/api/mensagens/${conversaId}`, { headers: { Authorization: TOKEN } });
-      setMensagens(res.data.data.mensagens);
+      const res = await apiService.request(`/mensagens/${conversaId}`);
+      setMensagens(res.data.mensagens);
       scrollToBottom();
 
       
-      const sse = new EventSource(`/api/chat/sse-mensagens.php?conversa_id=${conversaId}`);
+      const sse = new EventSource(`${config.API_BASE_URL}/api/chat/sse-mensagens.php?conversa_id=${conversaId}`);
       sse.onmessage = (e) => {
         const msg = JSON.parse(e.data);
         setMensagens((prev) => [...prev, msg]);
@@ -66,13 +57,24 @@ export default function MensagensPage({ usuarioId }) {
     } catch (err) {
       console.error("Erro ao buscar mensagens:", err);
     }
-  };
+  }, []);
+
+  
+  useEffect(() => {
+    if (tipo && conversas.length > 0) {
+      const primeira = conversas.find((c) => c.tipo === tipo);
+      if (primeira) carregarMensagens(primeira.id);
+    }
+  }, [tipo, conversas, carregarMensagens]);
 
   const enviarMensagem = async () => {
     if (!novaMensagem.trim() || !conversaSelecionada) return;
 
     try {
-      await axios.post(`/api/mensagens/${conversaSelecionada}`, { conteudo: novaMensagem }, { headers: { Authorization: TOKEN } });
+      await apiService.request(`/mensagens/${conversaSelecionada}`, {
+        method: 'POST',
+        body: JSON.stringify({ conteudo: novaMensagem })
+      });
       setNovaMensagem("");
       scrollToBottom();
     } catch (err) {
