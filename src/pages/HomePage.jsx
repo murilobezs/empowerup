@@ -11,7 +11,7 @@ export default function HomePage() {
     { nome: "Moda", icone: "👗" },
     { nome: "Beleza", icone: "💄" },
     { nome: "Gastronomia", icone: "🍰" },
-    { nome: "Decoração", icone: "🏠" },
+    { nome: "Casa", icone: "🏠" },
     { nome: "Serviços", icone: "⚡" },
   ]
 
@@ -85,7 +85,7 @@ export default function HomePage() {
                     <Link to="/cadastro">Comece Gratuitamente</Link>
                   </Button>
                   <Button asChild variant="outline" size="lg" className="hover:text-white">
-                    <Link to="/marketplace">Explorar Marketplace</Link>
+                    <Link to="https://marketplace.empowerup.com.br">Explorar Marketplace</Link>
                   </Button>
                 </div>
               </div>
@@ -114,7 +114,7 @@ export default function HomePage() {
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4 mt-12">
               {categorias.map((categoria) => (
                 <Card key={categoria.nome} className="overflow-hidden hover:shadow-md transition-shadow cursor-pointer">
-                  <Link to={`/marketplace?categoria=${categoria.nome.toLowerCase()}`}>
+                  <Link to={`https://marketplace.empowerup.com.br?categoria=${categoria.nome.toLowerCase()}`}>
                     <CardContent className="p-6 text-center">
                       <div className="text-4xl mb-2">{categoria.icone}</div>
                       <h3 className="font-medium">{categoria.nome}</h3>
@@ -163,7 +163,7 @@ export default function HomePage() {
                         className="text-olive hover:text-olive/80 hover:bg-olive/10"
                         asChild
                       >
-                        <Link to={`/marketplace/produto/${produto.id}`}>
+                        <Link to={`https://marketplace.empowerup.com.br/produto/${produto.id}`}>
                           Ver detalhes <ArrowRight className="ml-1 h-4 w-4" />
                         </Link>
                       </Button>
@@ -174,7 +174,7 @@ export default function HomePage() {
             </div>
             <div className="flex justify-center mt-8">
               <Button asChild className="bg-olive hover:bg-olive/90">
-                <Link to="/marketplace">Ver Todos os Produtos</Link>
+                <Link to="https://marketplace.empowerup.com.br">Ver Todos os Produtos</Link>
               </Button>
             </div>
           </div>

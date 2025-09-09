@@ -57,7 +57,7 @@ export function SiteFooter() {
             <h3 className="text-lg font-semibold">Links Rápidos</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link to="/marketplace" className="text-muted-foreground hover:text-foreground transition-colors">
+                <Link to="https://marketplace.empowerup.com.br" className="text-muted-foreground hover:text-foreground transition-colors">
                   Marketplace
                 </Link>
               </li>

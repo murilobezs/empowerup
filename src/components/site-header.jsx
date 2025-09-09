@@ -11,7 +11,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 
 const navigation = [
 	{ name: "Início", href: "/" },
-	{ name: "Marketplace", href: "/marketplace" },
+	{ name: "Marketplace", href: "https://marketplace.empowerup.com.br" },
 	{ name: "Sobre", href: "/sobre" },
 	{ name: "Contato", href: "/contato" },
 ]

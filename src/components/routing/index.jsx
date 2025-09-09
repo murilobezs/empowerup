@@ -41,6 +41,7 @@ export const ProtectedRoute = ({ children, redirectTo = '/login' }) => {
  */
 export const PublicRoute = ({ children, redirectTo = '/comunidade' }) => {
   const { isAuthenticated, loading } = useAuth();
+  const isAdminLoggedIn = localStorage.getItem('admin_logged_in');
 
   if (loading) {
     return (
@@ -48,6 +49,11 @@ export const PublicRoute = ({ children, redirectTo = '/comunidade' }) => {
         <Loading size="lg" text="Carregando..." />
       </div>
     );
+  }
+
+  // Se for a rota de admin login e o admin já estiver logado, redirecionar para /admin
+  if (window.location.pathname === '/admin/login' && isAdminLoggedIn) {
+    return <Navigate to="/admin" replace />;
   }
 
   if (isAuthenticated) {
@@ -60,8 +66,9 @@ export const PublicRoute = ({ children, redirectTo = '/comunidade' }) => {
 /**
  * Componente para rotas de admin
  */
-export const AdminRoute = ({ children, redirectTo = '/login' }) => {
+export const AdminRoute = ({ children, redirectTo = '/admin/login' }) => {
   const { user, loading } = useAuth();
+  const isAdminLoggedIn = localStorage.getItem('admin_logged_in');
 
   if (loading) {
     return (
@@ -71,7 +78,8 @@ export const AdminRoute = ({ children, redirectTo = '/login' }) => {
     );
   }
 
-  if (!user || user.tipo !== 'admin') {
+  // Verificar se admin está logado via localStorage ou se é um usuário admin
+  if (!isAdminLoggedIn && (!user || user.tipo !== 'admin')) {
     return <Navigate to={redirectTo} replace />;
   }
 
