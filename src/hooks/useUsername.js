@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import config from '../config/config';
 
 const useUsername = () => {
   const [username, setUsername] = useState('');
@@ -24,7 +25,7 @@ const useUsername = () => {
     setError('');
 
     try {
-      const response = await fetch(`/api/username.php?action=check_username&username=${encodeURIComponent(usernameToCheck)}`);
+      const response = await fetch(`${config.API_BASE_URL}/api/username.php?action=check_username&username=${encodeURIComponent(usernameToCheck)}`);
       const result = await response.json();
 
       if (result.success) {
@@ -47,7 +48,7 @@ const useUsername = () => {
     setError('');
 
     try {
-      const response = await fetch('/api/username.php', {
+      const response = await fetch(`${config.API_BASE_URL}/api/username.php`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -82,7 +83,7 @@ const useUsername = () => {
     setError('');
 
     try {
-      const response = await fetch('/api/username.php', {
+      const response = await fetch(`${config.API_BASE_URL}/api/username.php`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',

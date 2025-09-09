@@ -2,6 +2,28 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## Configuração
+
+### Configuração da API
+
+O projeto usa uma variável de ambiente `REACT_APP_API_URL` para configurar a URL base da API. 
+
+**Importante**: A URL base **NÃO** deve incluir o sufixo `/api`, pois as rotas do backend já incluem este prefixo automaticamente.
+
+```bash
+# Exemplo para desenvolvimento local
+REACT_APP_API_URL=http://localhost/empowerup
+
+# Exemplo para produção
+REACT_APP_API_URL=https://www.empowerup.com.br
+```
+
+Copie o arquivo `.env.example` para `.env` e ajuste as configurações conforme necessário:
+
+```bash
+cp .env.example .env
+```
+
 ## Available Scripts
 
 In the project directory, you can run:

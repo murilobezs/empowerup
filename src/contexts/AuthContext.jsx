@@ -29,9 +29,8 @@ export const AuthProvider = ({ children }) => {
     // API uses `avatar_url` (relative path like /images/...), some components expect `foto_perfil` as full/public URL
     const avatarUrl = u.avatar_url || u.avatar || null;
     if (avatarUrl) {
-      // Build full public URL based on API base (strip /api)
-      const apiBase = (config.API_BASE_URL || '').replace(/\/api\/?$/i, '');
-      const publicBase = apiBase || '';
+      // Build full public URL based on API base
+      const publicBase = config.API_BASE_URL || '';
       // If avatarUrl already looks like an absolute URL, keep it
       if (/^https?:\/\//.test(avatarUrl)) {
         out.foto_perfil = avatarUrl;
