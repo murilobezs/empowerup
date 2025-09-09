@@ -105,6 +105,10 @@ Authorization: Bearer seu_token_aqui
 
 ## 📝 Exemplos de Uso
 
+**Nota**: As URLs nos exemplos incluem `/api` no caminho pois este é o endpoint real da API. 
+No frontend, a configuração `API_BASE_URL` deve ser definida **sem** o `/api` (ex: `http://localhost/empowerup`), 
+pois o sistema adiciona automaticamente o prefixo `/api` às requisições.
+
 ### Registrar Usuário
 ```bash
 curl -X POST http://localhost/empowerup/api/auth/register \
