@@ -4,16 +4,10 @@ EmpowerUp é uma plataforma social para empreendedoras com trilhas de aprendizad
 
 ## Recursos principais
 
-- **Cursos e progresso:** catálogo completo em `/cursos`, com detalhe de módulos, marcação de lições e acompanhamento de progresso individual.
 - **Planos e assinaturas:** gestão de pacotes em `/planos`, incluindo upgrade, cancelamento e uso de campanhas promovidas do plano atual.
 - **Campanhas promovidas:** dashboard em `/campanhas` para criar, pausar e encerrar anúncios impulsionados, com controle de orçamento e posts vinculados.
 - **Comunidade:** feed colaborativo, mensagens diretas, grupos temáticos e notificações em tempo real.
 
-> Dica: para testar os novos fluxos protegidos, autentique-se com uma conta que possua assinatura ativa conforme os seeds do backend ou ative manualmente via banco.
-
-# Getting Started with Create React App
-
-Este projeto foi bootstrapped com [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
 
