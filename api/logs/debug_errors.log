@@ -1,0 +1,17 @@
+[05-Oct-2025 11:11:09 America/Sao_Paulo] PHP Fatal error:  Uncaught Error: Class "MigrationRunner" not found in C:\xampp\htdocs\empowerup\api\index.php:35
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\empowerup\api\index.php on line 35
+[05-Oct-2025 11:16:26 America/Sao_Paulo] PHP Fatal error:  Uncaught Error: Class "MigrationRunner" not found in C:\xampp\htdocs\empowerup\api\index.php:35
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\empowerup\api\index.php on line 35
+[05-Oct-2025 21:07:35 America/Sao_Paulo] PHP Fatal error:  Maximum execution time of 300 seconds exceeded in C:\xampp\htdocs\empowerup\api\config\Database.php on line 56
+[06-Oct-2025 18:02:29 America/Sao_Paulo] Erro ao buscar posts dos grupos: Erro na consulta ao banco de dados
+[06-Oct-2025 18:02:29 America/Sao_Paulo] Erro ao buscar posts dos grupos: Erro na consulta ao banco de dados
+[06-Oct-2025 18:16:23 America/Sao_Paulo] Erro ao buscar posts dos grupos: Erro na consulta ao banco de dados
+[06-Oct-2025 18:16:23 America/Sao_Paulo] Erro ao buscar posts dos grupos: Erro na consulta ao banco de dados
+[06-Oct-2025 18:16:48 America/Sao_Paulo] Erro ao buscar posts dos grupos: Erro na consulta ao banco de dados
+[06-Oct-2025 18:16:48 America/Sao_Paulo] Erro ao buscar posts dos grupos: Erro na consulta ao banco de dados
+[06-Oct-2025 18:25:24 America/Sao_Paulo] Erro ao buscar posts dos grupos: Erro na consulta ao banco de dados
+[06-Oct-2025 18:25:25 America/Sao_Paulo] Erro ao buscar posts dos grupos: Erro na consulta ao banco de dados

@@ -1,0 +1,43 @@
+# .htaccess para a subaplicação de cursos EmpowerUp
+
+# Garante MIME types corretos para assets modernos
+AddType application/javascript .js .mjs .jsx
+AddType text/css .css
+AddType application/json .json
+AddType image/svg+xml .svg
+AddType font/woff2 .woff2
+AddType font/woff .woff
+AddType font/ttf .ttf
+AddType font/eot .eot
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  # Ajuste o RewriteBase conforme o ponto de montagem.
+  # Para subdomínio dedicado (ex.: cursos.empowerup.com.br), mantenha "/".
+  # Para subdiretório (ex.: empowerup.com.br/cursos), altere para "/cursos/".
+  RewriteBase /
+
+  # Preserva chamadas para a API e assets públicos do backend
+  RewriteRule ^api/ - [L]
+  RewriteRule ^public/ - [L]
+
+  # Se arquivo ou diretório existir, serve diretamente
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+
+  # SPA fallback: redireciona tudo para index.html
+  RewriteRule . /index.html [L]
+</IfModule>
+
+# Desabilita listagem de diretórios
+Options -Indexes
+
+# Cache básico para assets buildados
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType application/javascript "access plus 1 year"
+    ExpiresByType text/css "access plus 1 year"
+    ExpiresByType image/svg+xml "access plus 1 year"
+    ExpiresByType font/woff2 "access plus 1 year"
+</IfModule>

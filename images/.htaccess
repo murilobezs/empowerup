@@ -1,0 +1,15 @@
+# Proteção contra execução de scripts
+php_flag engine off
+AddType text/plain .php .php3 .phtml .pht
+
+# Permitir apenas tipos de arquivo específicos
+<FilesMatch "\.(jpg|jpeg|png|gif|webp|mp4|avi|mov|wmv)$">
+    Order allow,deny
+    Allow from all
+</FilesMatch>
+
+# Negar acesso a outros tipos de arquivo
+<FilesMatch "\.(php|php3|phtml|pht|pl|py|jsp|asp|sh|cgi)$">
+    Order deny,allow
+    Deny from all
+</FilesMatch>

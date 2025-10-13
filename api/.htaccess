@@ -1,0 +1,83 @@
+RewriteEngine On
+
+# Prevent Apache from redirecting directory requests (stops 301/302 for preflight to /posts/)
+DirectorySlash Off
+
+# Preserve Authorization header for PHP (common issue behind Apache/mod_php/mod_rewrite)
+<IfModule mod_setenvif.c>
+    # Pass Authorization header to PHP as HTTP_AUTHORIZATION
+    SetEnvIf Authorization "(.+)" HTTP_AUTHORIZATION=$1
+</IfModule>
+
+# Configurações de segurança
+# Note: ServerTokens and ServerSignature must be set in httpd.conf, not .htaccess
+
+# Remover header Server
+Header unset Server
+Header unset X-Powered-By
+
+# Headers de segurança adicionais
+Header always set X-Content-Type-Options nosniff
+Header always set X-Frame-Options DENY
+Header always set X-XSS-Protection "1; mode=block"
+Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+Header always set Referrer-Policy "strict-origin-when-cross-origin"
+
+# CORS headers are handled by PHP CorsMiddleware to avoid duplicate headers
+# # CORS Headers
+# #Header always set Access-Control-Allow-Origin "*"
+# #Header always set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+# #Header always set Access-Control-Allow-Headers "Content-Type, Authorization, X-Requested-With"
+# #Header always set Access-Control-Max-Age "86400"
+
+# Configurações de cache para arquivos estáticos
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType image/jpg "access plus 1 month"
+    ExpiresByType image/jpeg "access plus 1 month"
+    ExpiresByType image/gif "access plus 1 month"
+    ExpiresByType image/png "access plus 1 month"
+    ExpiresByType image/webp "access plus 1 month"
+    ExpiresByType video/mp4 "access plus 1 month"
+    ExpiresByType video/avi "access plus 1 month"
+    ExpiresByType text/css "access plus 1 month"
+    ExpiresByType application/javascript "access plus 1 month"
+</IfModule>
+
+# Compressão GZIP
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/plain
+    AddOutputFilterByType DEFLATE text/html
+    AddOutputFilterByType DEFLATE text/xml
+    AddOutputFilterByType DEFLATE text/css
+    AddOutputFilterByType DEFLATE application/xml
+    AddOutputFilterByType DEFLATE application/xhtml+xml
+    AddOutputFilterByType DEFLATE application/rss+xml
+    AddOutputFilterByType DEFLATE application/javascript
+    AddOutputFilterByType DEFLATE application/x-javascript
+    AddOutputFilterByType DEFLATE application/json
+</IfModule>
+
+# Bloquear acesso a arquivos sensíveis
+<Files ~ "^\.">
+    Order allow,deny
+    Deny from all
+</Files>
+
+<Files ~ "\.(log|sql|env|config)$">
+    Order allow,deny
+    Deny from all
+</Files>
+
+# Redirecionamento para index.php
+RewriteCond %{REQUEST_FILENAME} !-f
+# Skip directory check so that API routes under folder names (e.g., /posts) are rewritten to index.php
+# RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php [QSA,L]
+
+# Configurações de upload
+php_value upload_max_filesize 10M
+php_value post_max_size 12M
+php_value max_execution_time 300
+php_value max_input_time 300
+php_value memory_limit 256M

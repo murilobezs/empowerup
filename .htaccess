@@ -1,0 +1,50 @@
+# .htaccess principal do projeto EmpowerUp
+
+# Configurar MIME types corretos para módulos JavaScript
+AddType application/javascript .js .mjs .jsx
+AddType text/css .css
+AddType application/json .json
+AddType image/svg+xml .svg
+AddType font/woff2 .woff2
+AddType font/woff .woff
+AddType font/ttf .ttf
+AddType font/eot .eot
+
+# Força HTTPS (descomente se necessário em produção)
+# RewriteCond %{HTTPS} off
+# RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # Redireciona todas as rotas de cursos para o subdomínio dedicado
+  RewriteCond %{HTTP_HOST} ^(www\.)?empowerup\.com\.br$ [NC]
+  RewriteRule ^cursos?(/.*)?$ https://cursos.empowerup.com.br$1 [R=301,L]
+
+  # Se a requisição for para /api, não reescreve (deixa o backend cuidar)
+  RewriteRule ^api/ - [L]
+
+  # Se a requisição for para /public, serve diretamente
+  RewriteRule ^public/ - [L]
+
+  # Se o arquivo ou diretório realmente existir, usa ele
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+
+  # Caso contrário, redireciona tudo para index.html (React em produção)
+  RewriteRule . /index.html [L]
+</IfModule>
+
+# Configurações gerais
+Options -Indexes
+
+# Cache para arquivos estáticos
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType application/javascript "access plus 1 year"
+    ExpiresByType text/css "access plus 1 year"
+    ExpiresByType image/svg+xml "access plus 1 year"
+    ExpiresByType font/woff2 "access plus 1 year"
+</IfModule>
