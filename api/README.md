@@ -141,7 +141,7 @@ Esta abordagem facilita auditorias, pois cada grupo de rotas está em um bloco c
 
 > **Total geral:** 114 rotas.
 
-## ⚙️ Configuração e ambiente
+##Configuração e ambiente
 
 1. Copie `config/config.php` e ajuste credenciais de banco, segredos JWT e endpoints de serviços externos.
 2. Garanta que `cache/` e `logs/` tenham permissão de escrita pelo usuário do servidor web.
