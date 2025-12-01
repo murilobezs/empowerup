@@ -143,8 +143,4 @@ Depuração comum
 - Problemas de variáveis ambiente: conferir .env e reiniciar servidores.
 - Erros de build: verifique versão do Node e dependências instaladas.
 
-Boas práticas para desenvolvimento
-- Rode os testes localmente antes de abrir PRs.
-- Mantenha commit e mensagens claras.
-- Se modificar APIs, documente endpoints e eventuais mudanças em uma seção API.md.
-- Para alterações grandes no backend PHP, descreva passos de migração (se houver banco).
+
