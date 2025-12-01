@@ -51,7 +51,6 @@ Requisitos
 - Node.js (recomendado 16+ ou conforme .nvmrc, se existir)
 - npm (ou yarn)
 - PHP (se for necessário rodar o backend localmente)
-- Composer (se o backend PHP usar dependências)
 - Opcional: Docker, XAMPP, Laragon (para isolar ambiente PHP)
 
 Instalação — Frontend
