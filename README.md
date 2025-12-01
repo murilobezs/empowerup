@@ -2,7 +2,7 @@
 
 EmpowerUp é uma plataforma web composta por um frontend moderno em JavaScript (React + Vite, estilizado com Tailwind CSS e usando componentes acessíveis do Radix UI) e um backend em PHP (ou outra implementação em servidor, dependendo do que estiver presente na pasta `backend` do repositório). O frontend utiliza Axios para comunicação com APIs e inclui uma suíte de testes baseada em Vitest e Testing Library.
 
-> Observação: este README foi gerado a partir da inspeção do package.json e da composição de linguagens do repositório. Ajuste as seções de backend e comandos conforme o framework PHP que você estiver usando (Laravel, Slim, Symfony, etc.) ou se existir um backend Node.js/Express.
+
 
 Sumário
 - Funcionalidades
